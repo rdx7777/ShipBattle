@@ -1,7 +1,6 @@
 package com.kodilla;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -11,9 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -112,29 +109,19 @@ public class ShipBattle extends Application implements EventHandler<ActionEvent>
         grid.add(userInterfaceLabel, 5, 0);
 
         // creating bottom buttons and adding to the grid
-        Button newGameButton = new Button();
-        newGameButton.setText("New game");
-        newGameButton.setMinSize(108, 40);
+        GameButton newGameButton = new GameButton(108, 40, "New game");
         newGameButton.setOnAction(event -> System.out.println("New game will start here."));
 
-        Button setShipButton = new Button();
-        setShipButton.setText("Set ship");
-        setShipButton.setMinSize(108, 40);
+        GameButton setShipButton = new GameButton(108, 40, "Set ship");
         setShipButton.setOnAction(event -> System.out.println("Player accepts their ship built on the board"));
 
-        Button startGameButton = new Button();
-        startGameButton.setText("Start");
-        startGameButton.setMinSize(108, 40);
+        GameButton startGameButton = new GameButton(108, 40, "Start");
         startGameButton.setOnAction(event -> System.out.println("Starting game"));
 
-        Button helpButton = new Button();
-        helpButton.setText("Help");
-        helpButton.setMinSize(108, 40);
+        GameButton helpButton = new GameButton(108, 40, "Help");
         helpButton.setOnAction(event -> System.out.println("Displaying instruction for player"));
 
-        Button exitGameButton = new Button();
-        exitGameButton.setText("Exit");
-        exitGameButton.setMinSize(108, 40);
+        GameButton exitGameButton = new GameButton(108, 40, "Exit");
         exitGameButton.setOnAction(event -> System.out.println("Exit game"));
 
         grid.add(newGameButton, 0, 15);
