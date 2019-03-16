@@ -1,21 +1,21 @@
 package com.kodilla;
 
 import javafx.application.Application;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+
+import static com.kodilla.ControlSquare.getPositionAndSetActionOfControlSquare;
+import static com.kodilla.Hit.getPositionAndSetActionOfHit;
+import static com.kodilla.ShipMast.getPositionAndSetActionOfShipMast;
 
 public class ShipBattle extends Application implements EventHandler<ActionEvent>{
 
@@ -167,53 +167,58 @@ public class ShipBattle extends Application implements EventHandler<ActionEvent>
         grid.add(hit1, 1, 5);
         grid.add(hit2, 1, 7);
 
+        // setting actions, getting position and calling specific methods for clicked mouse events
+        getPositionAndSetActionOfControlSquare(grid);
+        getPositionAndSetActionOfShipMast(grid);
+        getPositionAndSetActionOfHit(grid);
+
         // ********************* temporary place *********************
         // setting actions for clicked mouse events
 
-        ControlSquare controlSquare = new ControlSquare();
-        ObservableList<Node> childrenOfControlSquares = grid.getChildren();
-        for(Node node : childrenOfControlSquares) {
-            if(node.getClass() == controlSquare.getClass()) {
-                ControlSquare button = (ControlSquare) node;
-                button.setOnAction(event -> {
-                    int pos[] = button.getControlSquareColumnAndRow(button);
-                    int type = pos[0];
-                    int x = pos[1];
-                    int y = pos[2];
-                    example(type, x, y);
-                });
-            }
-        }
+//        ControlSquare controlSquare = new ControlSquare();
+//        ObservableList<Node> childrenOfControlSquares = grid.getChildren();
+//        for(Node node : childrenOfControlSquares) {
+//            if(node.getClass() == controlSquare.getClass()) {
+//                ControlSquare button = (ControlSquare) node;
+//                button.setOnAction(event -> {
+//                    int pos[] = button.getControlSquareColumnAndRow(button);
+//                    int type = pos[0];
+//                    int x = pos[1];
+//                    int y = pos[2];
+//                    example(type, x, y);
+//                });
+//            }
+//        }
 
-        ShipMast shipMast = new ShipMast();
-        ObservableList<Node> childrenOfShipMasts = grid.getChildren();
-        for(Node node : childrenOfShipMasts) {
-            if(node.getClass() == shipMast.getClass()) { // if(node.getClass().isInstance(shipMast))
-                ShipMast button = (ShipMast) node;
-                button.setOnAction(event -> {
-                    int pos[] = button.getShipMastColumnAndRow(button);
-                    int type = pos[0];
-                    int x = pos[1];
-                    int y = pos[2];
-                    example(type, x, y);
-                });
-            }
-        }
+//        ShipMast shipMast = new ShipMast();
+//        ObservableList<Node> childrenOfShipMasts = grid.getChildren();
+//        for(Node node : childrenOfShipMasts) {
+//            if(node.getClass() == shipMast.getClass()) { // if(node.getClass().isInstance(shipMast))
+//                ShipMast button = (ShipMast) node;
+//                button.setOnAction(event -> {
+//                    int pos[] = button.getShipMastColumnAndRow(button);
+//                    int type = pos[0];
+//                    int x = pos[1];
+//                    int y = pos[2];
+//                    example(type, x, y);
+//                });
+//            }
+//        }
 
-        Hit hit = new Hit();
-        ObservableList<Node> childrenOfHits = grid.getChildren();
-        for(Node node : childrenOfHits) {
-            if(node.getClass() == hit.getClass()) {
-                Hit button = (Hit) node;
-                button.setOnAction(event -> {
-                    int pos[] = button.getHitColumnAndRow(button);
-                    int type = pos[0];
-                    int x = pos[1];
-                    int y = pos[2];
-                    example(type, x, y);
-                });
-            }
-        }
+//        Hit hit = new Hit();
+//        ObservableList<Node> childrenOfHits = grid.getChildren();
+//        for(Node node : childrenOfHits) {
+//            if(node.getClass() == hit.getClass()) {
+//                Hit button = (Hit) node;
+//                button.setOnAction(event -> {
+//                    int pos[] = button.getHitColumnAndRow(button);
+//                    int type = pos[0];
+//                    int x = pos[1];
+//                    int y = pos[2];
+//                    example(type, x, y);
+//                });
+//            }
+//        }
 
         // ***********************************************************
 
