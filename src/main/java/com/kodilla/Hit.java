@@ -13,13 +13,6 @@ public class Hit extends Button {
         setMaxSize(27, 27);
     }
 
-//    public int[] getHitColumnAndRow(Hit hit) {
-//        int column = (int)((hit.getLocalToParentTransform().getTx()-81)/27);
-//        int row = (int)((hit.getLocalToParentTransform().getTy()-150)/27);
-//        int results[] = {-1, column, row}; // -1 indicates hit field
-//        return results;
-//    }
-
     public static void getPositionAndSetActionOfHit(GridPane grid) {
         Hit hit = new Hit();
         ObservableList<Node> childrenOfHits = grid.getChildren();
@@ -33,8 +26,6 @@ public class Hit extends Button {
                 });
             }
         }
-
     }
-
 
 }

@@ -16,4 +16,5 @@ public class GameLabel extends Label {
         setStyle(gameLabelUrl);
         setWrapText(true);
     }
+
 }

@@ -14,4 +14,5 @@ public class GameButton extends Button {
         setMinSize(width, height);
         setText(buttonName);
     }
+
 }

@@ -172,56 +172,6 @@ public class ShipBattle extends Application implements EventHandler<ActionEvent>
         getPositionAndSetActionOfShipMast(grid);
         getPositionAndSetActionOfHit(grid);
 
-        // ********************* temporary place *********************
-        // setting actions for clicked mouse events
-
-//        ControlSquare controlSquare = new ControlSquare();
-//        ObservableList<Node> childrenOfControlSquares = grid.getChildren();
-//        for(Node node : childrenOfControlSquares) {
-//            if(node.getClass() == controlSquare.getClass()) {
-//                ControlSquare button = (ControlSquare) node;
-//                button.setOnAction(event -> {
-//                    int pos[] = button.getControlSquareColumnAndRow(button);
-//                    int type = pos[0];
-//                    int x = pos[1];
-//                    int y = pos[2];
-//                    example(type, x, y);
-//                });
-//            }
-//        }
-
-//        ShipMast shipMast = new ShipMast();
-//        ObservableList<Node> childrenOfShipMasts = grid.getChildren();
-//        for(Node node : childrenOfShipMasts) {
-//            if(node.getClass() == shipMast.getClass()) { // if(node.getClass().isInstance(shipMast))
-//                ShipMast button = (ShipMast) node;
-//                button.setOnAction(event -> {
-//                    int pos[] = button.getShipMastColumnAndRow(button);
-//                    int type = pos[0];
-//                    int x = pos[1];
-//                    int y = pos[2];
-//                    example(type, x, y);
-//                });
-//            }
-//        }
-
-//        Hit hit = new Hit();
-//        ObservableList<Node> childrenOfHits = grid.getChildren();
-//        for(Node node : childrenOfHits) {
-//            if(node.getClass() == hit.getClass()) {
-//                Hit button = (Hit) node;
-//                button.setOnAction(event -> {
-//                    int pos[] = button.getHitColumnAndRow(button);
-//                    int type = pos[0];
-//                    int x = pos[1];
-//                    int y = pos[2];
-//                    example(type, x, y);
-//                });
-//            }
-//        }
-
-        // ***********************************************************
-
         Scene scene = new Scene(grid, 810, 540, Color.BLACK);
 
         primaryStage.setTitle("Ship Battle");
