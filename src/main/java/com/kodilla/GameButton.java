@@ -1,6 +1,8 @@
 package com.kodilla;
 
 import javafx.scene.control.Button;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 public class GameButton extends Button {
     private int width;
@@ -13,6 +15,7 @@ public class GameButton extends Button {
         this.buttonName = buttonName;
         setMinSize(width, height);
         setText(buttonName);
+        setFont(Font.font("Verdana", FontWeight.MEDIUM, 12));
     }
 
 }

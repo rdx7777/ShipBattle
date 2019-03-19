@@ -1,8 +1,7 @@
 package com.kodilla;
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -13,11 +12,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-import static com.kodilla.ControlSquare.getPositionAndSetActionOfControlSquare;
-import static com.kodilla.Hit.getPositionAndSetActionOfHit;
-import static com.kodilla.ShipMast.getPositionAndSetActionOfShipMast;
-
-public class ShipBattle extends Application implements EventHandler<ActionEvent>{
+//public class ShipBattle extends Application implements EventHandler<ActionEvent>{
+public class ShipBattle extends Application {
 
     private Image imageBack = new Image("ocean_ready_with_grid.jpg");
 
@@ -28,21 +24,21 @@ public class ShipBattle extends Application implements EventHandler<ActionEvent>
     public static void example(int type, int column, int row) {
         String typeString = "";
         if (type == 0) {
-            typeString = "empty";
+            typeString = "EMPTY";
         }
         if (type == 1) {
-            typeString = "mast";
+            typeString = "MAST";
         }
         if (type == -1) {
-            typeString = "hit";
+            typeString = "HIT";
         }
         System.out.println("Clicked on " + typeString + " field in column " + column + " and in row " + row);
     }
 
-    @Override
-    public void handle(ActionEvent event) {
-        ///
-    }
+//    @Override
+//    public void handle(ActionEvent event) {
+//        ///
+//    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -76,31 +72,30 @@ public class ShipBattle extends Application implements EventHandler<ActionEvent>
 
         // creating top labels and adding to the grid
         GameLabel userInterfaceLabel = new GameLabel(378, 54, "user-interface_background.jpg");
-        userInterfaceLabel.setText("Hello! Here a player can read some news, e.g. instruction \n" +
-                "We well see how text will fill this label. \n" + "3rd line");
-        userInterfaceLabel.setAlignment(Pos.TOP_LEFT);
-        userInterfaceLabel.setFont(Font.font("Verdana", FontWeight.MEDIUM, 12));
+        userInterfaceLabel.setAlignment(Pos.CENTER);
         userInterfaceLabel.setPadding(new Insets(5, 0, 0, 5));
+        userInterfaceLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 24));
+        userInterfaceLabel.setText("Hello! You are welcome!");
 
         GameLabel playerScoreLabel = new GameLabel(54, 40, "score_background.jpg");
-        playerScoreLabel.setText("0");
         playerScoreLabel.setAlignment(Pos.CENTER);
         playerScoreLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 24));
+        playerScoreLabel.setText("0");
 
         GameLabel computerScoreLabel = new GameLabel(54, 40, "score_background.jpg");
-        computerScoreLabel.setText("1");
         computerScoreLabel.setAlignment(Pos.CENTER);
         computerScoreLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 24));
+        computerScoreLabel.setText("0");
 
         GameLabel playerNameLabel = new GameLabel(135, 40, "name_background.jpg");
-        playerNameLabel.setText("Player Name");
         playerNameLabel.setAlignment(Pos.CENTER);
         playerNameLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 18));
+        playerNameLabel.setText("Player");
 
         GameLabel computerNameLabel = new GameLabel(135, 40, "name_background.jpg");
-        computerNameLabel.setText("Computer");
         computerNameLabel.setAlignment(Pos.CENTER);
         computerNameLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 18));
+        computerNameLabel.setText("Computer");
 
         grid.add(playerScoreLabel, 8, 2);
         grid.add(computerScoreLabel, 12, 2);
@@ -108,69 +103,93 @@ public class ShipBattle extends Application implements EventHandler<ActionEvent>
         grid.add(computerNameLabel, 17, 2);
         grid.add(userInterfaceLabel, 5, 0);
 
-        // creating bottom buttons and adding to the grid
+//        Board board = new Board(grid);
+        PlayerBoard playerBoard = new PlayerBoard(grid);
+        ComputerBoard computerBoard = new ComputerBoard(grid);
+
+        // creating bottom buttons
         GameButton newGameButton = new GameButton(108, 40, "New game");
-        newGameButton.setOnAction(event -> System.out.println("New game will start here."));
-
         GameButton setShipButton = new GameButton(108, 40, "Set ship");
-        setShipButton.setOnAction(event -> System.out.println("Player accepts their ship built on the board"));
-
         GameButton startGameButton = new GameButton(108, 40, "Start");
-        startGameButton.setOnAction(event -> System.out.println("Starting game"));
-
         GameButton helpButton = new GameButton(108, 40, "Help");
-        helpButton.setOnAction(event -> System.out.println("Displaying instruction for player"));
-
         GameButton exitGameButton = new GameButton(108, 40, "Exit");
-        exitGameButton.setOnAction(event -> System.out.println("Exit game"));
 
+        // creating buttons to handle "exit" choice
+        GameButton areYouSureExitGameButton = new GameButton(135, 40, "Are you sure?");
+        areYouSureExitGameButton.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+        areYouSureExitGameButton.setTextFill(Color.RED);
+        GameButton cancelExitGameButton = new GameButton(135, 40, "Cancel");
+        cancelExitGameButton.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+
+        // setting actions for "New game" button
+        newGameButton.setOnAction(event -> {
+            System.out.println("New game starts here.");
+            playerBoard.createPlayerBoard();
+            playerBoard.setEmptyPlayerBoard();
+            playerBoard.getPositionAndSetActionOfControlSquare();
+            computerBoard.createComputerBoard();
+            computerBoard.setEmptyComputerBoard();
+            // nie trzeba blokować planszy komputera, ponieważ obiekty na niej utworzone
+            // już po wywołaniu metody obsługującej eventy dla ControlSquare nie są objęte tą obsługą
+            newGameButton.setDisable(true);
+
+            helpButton.setOnAction(event1 -> {
+                System.out.println("Help when player has started new game.");
+                userInterfaceLabel.setAlignment(Pos.TOP_LEFT);
+                userInterfaceLabel.setPadding(new Insets(5, 0, 0, 5));
+                userInterfaceLabel.setFont(Font.font("Verdana", FontWeight.MEDIUM, 12));
+                userInterfaceLabel.setText("To build your ship click on any field on Player board.\n" +
+                        "When ship's built, press \"Set ship\" button to accept it.\n" +
+                        "When all ships're built, press \"Start\" to start your game.");
+                helpButton.setDisable(true);
+            });
+
+        });
+
+        // setting actions for "Set ship" button
+        setShipButton.setOnAction(event -> System.out.println("Player accepts their ship built on the board"));
+        setShipButton.setDisable(true);
+
+        // setting actions for "Start game" button
+        startGameButton.setOnAction(event -> System.out.println("Starting game"));
+        startGameButton.setDisable(true);
+
+        // setting actions for "Help" button
+        helpButton.setOnAction(event -> {
+            System.out.println("Help for player wanted to start new game.");
+            userInterfaceLabel.setAlignment(Pos.CENTER_LEFT);
+            userInterfaceLabel.setPadding(new Insets(7, 0, 8, 5));
+            userInterfaceLabel.setFont(Font.font("Verdana", FontWeight.MEDIUM, 12));
+            userInterfaceLabel.setText("Press \"New game\" button to start a new game.\n" +
+                    "Press \"Exit\" button to end the game.");
+        });
+
+        // setting actions for "Exit" button
+        exitGameButton.setOnAction(event -> {
+            System.out.println("Exit game");
+            grid.add(areYouSureExitGameButton, 5, 8);
+            grid.add(cancelExitGameButton, 12, 8);
+        });
+
+        // setting actions for "Are you sure?" button
+        areYouSureExitGameButton.setOnAction(event -> {
+            System.out.println("Player confirmed their decision about exit game.");
+            Platform.exit();
+        });
+
+        // setting actions for "Cancel" button
+        cancelExitGameButton.setOnAction(event -> {
+            System.out.println("Player's changed their mind about exit game.");
+            grid.getChildren().remove(areYouSureExitGameButton);
+            grid.getChildren().remove(cancelExitGameButton);
+        });
+
+        // adding bottom buttons to grid
         grid.add(newGameButton, 0, 15);
         grid.add(setShipButton, 5, 15);
         grid.add(startGameButton, 10, 15);
         grid.add(helpButton, 13, 15);
         grid.add(exitGameButton, 18, 15);
-
-        // temporary creating fields for the board and adding to the grid
-        ControlSquare emptyField0 = new ControlSquare();
-        ControlSquare emptyField1 = new ControlSquare();
-        ControlSquare emptyField2 = new ControlSquare();
-
-        ShipMast shipMast0 = new ShipMast();
-        ShipMast shipMast1 = new ShipMast();
-        ShipMast shipMast2 = new ShipMast();
-        ShipMast shipMast3 = new ShipMast();
-        ShipMast shipMast4 = new ShipMast();
-        ShipMast shipMast5 = new ShipMast();
-        ShipMast shipMast6 = new ShipMast();
-        ShipMast shipMast7 = new ShipMast();
-        ShipMast shipMast8 = new ShipMast();
-
-        Hit hit0 = new Hit();
-        Hit hit1 = new Hit();
-        Hit hit2 = new Hit();
-
-        grid.add(emptyField0, 0, 5);
-        grid.add(emptyField1, 0, 6);
-        grid.add(emptyField2, 0, 7);
-
-        grid.add(shipMast0, 5, 7);
-        grid.add(shipMast1, 6, 7);
-        grid.add(shipMast2, 7, 7);
-        grid.add(shipMast3, 2, 4);
-        grid.add(shipMast4, 2, 5);
-        grid.add(shipMast5, 2, 6);
-        grid.add(shipMast6, 2, 7);
-        grid.add(shipMast7, 8, 13);
-        grid.add(shipMast8, 9, 13);
-
-        grid.add(hit0, 0, 4);
-        grid.add(hit1, 1, 5);
-        grid.add(hit2, 1, 7);
-
-        // setting actions, getting position and calling specific methods for clicked mouse events
-        getPositionAndSetActionOfControlSquare(grid);
-        getPositionAndSetActionOfShipMast(grid);
-        getPositionAndSetActionOfHit(grid);
 
         Scene scene = new Scene(grid, 810, 540, Color.BLACK);
 

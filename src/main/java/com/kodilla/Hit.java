@@ -13,19 +13,23 @@ public class Hit extends Button {
         setMaxSize(27, 27);
     }
 
-    public static void getPositionAndSetActionOfHit(GridPane grid) {
-        Hit hit = new Hit();
-        ObservableList<Node> childrenOfHits = grid.getChildren();
-        for(Node node : childrenOfHits) {
-            if(node.getClass() == hit.getClass()) {
-                Hit button = (Hit) node;
-                button.setOnAction(event -> {
-                    int column = (int)((button.getLocalToParentTransform().getTx()-81)/27);
-                    int row = (int)((button.getLocalToParentTransform().getTy()-150)/27);
-                    ShipBattle.example(-1, column, row);
-                });
-            }
-        }
-    }
+    // metoda obsługująca kliknięcie w pole "trafiony" nie jest potrzebna do niczego, oprócz ew. testowania
+    // kodu poczas pisania programu
+
+//    public static void getPositionAndSetActionOfHit(GridPane grid) {
+//        Hit hit = new Hit();
+//        ObservableList<Node> childrenOfHits = grid.getChildren();
+//        for(Node node : childrenOfHits) {
+//            if(node.getClass() == hit.getClass()) {
+//                Hit button = (Hit) node;
+//                button.setOnAction(event -> {
+//                    int column = (int)((button.getLocalToParentTransform().getTx()-81)/27);
+//                    int row = (int)((button.getLocalToParentTransform().getTy()-150)/27);
+//                    ShipBattle.example(-1, column, row);
+//                    grid.getChildren().remove(button);
+//                });
+//            }
+//        }
+//    }
 
 }
