@@ -18,4 +18,8 @@ public class GameButton extends Button {
         setFont(Font.font("Verdana", FontWeight.MEDIUM, 12));
     }
 
+    public String getButtonName() {
+        return buttonName;
+    }
+
 }
