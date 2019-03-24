@@ -11,7 +11,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,8 +47,8 @@ public class ShipBattle extends Application {
 
     // creating bottom buttons
     GameButton newGameButton = new GameButton(108, 40, "New game");
-    GameButton setShipButton = new GameButton(108, 40, "Set ship");
-    GameButton startGameButton = new GameButton(108, 40, "Start");
+    GameButton setShipButton = new GameButton(108, 40, "Hello"); // "Set ship" in future use
+    GameButton startButton = new GameButton(108, 40, "Start");
     GameButton helpButton = new GameButton(108, 40, "Help");
     GameButton exitGameButton = new GameButton(108, 40, "Exit");
     GameButton areYouSureExitGameButton = new GameButton(135, 40, "Are you sure?");
@@ -155,14 +154,18 @@ public class ShipBattle extends Application {
             userInterfaceLabel.setText("Now build your ships. \n" +
                     "FIRST build one 4-masts ship, then two 3-masts ships, \n" +
                     "then three 2-masts ships and finally four 1-mast ships.");
-//            setShipButton.setDisable(true);
+//            setShipButton.setDisable(true); // unnecessary button (for possible use in future)
             playerBoard.createPlayerBoard();
             playerBoard.setEmptyPlayerBoard();
             playerBoard.setShipMastOnControlSquareField();
+            // unnecessary button (for possible use in future)
+/*
             setShipButton.setOnAction(event1 -> { // TEMPORARY ONLY !!!!!!!!!!!!!!!!!!!!!!!!!
                 // NEED setting ship object etc.
                 playerBoard.setFirstMastOfShipChecker(true);
+                setShipButton.setDisable(true);
             });
+*/
             computerBoard.createComputerBoard();
             computerBoard.setEmptyComputerBoard();
             // nie trzeba blokować planszy komputera, ponieważ obiekty na niej utworzone
@@ -184,11 +187,11 @@ public class ShipBattle extends Application {
 
         // setting actions for "Set ship" button
         setShipButton.setOnAction(event -> System.out.println("Player accepts their ship built on the board"));
-        setShipButton.setDisable(true);
+//        setShipButton.setDisable(true);
 
         // setting actions for "Start game" button
-        startGameButton.setOnAction(event -> System.out.println("Starting game"));
-        startGameButton.setDisable(true);
+        startButton.setOnAction(event -> System.out.println("Starting game"));
+        startButton.setDisable(true);
 
         // setting actions for "Help" button
         helpButton.setOnAction(event -> {
@@ -205,6 +208,7 @@ public class ShipBattle extends Application {
             System.out.println("Exit game");
             grid.add(areYouSureExitGameButton, 5, 8);
             grid.add(cancelExitGameButton, 12, 8);
+            exitGameButton.setDisable(true);
         });
 
         // setting actions for "Are you sure?" button
@@ -218,12 +222,13 @@ public class ShipBattle extends Application {
             System.out.println("Player's changed their mind about exit game.");
             grid.getChildren().remove(areYouSureExitGameButton);
             grid.getChildren().remove(cancelExitGameButton);
+            exitGameButton.setDisable(false);
         });
 
         // adding bottom buttons to grid
         grid.add(newGameButton, 0, 15);
         grid.add(setShipButton, 5, 15);
-        grid.add(startGameButton, 10, 15);
+        grid.add(startButton, 10, 15);
         grid.add(helpButton, 13, 15);
         grid.add(exitGameButton, 18, 15);
 

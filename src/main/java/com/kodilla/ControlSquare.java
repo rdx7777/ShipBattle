@@ -4,7 +4,6 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
-import javafx.util.Pair;
 
 public class ControlSquare extends Button {
 
@@ -15,29 +14,31 @@ public class ControlSquare extends Button {
 //        setOnActionMethod();
     }
 
-/*
-    public void setOnActionMethod() {
+    // method can be used in constructor
+/*    public void setOnActionMethod() {
         setOnAction(event -> {
             int column = (int)((getLocalToParentTransform().getTx()-81)/27);
             int row = (int)((getLocalToParentTransform().getTy()-150)/27);
             ShipBattle.example(0, column, row); // CHECK POSITION ONLY
         });
+    }*/
+
+    // method for use outside this class
+/*
+    public static void getPositionAndSetActionOfControlSquare(GridPane grid) {
+        ControlSquare controlSquare = new ControlSquare();
+        ObservableList<Node> childrenOfControlSquares = grid.getChildren();
+        for(Node node : childrenOfControlSquares) {
+            if(node.getClass() == controlSquare.getClass()) {
+                ControlSquare button = (ControlSquare) node;
+                button.setOnAction(event -> {
+                    int column = (int)((button.getLocalToParentTransform().getTx()-81)/27);
+                    int row = (int)((button.getLocalToParentTransform().getTy()-150)/27);
+                    ShipBattle.example(0, column, row); // for check only **************************
+                });
+            }
+        }
     }
 */
-
-//    public static void getPositionAndSetActionOfControlSquare(GridPane grid) {
-//        ControlSquare controlSquare = new ControlSquare();
-//        ObservableList<Node> childrenOfControlSquares = grid.getChildren();
-//        for(Node node : childrenOfControlSquares) {
-//            if(node.getClass() == controlSquare.getClass()) {
-//                ControlSquare button = (ControlSquare) node;
-//                button.setOnAction(event -> {
-//                    int column = (int)((button.getLocalToParentTransform().getTx()-81)/27);
-//                    int row = (int)((button.getLocalToParentTransform().getTy()-150)/27);
-//                    ShipBattle.example(0, column, row);
-//                });
-//            }
-//        }
-//    }
 
 }
