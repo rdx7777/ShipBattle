@@ -24,6 +24,127 @@ public class PlayerBoard {
         this.shipsContainer = shipsContainer;
     }
 
+    public void createPlayerBoard() {
+        for (int i = 0; i < 10; i++) {
+            for (int n = 0; n < 10; n++) {
+                grid.add(new ControlSquare(), i, n + 4);
+            }
+        }
+    }
+
+    public void clearPlayerBoard() {
+        ControlSquare controlSquare = new ControlSquare();
+        ObservableList<Node> childrenOfControlSquares = grid.getChildren();
+        ControlSquare button = new ControlSquare();
+        for (Node node : childrenOfControlSquares) { // set actions for every ControlSquare object in the grid
+            if (node.getClass() == controlSquare.getClass()) {
+                button = (ControlSquare) node;
+                button.setDisable(true); // *********** TEMPORARY *****************
+            }
+//            grid.getChildren().remove(button);
+        }
+    }
+
+    public void setEmptyPlayerBoard() {
+        for (int i = 0; i < 10; i++) {
+            for (int n = 0; n < 10; n++) {
+                playerBoard[i][n] = 0;
+            }
+        }
+    }
+
+    public int[][] getPlayerBoard() {
+        return playerBoard;
+    }
+
+    public void makeChangeInPlayerBoard(int column, int row, int number) {
+        playerBoard[column][row] = number;
+    }
+
+    public void setShipMastOnControlSquareField() {
+//        setShipButton = findSetShipButton(); // unnecessary button (for possible use in future)
+        startButton = findStartButton();
+        maxNumberOfMasts = checkShipExistsInShipsContainer();
+        if (maxNumberOfMasts == 4) {
+            savedMaxNumberOfMasts = 10; // sets max number of ships
+        }
+        System.out.println("Saved = " + savedMaxNumberOfMasts); // TEMPORARY ONLY **************************************
+        ArrayList<Pair<Integer, Integer>> mastsCoordinates = new ArrayList<>();
+        ControlSquare controlSquare = new ControlSquare();
+        ObservableList<Node> childrenOfControlSquares = grid.getChildren();
+        for (Node node : childrenOfControlSquares) { // set actions for every ControlSquare object in the grid
+            if (node.getClass() == controlSquare.getClass()) {
+                ControlSquare button = (ControlSquare) node;
+                button.setOnAction(event -> {
+                    int column = (int) ((button.getLocalToParentTransform().getTx() - 81) / 27);
+                    int row = (int) ((button.getLocalToParentTransform().getTy() - 150) / 27);
+                    ShipBattle.example(0, column, row); // CHECK POSITION ONLY ***********************************
+                    System.out.println("Value of player board = " + playerBoard[column][row]);
+                    System.out.println(maxNumberOfMasts); // FOR CHECK ONLY ********************************************
+                    if (maxNumberOfMasts > 0) {
+                        if (checkNeighbourDiagonally(column, row)) { // check player move is legal
+                            if (firstMastOfShipChecker) {
+                                // adding first mast of ship
+                                grid.add(new ShipMast(), column, row + 4);
+                                playerBoard[column][row] = 1;
+                                mastsCoordinates.add(new Pair<>(column, row));
+                                maxNumberOfMasts--;
+                                firstMastOfShipChecker = false;
+                                if (maxNumberOfMasts == 0) {
+                                    changeSetOfShipsInShipsContainer(savedMaxNumberOfMasts, mastsCoordinates);
+                                    protectShipPosition(mastsCoordinates);
+                                    savedMaxNumberOfMasts--;
+                                    mastsCoordinates.clear();
+                                    firstMastOfShipChecker = true;
+//                                  setShipButton.setDisable(false); // unnecessary button (for possible use in future)
+                                    System.out.println("Max. no of masts after saving ship: " + maxNumberOfMasts); // ***************************************
+                                    maxNumberOfMasts = checkShipExistsInShipsContainer(); // ***********************
+                                    if (maxNumberOfMasts == 0 && savedMaxNumberOfMasts == 0) {
+                                        startButton.setDisable(false);
+                                    }
+                                }
+                            } else {
+                                if (checkBuildingOnlyOneShipAtTime(column, row)) {
+                                    // adding next mast of ship
+                                    grid.add(new ShipMast(), column, row + 4);
+                                    playerBoard[column][row] = 1;
+                                    mastsCoordinates.add(new Pair<>(column, row));
+                                    maxNumberOfMasts--;
+                                    if (maxNumberOfMasts == 0) {
+                                        changeSetOfShipsInShipsContainer(savedMaxNumberOfMasts, mastsCoordinates);
+                                        protectShipPosition(mastsCoordinates);
+                                        savedMaxNumberOfMasts--;
+                                        mastsCoordinates.clear();
+                                        firstMastOfShipChecker = true;
+//                                        setShipButton.setDisable(false); // unnecessary button (for possible use in future)
+                                        System.out.println("Max no of masts after saving ship: " + maxNumberOfMasts); // ***************************************
+                                        maxNumberOfMasts = checkShipExistsInShipsContainer(); // ***********************
+                                        if (maxNumberOfMasts == 0 && savedMaxNumberOfMasts == 0) {
+                                            startButton.setDisable(false);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+// *** ZUPELNIE NIEPOTRZEBNA CZESC KODU, ZROZUMIENIE I USUNIECIE GENEROWANYCH PRZEZ NIA BLEDOW ZAJELO DOBRA GODZINE :) ***
+//                    } else { // ends building new ship, saves ship to ships container, saves all coordinates to ship object
+////                        setShipButton.setDisable(true); // unnecessary button (for possible use in future)
+//                        maxNumberOfMasts = checkShipExistsInShipsContainer();
+//                        System.out.println(maxNumberOfMasts + ", " + savedMaxNumberOfMasts);
+//                        if (maxNumberOfMasts == 0 && savedMaxNumberOfMasts == 0) {startButton.setDisable(false);}
+//                        System.out.println("New max =" + maxNumberOfMasts); // TEMP ONLY *******************************
+                    }
+
+/*                  ********** for future use *********
+                    removeShipMast(); // setting action when clicked on ShipMast object
+*/
+
+                });
+            }
+        }
+    }
+
     // method for use in the future
 /*
     public GameButton findSetShipButton() {
@@ -57,102 +178,19 @@ public class PlayerBoard {
         return wantedGameButton;
     }
 
-
-    public void createPlayerBoard() {
-        for (int i = 0; i < 10; i++) {
-            for (int n = 0; n < 10; n++) {
-                grid.add(new ControlSquare(), i, n + 4);
-            }
-        }
-    }
-
-    public void setEmptyPlayerBoard() {
-        for (int i = 0; i < 10; i++) {
-            for (int n = 0; n < 10; n++) {
-                playerBoard[i][n] = 0;
-            }
-        }
-    }
-
-    public void protectShipPosition(ArrayList<Pair<Integer, Integer>> coordinates) {
-
-        for (Pair<Integer, Integer> pair : coordinates) {
-            int column = pair.getKey();
-            int row = pair.getValue();
-
-            if (column > 0 && column < 9 && row > 0 && row < 9) {
-                if (playerBoard[column-1][row] != 1) {playerBoard[column-1][row] = 2;}
-                if (playerBoard[column+1][row] != 1) {playerBoard[column+1][row] = 2;}
-                if (playerBoard[column][row-1] != 1) {playerBoard[column][row-1] = 2;}
-                if (playerBoard[column][row+1] != 1) {playerBoard[column][row+1] = 2;}
-                playerBoard[column-1][row-1] = 2;
-                playerBoard[column+1][row-1] = 2;
-                playerBoard[column-1][row+1] = 2;
-                playerBoard[column+1][row+1] = 2;
-            }
-
-            if (column == 0 && row > 0 && row < 9) {
-                if (playerBoard[column][row-1] != 1) {playerBoard[column][row-1] = 2;}
-                if (playerBoard[column][row+1] != 1) {playerBoard[column][row+1] = 2;}
-                if (playerBoard[column+1][row] != 1) {playerBoard[column+1][row] = 2;}
-                playerBoard[column+1][row-1] = 2;
-                playerBoard[column+1][row+1] = 2;
-            }
-
-            if (column == 9 && row > 0 && row < 9) {
-                if (playerBoard[column][row-1] != 1) {playerBoard[column][row-1] = 2;}
-                if (playerBoard[column][row+1] != 1) {playerBoard[column][row+1] = 2;}
-                if (playerBoard[column-1][row] != 1) {playerBoard[column-1][row] = 2;}
-                playerBoard[column-1][row-1] = 2;
-                playerBoard[column-1][row+1] = 2;
-            }
-
-            if (column > 0 && column < 9 && row == 0) {
-                if (playerBoard[column-1][row] != 1) {playerBoard[column-1][row] = 2;}
-                if (playerBoard[column+1][row] != 1) {playerBoard[column+1][row] = 2;}
-                if (playerBoard[column][row+1] != 1) {playerBoard[column][row+1] = 2;}
-                playerBoard[column-1][row+1] = 2;
-                playerBoard[column+1][row+1] = 2;
-            }
-
-            if (column > 0 && column < 9 && row == 9) {
-                if (playerBoard[column-1][row] != 1) {playerBoard[column-1][row] = 2;}
-                if (playerBoard[column+1][row] != 1) {playerBoard[column+1][row] = 2;}
-                if (playerBoard[column][row-1] != 1) {playerBoard[column][row-1] = 2;}
-                playerBoard[column-1][row-1] = 2;
-                playerBoard[column+1][row-1] = 2;
-            }
-
-            if (column == 0 && row == 0) {
-                if (playerBoard[column][row+1] != 1) {playerBoard[column][row+1] = 2;}
-                if (playerBoard[column+1][row] != 1) {playerBoard[column+1][row] = 2;}
-                playerBoard[column+1][row+1] = 2;
-            }
-
-            if (column == 9 && row == 0) {
-                if (playerBoard[column][row+1] != 1) {playerBoard[column][row+1] = 2;}
-                if (playerBoard[column-1][row] != 1) {playerBoard[column-1][row] = 2;}
-                playerBoard[column-1][row+1] = 2;
-            }
-
-            if (column == 0 && row == 9) {
-                if (playerBoard[column][row-1] != 1) {playerBoard[column][row-1] = 2;}
-                if (playerBoard[column+1][row] != 1) {playerBoard[column+1][row] = 2;}
-                playerBoard[column+1][row-1] = 2;
-            }
-
-            if (column == 9 && row == 9) {
-                if (playerBoard[column][row-1] != 1) {playerBoard[column][row-1] = 2;}
-                if (playerBoard[column-1][row] != 1) {playerBoard[column-1][row] = 2;}
-                playerBoard[column-1][row-1] = 2;
-            }
-
-        }
-
-    }
-
-    public void setFirstMastOfShipChecker(boolean expression){
-        firstMastOfShipChecker = expression;
+    public int checkShipExistsInShipsContainer() { // method returns max. number of masts allowed
+        HashMap<Ship, Integer> map = shipsContainer.getSetOfShips();
+        if (map.get(new Ship("Ship 4-masts (1)", new ArrayList<>())) == 0) {return 4;}
+        if (map.get(new Ship("Ship 3-masts (1)", new ArrayList<>())) == 0) {return 3;}
+        if (map.get(new Ship("Ship 3-masts (2)", new ArrayList<>())) == 0) {return 3;}
+        if (map.get(new Ship("Ship 2-masts (1)", new ArrayList<>())) == 0) {return 2;}
+        if (map.get(new Ship("Ship 2-masts (2)", new ArrayList<>())) == 0) {return 2;}
+        if (map.get(new Ship("Ship 2-masts (3)", new ArrayList<>())) == 0) {return 2;}
+        if (map.get(new Ship("Ship 1-masts (1)", new ArrayList<>())) == 0) {return 1;}
+        if (map.get(new Ship("Ship 1-masts (2)", new ArrayList<>())) == 0) {return 1;}
+        if (map.get(new Ship("Ship 1-masts (3)", new ArrayList<>())) == 0) {return 1;}
+        if (map.get(new Ship("Ship 1-masts (4)", new ArrayList<>())) == 0) {return 1;}
+        return 0;
     }
 
     public boolean checkNeighbourDiagonally(int column, int row) {
@@ -163,58 +201,48 @@ public class PlayerBoard {
 
             if (column > 0 && column < 9 && row > 0 && row < 9) {
                 if (playerBoard[column-1][row-1] != 1 && playerBoard[column+1][row-1] != 1
-                        && playerBoard[column-1][row+1] != 1 && playerBoard[column+1][row+1] != 1
-//                    && playerBoard[column][row-1] != 1 && playerBoard[column][row+1] != 1
-//                    && playerBoard[column-1][row] != 1 && playerBoard[column+1][row] != 1
-                ) { result = true; }
+                        && playerBoard[column-1][row+1] != 1 && playerBoard[column+1][row+1] != 1)
+                { result = true; }
             }
 
             if (column == 0 && row > 0 && row < 9) {
-                if (playerBoard[column+1][row-1] != 1 && playerBoard[column+1][row+1] != 1
-//                    && playerBoard[column+1][row] != 1
-                ) { result = true; }
+                if (playerBoard[column+1][row-1] != 1 && playerBoard[column+1][row+1] != 1)
+                { result = true; }
             }
 
             if (column == 9 && row > 0 && row < 9) {
-                if (playerBoard[column-1][row-1] != 1 && playerBoard[column-1][row+1] != 1
-//                    && playerBoard[column-1][row] != 1
-                ) { result = true; }
+                if (playerBoard[column-1][row-1] != 1 && playerBoard[column-1][row+1] != 1)
+                { result = true; }
             }
 
             if (column > 0 && column < 9 && row == 0) {
-                if (playerBoard[column-1][row+1] != 1 && playerBoard[column+1][row+1] != 1
-//                    && playerBoard[column][row+1] != 1
-                ) { result = true; }
+                if (playerBoard[column-1][row+1] != 1 && playerBoard[column+1][row+1] != 1)
+                { result = true; }
             }
 
             if (column > 0 && column < 9 && row == 9) {
-                if (playerBoard[column-1][row-1] != 1 && playerBoard[column+1][row-1] != 1
-//                    && playerBoard[column][row-1] != 1
-                ) { result = true; }
+                if (playerBoard[column-1][row-1] != 1 && playerBoard[column+1][row-1] != 1)
+                { result = true; }
             }
 
             if (column == 0 && row == 0) {
-                if (playerBoard[column+1][row+1] != 1
-//                    && playerBoard[column+1][row] != 1 && playerBoard[column][row+1] != 1
-                ) { result = true; }
+                if (playerBoard[column+1][row+1] != 1)
+                { result = true; }
             }
 
             if (column == 9 && row == 0) {
-                if (playerBoard[column-1][row+1] != 1
-//                    && playerBoard[column-1][row] != 1 && playerBoard[column][row+1] != 1
-                ) { result = true; }
+                if (playerBoard[column-1][row+1] != 1)
+                { result = true; }
             }
 
             if (column == 0 && row == 9) {
-                if (playerBoard[column+1][row-1] != 1
-//                    && playerBoard[column+1][row] != 1 && playerBoard[column][row-1] != 1
-                ) { result = true; }
+                if (playerBoard[column+1][row-1] != 1)
+                { result = true; }
             }
 
             if (column == 9 && row == 9) {
-                if (playerBoard[column-1][row-1] != 1
-//                    && playerBoard[column-1][row] != 1 && playerBoard[column][row-1] != 1
-                ) { result = true; }
+                if (playerBoard[column-1][row-1] != 1)
+                { result = true; }
             }
 
         }
@@ -272,22 +300,57 @@ public class PlayerBoard {
 
     }
 
-    public int checkShipExistsInShipsContainer() { // method returns max. number of masts allowed
+    public void changeSetOfShipsInShipsContainer(int number, ArrayList<Pair<Integer, Integer>> coordinates) {
 
-        HashMap<Ship, Integer> map = shipsContainer.getSetOfShips();
+        if (number == 10) {
+            String name = "Ship 4-masts (1)";
+            replaceValueAndSaveCoordinates(name, coordinates);
+        }
 
-        if (map.get(new Ship("Ship 4-masts (1)", new ArrayList<>())) == 0) {return 4;}
-        if (map.get(new Ship("Ship 3-masts (1)", new ArrayList<>())) == 0) {return 3;}
-        if (map.get(new Ship("Ship 3-masts (2)", new ArrayList<>())) == 0) {return 3;}
-        if (map.get(new Ship("Ship 2-masts (1)", new ArrayList<>())) == 0) {return 2;}
-        if (map.get(new Ship("Ship 2-masts (2)", new ArrayList<>())) == 0) {return 2;}
-        if (map.get(new Ship("Ship 2-masts (3)", new ArrayList<>())) == 0) {return 2;}
-        if (map.get(new Ship("Ship 1-masts (1)", new ArrayList<>())) == 0) {return 1;}
-        if (map.get(new Ship("Ship 1-masts (2)", new ArrayList<>())) == 0) {return 1;}
-        if (map.get(new Ship("Ship 1-masts (3)", new ArrayList<>())) == 0) {return 1;}
-        if (map.get(new Ship("Ship 1-masts (4)", new ArrayList<>())) == 0) {return 1;}
+        if (number == 9) {
+            String name = "Ship 3-masts (1)";
+            replaceValueAndSaveCoordinates(name, coordinates);
+        }
 
-        return 0;
+        if (number == 8) {
+            String name = "Ship 3-masts (2)";
+            replaceValueAndSaveCoordinates(name, coordinates);
+        }
+
+        if (number == 7) {
+            String name = "Ship 2-masts (1)";
+            replaceValueAndSaveCoordinates(name, coordinates);
+        }
+
+        if (number == 6) {
+            String name = "Ship 2-masts (2)";
+            replaceValueAndSaveCoordinates(name, coordinates);
+        }
+
+        if (number == 5) {
+            String name = "Ship 2-masts (3)";
+            replaceValueAndSaveCoordinates(name, coordinates);
+        }
+
+        if (number == 4) {
+            String name = "Ship 1-masts (1)";
+            replaceValueAndSaveCoordinates(name, coordinates);
+        }
+
+        if (number == 3) {
+            String name = "Ship 1-masts (2)";
+            replaceValueAndSaveCoordinates(name, coordinates);
+        }
+
+        if (number == 2) {
+            String name ="Ship 1-masts (3)";
+            replaceValueAndSaveCoordinates(name, coordinates);
+        }
+
+        if (number == 1) {
+            String name = "Ship 1-masts (4)";
+            replaceValueAndSaveCoordinates(name, coordinates);
+        }
 
     }
 
@@ -299,168 +362,100 @@ public class PlayerBoard {
             if (entry.getKey().getName() == name) {
                 entry.getKey().setCoordinates(coordinates);
                 System.out.println(entry.getKey().getName()); // TEMP ONLY *********************************************
+                System.out.println(entry.getKey().getMastsCoordinates());
             }
         }
     }
 
-    public void changeSetOfShipsInShipsContainer(int number, ArrayList<Pair<Integer, Integer>> coordinates) {
+    public void protectShipPosition(ArrayList<Pair<Integer, Integer>> coordinates) {
 
-//        HashMap<Ship, Integer> map = shipsContainer.getSetOfShips();
+        for (Pair<Integer, Integer> pair : coordinates) {
+            int column = pair.getKey();
+            int row = pair.getValue();
 
-        if (number == 10) {
-            String name = "Ship 4-masts (1)";
-//            map.replace(new Ship(name, new ArrayList<>()), 1);
-//            for (Map.Entry<Ship, Integer> entry : map.entrySet()) {
-//                if (entry.getKey().getName() == name) {
-//                    entry.getKey().setCoordinates(mastsCoordinates);
-//                    System.out.println(entry.getKey().getName());
-//                }
-//            }
-            replaceValueAndSaveCoordinates(name, coordinates);
-        }
-
-        if (number == 9) {
-            String name = "Ship 3-masts (1)";
-//            map.replace(new Ship("Ship 3-masts (1)", new ArrayList<>()), 1);
-            replaceValueAndSaveCoordinates(name, coordinates);
-        }
-
-        if (number == 8) {
-            String name = "Ship 3-masts (2)";
-//            map.replace(new Ship("Ship 3-masts (2)", new ArrayList<>()), 1);
-            replaceValueAndSaveCoordinates(name, coordinates);
-        }
-
-        if (number == 7) {
-            String name = "Ship 2-masts (1)";
-//            map.replace(new Ship("Ship 2-masts (1)", new ArrayList<>()), 1);
-            replaceValueAndSaveCoordinates(name, coordinates);
-        }
-
-        if (number == 6) {
-            String name = "Ship 2-masts (2)";
-//            map.replace(new Ship("Ship 2-masts (2)", new ArrayList<>()), 1);
-            replaceValueAndSaveCoordinates(name, coordinates);
-        }
-
-        if (number == 5) {
-            String name = "Ship 2-masts (3)";
-//            map.replace(new Ship("Ship 2-masts (3)", new ArrayList<>()), 1);
-            replaceValueAndSaveCoordinates(name, coordinates);
-        }
-
-        if (number == 4) {
-            String name = "Ship 1-masts (1)";
-//            map.replace(new Ship("Ship 1-masts (1)", new ArrayList<>()), 1);
-            replaceValueAndSaveCoordinates(name, coordinates);
-        }
-
-        if (number == 3) {
-            String name = "Ship 1-masts (2)";
-//            map.replace(new Ship("Ship 1-masts (2)", new ArrayList<>()), 1);
-            replaceValueAndSaveCoordinates(name, coordinates);
-        }
-
-        if (number == 2) {
-            String name ="Ship 1-masts (3)";
-//            map.replace(new Ship("Ship 1-masts (3)", new ArrayList<>()), 1);
-            replaceValueAndSaveCoordinates(name, coordinates);
-        }
-
-        if (number == 1) {
-            String name = "Ship 1-masts (4)";
-//            map.replace(new Ship("Ship 1-masts (4)", new ArrayList<>()), 1);
-            replaceValueAndSaveCoordinates(name, coordinates);
-        }
-
-    }
-
-    public void setShipMastOnControlSquareField() {
-//        setShipButton = findSetShipButton(); // unnecessary button (for possible use in future)
-        startButton = findStartButton();
-        maxNumberOfMasts = checkShipExistsInShipsContainer();
-        if (maxNumberOfMasts == 4) {
-            savedMaxNumberOfMasts = 10;
-        }
-        System.out.println("Saved = " + savedMaxNumberOfMasts); // TEMPORARY ONLY **************************************
-        ArrayList<Pair<Integer, Integer>> mastsCoordinates = new ArrayList<>();
-        ControlSquare controlSquare = new ControlSquare();
-        ObservableList<Node> childrenOfControlSquares = grid.getChildren();
-        for (Node node : childrenOfControlSquares) { // set actions for every ControlSquare object in the grid
-            if (node.getClass() == controlSquare.getClass()) {
-                ControlSquare button = (ControlSquare) node;
-                button.setOnAction(event -> {
-                    int column = (int) ((button.getLocalToParentTransform().getTx() - 81) / 27);
-                    int row = (int) ((button.getLocalToParentTransform().getTy() - 150) / 27);
-                    ShipBattle.example(0, column, row); // CHECK POSITION ONLY ***********************************
-                    System.out.println("Value of player board = " + playerBoard[column][row]);
-                    System.out.println(maxNumberOfMasts); // FOR CHECK ONLY ********************************************
-                    if (maxNumberOfMasts > 0) {
-                        if (checkNeighbourDiagonally(column, row)) { // check player move is legal
-                            if (firstMastOfShipChecker) {
-//                                if (!checkBuildingOnlyOneShipAtTime(column, row)) {
-                                    grid.add(new ShipMast(), column, row + 4); // adding first mast of ship
-                                    playerBoard[column][row] = 1;
-                                    mastsCoordinates.add(new Pair<>(column, row));
-                                    maxNumberOfMasts--;
-                                    firstMastOfShipChecker = false;
-                                    if (maxNumberOfMasts == 0) {
-                                        changeSetOfShipsInShipsContainer(savedMaxNumberOfMasts, mastsCoordinates);
-                                        protectShipPosition(mastsCoordinates);
-                                        savedMaxNumberOfMasts--;
-                                        mastsCoordinates.clear();
-                                        firstMastOfShipChecker = true;
-//                                    setShipButton.setDisable(false); // unnecessary button (for possible use in future)
-                                        System.out.println(maxNumberOfMasts); // *******************************************
-                                        maxNumberOfMasts = checkShipExistsInShipsContainer(); // ***********************
-                                        if (maxNumberOfMasts == 0 && savedMaxNumberOfMasts == 0) { // ******************
-                                            startButton.setDisable(false);
-                                        }
-                                    }
-//                                }
-                            } else {
-                                if (checkBuildingOnlyOneShipAtTime(column, row)) {
-                                    grid.add(new ShipMast(), column, row + 4); // adding next mast of ship
-                                    playerBoard[column][row] = 1;
-                                    mastsCoordinates.add(new Pair<>(column, row));
-                                    maxNumberOfMasts--;
-                                    if (maxNumberOfMasts == 0) {
-                                        changeSetOfShipsInShipsContainer(savedMaxNumberOfMasts, mastsCoordinates);
-                                        protectShipPosition(mastsCoordinates);
-                                        savedMaxNumberOfMasts--;
-                                        mastsCoordinates.clear();
-                                        firstMastOfShipChecker = true;
-//                                        setShipButton.setDisable(false); // unnecessary button (for possible use in future)
-                                        System.out.println("Max. no of masts after saving ship: " + maxNumberOfMasts); // ***************************************
-                                        System.out.println(); // *******************************************************
-                                        maxNumberOfMasts = checkShipExistsInShipsContainer(); // ***********************
-                                        if (maxNumberOfMasts == 0 && savedMaxNumberOfMasts == 0) { // ******************
-                                            startButton.setDisable(false);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-//                    } else { // ends building new ship, saves ship to ships container, saves all coordinates to ship object
-////                        setShipButton.setDisable(true); // unnecessary button (for possible use in future)
-//                        maxNumberOfMasts = checkShipExistsInShipsContainer();
-//                        System.out.println(maxNumberOfMasts + ", " + savedMaxNumberOfMasts);
-//                        if (maxNumberOfMasts == 0 && savedMaxNumberOfMasts == 0) {startButton.setDisable(false);}
-//                        System.out.println("New max =" + maxNumberOfMasts); // TEMP ONLY *******************************
-                    }
-
-
-/*                  ********** for future use *********
-                    removeShipMast(); // setting action when clicked on ShipMast object
-*/
-
-
-                });
+            if (column > 0 && column < 9 && row > 0 && row < 9) {
+                extractedMethod3(column, row);
+                extractedMethod1(column, row);
+                playerBoard[column-1][row-1] = 2;
+                playerBoard[column+1][row-1] = 2;
+                playerBoard[column-1][row+1] = 2;
+                playerBoard[column+1][row+1] = 2;
             }
+
+            if (column == 0 && row > 0 && row < 9) {
+                extractedMethod1(column, row);
+                if (playerBoard[column+1][row] != 1) {playerBoard[column+1][row] = 2;}
+                playerBoard[column+1][row-1] = 2;
+                playerBoard[column+1][row+1] = 2;
+            }
+
+            if (column == 9 && row > 0 && row < 9) {
+                extractedMethod1(column, row);
+                extractedMethod2(column, row);
+                playerBoard[column-1][row+1] = 2;
+            }
+
+            if (column > 0 && column < 9 && row == 0) {
+                extractedMethod3(column, row);
+                if (playerBoard[column][row+1] != 1) {playerBoard[column][row+1] = 2;}
+                playerBoard[column-1][row+1] = 2;
+                playerBoard[column+1][row+1] = 2;
+            }
+
+            if (column > 0 && column < 9 && row == 9) {
+                extractedMethod3(column, row);
+                if (playerBoard[column][row-1] != 1) {playerBoard[column][row-1] = 2;}
+                playerBoard[column-1][row-1] = 2;
+                playerBoard[column+1][row-1] = 2;
+            }
+
+            if (column == 0 && row == 0) {
+                if (playerBoard[column][row+1] != 1) {playerBoard[column][row+1] = 2;}
+                if (playerBoard[column+1][row] != 1) {playerBoard[column+1][row] = 2;}
+                playerBoard[column+1][row+1] = 2;
+            }
+
+            if (column == 9 && row == 0) {
+                if (playerBoard[column][row+1] != 1) {playerBoard[column][row+1] = 2;}
+                if (playerBoard[column-1][row] != 1) {playerBoard[column-1][row] = 2;}
+                playerBoard[column-1][row+1] = 2;
+            }
+
+            if (column == 0 && row == 9) {
+                if (playerBoard[column][row-1] != 1) {playerBoard[column][row-1] = 2;}
+                if (playerBoard[column+1][row] != 1) {playerBoard[column+1][row] = 2;}
+                playerBoard[column+1][row-1] = 2;
+            }
+
+            if (column == 9 && row == 9) {
+                if (playerBoard[column][row-1] != 1) {playerBoard[column][row-1] = 2;}
+                extractedMethod2(column, row);
+            }
+
         }
+
     }
 
-/*
+    private void extractedMethod1(int column, int row) {
+        if (playerBoard[column][row-1] != 1) {playerBoard[column][row-1] = 2;}
+        if (playerBoard[column][row+1] != 1) {playerBoard[column][row+1] = 2;}
+    }
+
+    private void extractedMethod2(int column, int row) {
+        if (playerBoard[column-1][row] != 1) {playerBoard[column-1][row] = 2;}
+        playerBoard[column-1][row-1] = 2;
+    }
+
+    private void extractedMethod3(int column, int row) {
+        if (playerBoard[column-1][row] != 1) {playerBoard[column-1][row] = 2;}
+        if (playerBoard[column+1][row] != 1) {playerBoard[column+1][row] = 2;}
+    }
+
+    public void setFirstMastOfShipChecker(boolean expression){
+        firstMastOfShipChecker = expression;
+    }
+
+    /*
     public boolean checkRemoveMastIsAllowed(int column, int row) {
 
         boolean result = true;
@@ -509,6 +504,5 @@ public class PlayerBoard {
         }
     }
 */
-
 
 }

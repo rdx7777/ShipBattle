@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Random;
 
 public class ShipBattle extends Application {
 
@@ -138,7 +139,7 @@ public class ShipBattle extends Application {
 
         // creating main objects
         PlayerBoard playerBoard = new PlayerBoard(grid, shipsContainer);
-        ComputerBoard computerBoard = new ComputerBoard(grid);
+        ComputerBoard computerBoard = new ComputerBoard(grid, shipsContainer, playerBoard);
 
         // setting buttons to handle "exit" choice
         areYouSureExitGameButton.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
@@ -147,7 +148,7 @@ public class ShipBattle extends Application {
 
         // setting actions for "New game" button
         newGameButton.setOnAction(event -> {
-            System.out.println("New game starts here.");
+            System.out.println("New game starts here."); // ******************* TEST ONLY ******************************
             userInterfaceLabel.setAlignment(Pos.TOP_LEFT);
             userInterfaceLabel.setPadding(new Insets(5, 0, 0, 5));
             userInterfaceLabel.setFont(Font.font("Verdana", FontWeight.MEDIUM, 12));
@@ -158,7 +159,7 @@ public class ShipBattle extends Application {
             playerBoard.createPlayerBoard();
             playerBoard.setEmptyPlayerBoard();
             playerBoard.setShipMastOnControlSquareField();
-            // unnecessary button (for possible use in future)
+// unnecessary button (for possible use in future)
 /*
             setShipButton.setOnAction(event1 -> { // TEMPORARY ONLY !!!!!!!!!!!!!!!!!!!!!!!!!
                 // NEED setting ship object etc.
@@ -166,10 +167,6 @@ public class ShipBattle extends Application {
                 setShipButton.setDisable(true);
             });
 */
-            computerBoard.createComputerBoard();
-            computerBoard.setEmptyComputerBoard();
-            // nie trzeba blokować planszy komputera, ponieważ obiekty na niej utworzone
-            // już po wywołaniu metody obsługującej eventy dla ControlSquare nie są objęte tą obsługą
             newGameButton.setDisable(true);
 
             helpButton.setOnAction(event1 -> {
@@ -190,8 +187,23 @@ public class ShipBattle extends Application {
 //        setShipButton.setDisable(true);
 
         // setting actions for "Start game" button
-        startButton.setOnAction(event -> System.out.println("Starting game"));
         startButton.setDisable(true);
+        startButton.setOnAction(event -> {
+            System.out.println("Starting game");
+            playerBoard.clearPlayerBoard();
+            Random random = new Random();
+            int randomParameter = random.nextInt(5);
+            computerBoard.createComputerBoard();
+            computerBoard.setEmptyComputerBoard();
+            // nie trzeba blokować planszy komputera, ponieważ obiekty na niej utworzone
+            // już po wywołaniu metody obsługującej eventy dla ControlSquare nie są objęte tą obsługą
+            computerBoard.createShipsOnComputerBoard(randomParameter);
+//            computerBoard.showAllShipsMastsOnComputerBoard();
+            computerBoard.createShipObjectsAndShipsCoordinates(randomParameter);
+            computerBoard.protectAllComputerShipsPositions();
+            computerBoard.shootOnComputerBoard();
+        });
+
 
         // setting actions for "Help" button
         helpButton.setOnAction(event -> {

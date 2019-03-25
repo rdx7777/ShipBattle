@@ -3,7 +3,6 @@ package com.kodilla;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Ship {
     String shipName;
