@@ -7,17 +7,18 @@ import javafx.util.Pair;
 
 import java.util.*;
 
-public class ComputerBoard {
+public class Computer {
     private GridPane grid;
     private ShipsContainer shipsContainer;
-    private PlayerBoard playerBoard;
     private int[][] computerBoard = new int[10][10];
-    int[][] playerBoardOfInts;
+    int[][] playerBoard;
+    int[][] copyOfPlayerBoard;
+    Random random;
+    long time;
 
-    public ComputerBoard(GridPane grid, ShipsContainer shipsContainer, PlayerBoard playerBoard) {
+    public Computer(GridPane grid, ShipsContainer shipsContainer) {
         this.grid = grid;
         this.shipsContainer = shipsContainer;
-        this.playerBoard = playerBoard;
     }
 
     public void createComputerBoard() {
@@ -508,8 +509,11 @@ public class ComputerBoard {
         }
     }
 
-    public void shootOnComputerBoard() {
-        playerBoardOfInts = playerBoard.getPlayerBoard();
+    public void shootOnComputerBoard(Player player) {
+        playerBoard = player.getPlayerBoard();
+        copyOfPlayerBoard = playerBoard;
+        Random random = new Random();
+        time = (long) 0.7;
         ControlSquare controlSquare = new ControlSquare();
         ObservableList<Node> childrenOfControlSquares = grid.getChildren();
         // set actions for every ControlSquare object in the grid on computer board
@@ -520,16 +524,13 @@ public class ComputerBoard {
                     int column = (int) ((button.getLocalToParentTransform().getTx() - 81) / 27) - 14;
                     int row = (int) ((button.getLocalToParentTransform().getTy() - 150) / 27);
                     ShipBattle.example(0, column, row); // CHECK POSITION ONLY ***********************************
-                    if (column >= 0 && column <= 9) {
-                        if (computerBoard[column][row] == 1) {
-                            hit(column, row);
-                            computerMove();
-                        } else {
-                            missed(column, row);
-                            computerMove();
-                        }
+                    if (computerBoard[column][row] == 1) {
+                        hit(column, row);
+                        computerMove(random);
+                    } else {
+                        missed(column, row);
+                        computerMove(random);
                     }
-
                 });
             }
 
@@ -537,21 +538,34 @@ public class ComputerBoard {
     }
 
     public void hit(int column, int row) {
-        System.out.println("HIT on [" + column + "][" + row + "]!");
+        System.out.println("HIT on [" + column + "][" + row + "]!"); // ***************** TEMP ONLY ********************
+        computerBoard[column][row] = -1;
+        grid.add(new Hit(), column + 12, row + 4);
+        // coś trzeba zakombinować tutaj z obiektem - metoda recognizeShip (na planszy komputera)
+        // ingerencja w shipContainer LUB utworzenie jakiejś lokalnej kopii
     }
 
     public void missed(int column, int row) {
-        System.out.println("Missed on [" + column + "][" + row + "]...");
+        System.out.println("Missed on [" + column + "][" + row + "]..."); // *************** TEMP ONLY *****************
+        computerBoard[column][row] = -2;
+//        grid.add(new Hit(), column + 12, row + 4);
+//        try {
+//            wait(time);
+//        } catch (InterruptedException e) {
+//            System.out.println();
+//        }
+        grid.add(new Missed(), column + 12, row + 4);
+        // i jeszcze dużo innych rzeczy, choć może i nie
     }
 
-    public void computerMove() {
-        Random random = new Random();
+    public void computerMove(Random random) {
         int column = random.nextInt(9);
         int row = random.nextInt(9);
-        System.out.println("Computer shoots on [" + column + "][" + row + "]...");
-        if (playerBoardOfInts[column][row] == 1) {
+        System.out.println("Computer shoots on [" + column + "][" + row + "]..."); // ********* TEMP ONLY **************
+        if (playerBoard[column][row] == 1) {
             System.out.println("Hit on player board!");
         }
+        // metoda recognizeShip dla planszy gracza
 
 
     }

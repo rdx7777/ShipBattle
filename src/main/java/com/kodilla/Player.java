@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PlayerBoard {
+public class Player {
     private GridPane grid;
     private ShipsContainer shipsContainer;
     private int[][] playerBoard = new int[10][10];
@@ -18,8 +18,9 @@ public class PlayerBoard {
     private int savedMaxNumberOfMasts; // this declaration is 'must be', because the reference is used inside condition 'if'
 //    private GameButton setShipButton; //  for future use
     private GameButton startButton;
+    ArrayList<Pair<Integer, Integer>> mastsCoordinates;
 
-    public PlayerBoard(GridPane grid, ShipsContainer shipsContainer) {
+    public Player(GridPane grid, ShipsContainer shipsContainer) {
         this.grid = grid;
         this.shipsContainer = shipsContainer;
     }
@@ -32,16 +33,15 @@ public class PlayerBoard {
         }
     }
 
-    public void clearPlayerBoard() {
+    public void blockActionOnPlayerBoard() {
         ControlSquare controlSquare = new ControlSquare();
         ObservableList<Node> childrenOfControlSquares = grid.getChildren();
-        ControlSquare button = new ControlSquare();
+        ControlSquare button;
         for (Node node : childrenOfControlSquares) { // set actions for every ControlSquare object in the grid
             if (node.getClass() == controlSquare.getClass()) {
                 button = (ControlSquare) node;
-                button.setDisable(true); // *********** TEMPORARY *****************
+                button.setDisable(true);
             }
-//            grid.getChildren().remove(button);
         }
     }
 
@@ -66,7 +66,7 @@ public class PlayerBoard {
         startButton = findStartButton();
         maxNumberOfMasts = checkShipExistsInShipsContainer();
         if (maxNumberOfMasts == 4) {
-            savedMaxNumberOfMasts = 10; // sets max number of ships
+            savedMaxNumberOfMasts = 10; // sets max number of ships --- ZMIENIC NAZWE ZMIENNE !!!!!!!!!!!!!!!!!!!!!!!
         }
         System.out.println("Saved = " + savedMaxNumberOfMasts); // TEMPORARY ONLY **************************************
         ArrayList<Pair<Integer, Integer>> mastsCoordinates = new ArrayList<>();
@@ -90,6 +90,8 @@ public class PlayerBoard {
                                 mastsCoordinates.add(new Pair<>(column, row));
                                 maxNumberOfMasts--;
                                 firstMastOfShipChecker = false;
+//                                removeShipMast(mastsCoordinates, maxNumberOfMasts); // setting action when clicked on ShipMast object
+                                removeShipMast(mastsCoordinates); // setting action when clicked on ShipMast object
                                 if (maxNumberOfMasts == 0) {
                                     changeSetOfShipsInShipsContainer(savedMaxNumberOfMasts, mastsCoordinates);
                                     protectShipPosition(mastsCoordinates);
@@ -97,8 +99,9 @@ public class PlayerBoard {
                                     mastsCoordinates.clear();
                                     firstMastOfShipChecker = true;
 //                                  setShipButton.setDisable(false); // unnecessary button (for possible use in future)
-                                    System.out.println("Max. no of masts after saving ship: " + maxNumberOfMasts); // ***************************************
-                                    maxNumberOfMasts = checkShipExistsInShipsContainer(); // ***********************
+                                    System.out.println("Max. no of masts after saving ship: " +
+                                            maxNumberOfMasts); // ******************************************************
+                                    maxNumberOfMasts = checkShipExistsInShipsContainer();
                                     if (maxNumberOfMasts == 0 && savedMaxNumberOfMasts == 0) {
                                         startButton.setDisable(false);
                                     }
@@ -110,6 +113,8 @@ public class PlayerBoard {
                                     playerBoard[column][row] = 1;
                                     mastsCoordinates.add(new Pair<>(column, row));
                                     maxNumberOfMasts--;
+//                                    removeShipMast(mastsCoordinates, maxNumberOfMasts); // setting action when clicked on ShipMast object
+                                    removeShipMast(mastsCoordinates); // setting action when clicked on ShipMast object
                                     if (maxNumberOfMasts == 0) {
                                         changeSetOfShipsInShipsContainer(savedMaxNumberOfMasts, mastsCoordinates);
                                         protectShipPosition(mastsCoordinates);
@@ -117,8 +122,9 @@ public class PlayerBoard {
                                         mastsCoordinates.clear();
                                         firstMastOfShipChecker = true;
 //                                        setShipButton.setDisable(false); // unnecessary button (for possible use in future)
-                                        System.out.println("Max no of masts after saving ship: " + maxNumberOfMasts); // ***************************************
-                                        maxNumberOfMasts = checkShipExistsInShipsContainer(); // ***********************
+                                        System.out.println("Max no of masts after saving ship: " +
+                                                maxNumberOfMasts); // **************************************************
+                                        maxNumberOfMasts = checkShipExistsInShipsContainer();
                                         if (maxNumberOfMasts == 0 && savedMaxNumberOfMasts == 0) {
                                             startButton.setDisable(false);
                                         }
@@ -126,20 +132,9 @@ public class PlayerBoard {
                                 }
                             }
                         }
-
-// *** ZUPELNIE NIEPOTRZEBNA CZESC KODU, ZROZUMIENIE I USUNIECIE GENEROWANYCH PRZEZ NIA BLEDOW ZAJELO DOBRA GODZINE :) ***
-//                    } else { // ends building new ship, saves ship to ships container, saves all coordinates to ship object
-////                        setShipButton.setDisable(true); // unnecessary button (for possible use in future)
-//                        maxNumberOfMasts = checkShipExistsInShipsContainer();
-//                        System.out.println(maxNumberOfMasts + ", " + savedMaxNumberOfMasts);
-//                        if (maxNumberOfMasts == 0 && savedMaxNumberOfMasts == 0) {startButton.setDisable(false);}
-//                        System.out.println("New max =" + maxNumberOfMasts); // TEMP ONLY *******************************
                     }
-
-/*                  ********** for future use *********
-                    removeShipMast(); // setting action when clicked on ShipMast object
-*/
-
+//                  ********** for future use *********
+//                    removeShipMast(mastsCoordinates, maxNumberOfMasts); // setting action when clicked on ShipMast object
                 });
             }
         }
@@ -302,6 +297,9 @@ public class PlayerBoard {
 
     public void changeSetOfShipsInShipsContainer(int number, ArrayList<Pair<Integer, Integer>> coordinates) {
 
+        // ZAMIENIC NA ZDEJMOWANIE Z KOLEJKI BEZ number (bo kazde zdejmowanie bedzie rownowazne odejmowaniu jedynki
+        // z saved...
+
         if (number == 10) {
             String name = "Ship 4-masts (1)";
             replaceValueAndSaveCoordinates(name, coordinates);
@@ -359,14 +357,14 @@ public class PlayerBoard {
         HashMap<Ship, Integer> map = shipsContainer.getSetOfShips();
         map.replace(new Ship(name, new ArrayList<>()), 1);
         for (Map.Entry<Ship, Integer> entry : map.entrySet()) {
-            if (entry.getKey().getName() == name) {
+            if (entry.getKey().getName().equals(name)) {
                 entry.getKey().setCoordinates(coordinates);
                 System.out.println(entry.getKey().getName()); // TEMP ONLY *********************************************
                 System.out.println(entry.getKey().getMastsCoordinates());
             }
         }
+//        map.replace(new Ship(name, new ArrayList<>()), 1);
     }
-
     public void protectShipPosition(ArrayList<Pair<Integer, Integer>> coordinates) {
 
         for (Pair<Integer, Integer> pair : coordinates) {
@@ -455,7 +453,31 @@ public class PlayerBoard {
         firstMastOfShipChecker = expression;
     }
 
-    /*
+    public void removeShipMast(ArrayList<Pair<Integer, Integer>> coordinates) {
+        ShipMast shipMast = new ShipMast();
+        ObservableList<Node> childrenOfShipMasts = grid.getChildren();
+        for (Node node : childrenOfShipMasts) {
+            if (node.getClass() == shipMast.getClass()) { // if (node.getClass().isInstance(shipMast))
+                ShipMast button = (ShipMast) node;
+                button.setOnAction(event -> {
+                    int column = (int)((button.getLocalToParentTransform().getTx()-81)/27);
+                    int row = (int)((button.getLocalToParentTransform().getTy()-150)/27);
+                    ShipBattle.example(1, column, row); // CHECK POSITION ONLY
+                    if (maxNumberOfMasts > 0 && coordinates.size() > 0) {
+                        if (checkRemoveMastIsAllowed(column, row)) { // check if not removing mast inside the ship
+                            grid.getChildren().remove(button);
+                            playerBoard[column][row] = 0;
+                            System.out.println(coordinates.get(coordinates.size()-1));
+                            coordinates.remove(coordinates.size()-1);
+                            maxNumberOfMasts++;
+                        }
+                        if (maxNumberOfMasts > 1) {firstMastOfShipChecker = true;}
+                    }
+                });
+            }
+        }
+    }
+
     public boolean checkRemoveMastIsAllowed(int column, int row) {
 
         boolean result = true;
@@ -484,25 +506,5 @@ public class PlayerBoard {
         return result;
 
     }
-
-    public void removeShipMast() {
-        ShipMast shipMast = new ShipMast();
-        ObservableList<Node> childrenOfShipMasts = grid.getChildren();
-        for (Node node : childrenOfShipMasts) {
-            if (node.getClass() == shipMast.getClass()) { // if (node.getClass().isInstance(shipMast))
-                ShipMast button = (ShipMast) node;
-                button.setOnAction(event -> {
-                    int column = (int)((button.getLocalToParentTransform().getTx()-81)/27);
-                    int row = (int)((button.getLocalToParentTransform().getTy()-150)/27);
-                    ShipBattle.example(1, column, row); // CHECK POSITION ONLY
-                    if (checkRemoveMastIsAllowed(column, row)) { // check if not removing mast inside the ship
-                        grid.getChildren().remove(button);
-                        playerBoard[column][row] = 0;
-                    }
-                });
-            }
-        }
-    }
-*/
 
 }

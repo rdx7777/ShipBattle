@@ -138,8 +138,8 @@ public class ShipBattle extends Application {
         // ************************************
 
         // creating main objects
-        PlayerBoard playerBoard = new PlayerBoard(grid, shipsContainer);
-        ComputerBoard computerBoard = new ComputerBoard(grid, shipsContainer, playerBoard);
+        Player player = new Player(grid, shipsContainer);
+        Computer computer = new Computer(grid, shipsContainer);
 
         // setting buttons to handle "exit" choice
         areYouSureExitGameButton.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
@@ -156,14 +156,14 @@ public class ShipBattle extends Application {
                     "FIRST build one 4-masts ship, then two 3-masts ships, \n" +
                     "then three 2-masts ships and finally four 1-mast ships.");
 //            setShipButton.setDisable(true); // unnecessary button (for possible use in future)
-            playerBoard.createPlayerBoard();
-            playerBoard.setEmptyPlayerBoard();
-            playerBoard.setShipMastOnControlSquareField();
+            player.createPlayerBoard();
+            player.setEmptyPlayerBoard();
+            player.setShipMastOnControlSquareField();
 // unnecessary button (for possible use in future)
 /*
             setShipButton.setOnAction(event1 -> { // TEMPORARY ONLY !!!!!!!!!!!!!!!!!!!!!!!!!
                 // NEED setting ship object etc.
-                playerBoard.setFirstMastOfShipChecker(true);
+                player.setFirstMastOfShipChecker(true);
                 setShipButton.setDisable(true);
             });
 */
@@ -189,19 +189,20 @@ public class ShipBattle extends Application {
         // setting actions for "Start game" button
         startButton.setDisable(true);
         startButton.setOnAction(event -> {
+            player.blockActionOnPlayerBoard();
+            startButton.setDisable(true);
             System.out.println("Starting game");
-            playerBoard.clearPlayerBoard();
             Random random = new Random();
             int randomParameter = random.nextInt(5);
-            computerBoard.createComputerBoard();
-            computerBoard.setEmptyComputerBoard();
+            computer.createComputerBoard();
+            computer.setEmptyComputerBoard();
             // nie trzeba blokować planszy komputera, ponieważ obiekty na niej utworzone
             // już po wywołaniu metody obsługującej eventy dla ControlSquare nie są objęte tą obsługą
-            computerBoard.createShipsOnComputerBoard(randomParameter);
-//            computerBoard.showAllShipsMastsOnComputerBoard();
-            computerBoard.createShipObjectsAndShipsCoordinates(randomParameter);
-            computerBoard.protectAllComputerShipsPositions();
-            computerBoard.shootOnComputerBoard();
+            computer.createShipsOnComputerBoard(randomParameter);
+//            computer.showAllShipsMastsOnComputerBoard();
+            computer.createShipObjectsAndShipsCoordinates(randomParameter);
+            computer.protectAllComputerShipsPositions();
+            computer.shootOnComputerBoard(player);
         });
 
 
