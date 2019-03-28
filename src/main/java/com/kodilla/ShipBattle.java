@@ -85,7 +85,22 @@ public class ShipBattle extends Application {
         grid.setPadding(insets);
         grid.setBackground(background);
 
-        // setting size of columns in the grid
+        Insets insetsForGrids = new Insets(0, 0, 0, 0);
+
+        GridPane gridPlayer = new GridPane();
+        gridPlayer.setAlignment(grid.getAlignment());
+        gridPlayer.setPadding(insetsForGrids);
+        gridPlayer.setGridLinesVisible(true);
+
+        GridPane gridComputer = new GridPane();
+        gridComputer.setAlignment(Pos.TOP_LEFT);
+        gridComputer.setPadding(insetsForGrids);
+        gridComputer.setGridLinesVisible(true);
+
+        grid.add(gridPlayer, 0, 4, 10, 10);
+        grid.add(gridComputer, 12, 4, 10, 10);
+
+        // setting size of columns in the grids
         int columnSizes[] = {27, 27, 27, 27, 27, 27, 27, 27, 27, 27,
                 81, 27,
                 27, 27, 27, 27, 27, 27, 27, 27, 27, 27};
@@ -95,7 +110,22 @@ public class ShipBattle extends Application {
         // setting size of rows in the grid
         int rowSizes[] = {54, 14, 40, 14, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 40, 40};
         for(int i = 0; i<rowSizes.length; i++) {
-            grid.getRowConstraints().add(new RowConstraints(rowSizes[i])); }
+            grid.getRowConstraints().add(new RowConstraints(rowSizes[i]));
+
+        }
+
+        int columnSizesForGrids[] = {27, 27, 27, 27, 27, 27, 27, 27, 27, 27};
+        for(int i = 0; i<columnSizesForGrids.length; i++) {
+            gridPlayer.getColumnConstraints().add(new ColumnConstraints(columnSizesForGrids[i]));
+            gridComputer.getColumnConstraints().add(new ColumnConstraints(columnSizesForGrids[i]));
+        }
+
+        int rowSizesForGrids[] = {27, 27, 27, 27, 27, 27, 27, 27, 27, 27};
+        for(int i = 0; i<rowSizesForGrids.length; i++) {
+            gridPlayer.getRowConstraints().add(new RowConstraints(rowSizesForGrids[i]));
+            gridComputer.getRowConstraints().add(new RowConstraints(rowSizesForGrids[i]));
+
+        }
 
         // setting top labels and adding to the grid
         userInterfaceLabel.setAlignment(Pos.CENTER);
@@ -138,8 +168,8 @@ public class ShipBattle extends Application {
         // ************************************
 
         // creating main objects
-        Player player = new Player(grid, shipsContainer);
-        Computer computer = new Computer(grid, shipsContainer);
+        Player player = new Player(grid, gridPlayer, shipsContainer);
+        Computer computer = new Computer(grid, gridComputer, shipsContainer);
 
         // setting buttons to handle "exit" choice
         areYouSureExitGameButton.setFont(Font.font("Verdana", FontWeight.BOLD, 12));

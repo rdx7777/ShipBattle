@@ -9,8 +9,8 @@ public class ShipMast extends Button {
 
     public ShipMast() {
         setStyle("-fx-background-image: url(grey_square.jpg);");
-        setMinSize(26, 26);
-        setMaxSize(26, 26);
+        setMinSize(27, 27);
+        setMaxSize(27, 27);
     }
 
 //    public static void getPositionAndSetActionOfShipMast(GridPane grid) {

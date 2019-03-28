@@ -9,6 +9,7 @@ import java.util.*;
 
 public class Computer {
     private GridPane grid;
+    private GridPane gridComputer;
     private ShipsContainer shipsContainer;
     private int[][] computerBoard = new int[10][10];
     int[][] playerBoard;
@@ -16,15 +17,16 @@ public class Computer {
     Random random;
     long time;
 
-    public Computer(GridPane grid, ShipsContainer shipsContainer) {
+    public Computer(GridPane grid, GridPane gridComputer, ShipsContainer shipsContainer) {
         this.grid = grid;
+        this.gridComputer = gridComputer;
         this.shipsContainer = shipsContainer;
     }
 
     public void createComputerBoard() {
         for(int i = 0; i < 10; i++) {
             for(int n = 0; n < 10; n++) {
-                grid.add(new ControlSquare(), i + 12, n + 4);
+                gridComputer.add(new ControlSquare(), i, n);
             }
         }
     }
@@ -503,7 +505,7 @@ public class Computer {
         for (int i = 0; i < 10; i++) {
             for (int n = 0; n < 10; n++) {
                 if (computerBoard[i][n] == 1) {
-                    grid.add(new ShipMast(), i + 12, n + 4);
+                    gridComputer.add(new ShipMast(), i, n);
                 }
             }
         }
@@ -515,14 +517,14 @@ public class Computer {
         Random random = new Random();
         time = (long) 0.7;
         ControlSquare controlSquare = new ControlSquare();
-        ObservableList<Node> childrenOfControlSquares = grid.getChildren();
+        ObservableList<Node> childrenOfControlSquares = gridComputer.getChildren();
         // set actions for every ControlSquare object in the grid on computer board
         for (Node node : childrenOfControlSquares) {
             if (node.getClass() == controlSquare.getClass()) {
                 ControlSquare button = (ControlSquare) node;
                 button.setOnAction(event -> {
-                    int column = (int) ((button.getLocalToParentTransform().getTx() - 81) / 27) - 14;
-                    int row = (int) ((button.getLocalToParentTransform().getTy() - 150) / 27);
+                    int column = (int) ((button.getLocalToParentTransform().getTx()) / 27);
+                    int row = (int) ((button.getLocalToParentTransform().getTy()) / 27);
                     ShipBattle.example(0, column, row); // CHECK POSITION ONLY ***********************************
                     if (computerBoard[column][row] == 1) {
                         hit(column, row);
@@ -540,7 +542,7 @@ public class Computer {
     public void hit(int column, int row) {
         System.out.println("HIT on [" + column + "][" + row + "]!"); // ***************** TEMP ONLY ********************
         computerBoard[column][row] = -1;
-        grid.add(new Hit(), column + 12, row + 4);
+        gridComputer.add(new Hit(), column, row);
         // coś trzeba zakombinować tutaj z obiektem - metoda recognizeShip (na planszy komputera)
         // ingerencja w shipContainer LUB utworzenie jakiejś lokalnej kopii
     }
@@ -554,7 +556,7 @@ public class Computer {
 //        } catch (InterruptedException e) {
 //            System.out.println();
 //        }
-        grid.add(new Missed(), column + 12, row + 4);
+        gridComputer.add(new Missed(), column, row);
         // i jeszcze dużo innych rzeczy, choć może i nie
     }
 

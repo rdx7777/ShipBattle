@@ -11,6 +11,7 @@ import java.util.Map;
 
 public class Player {
     private GridPane grid;
+    private GridPane gridPlayer;
     private ShipsContainer shipsContainer;
     private int[][] playerBoard = new int[10][10];
     private boolean firstMastOfShipChecker = true; // checks if player sets the first mast of the ship
@@ -20,22 +21,23 @@ public class Player {
     private GameButton startButton;
     ArrayList<Pair<Integer, Integer>> mastsCoordinates;
 
-    public Player(GridPane grid, ShipsContainer shipsContainer) {
+    public Player(GridPane grid, GridPane gridPlayer, ShipsContainer shipsContainer) {
         this.grid = grid;
+        this.gridPlayer = gridPlayer;
         this.shipsContainer = shipsContainer;
     }
 
     public void createPlayerBoard() {
         for (int i = 0; i < 10; i++) {
             for (int n = 0; n < 10; n++) {
-                grid.add(new ControlSquare(), i, n + 4);
+                gridPlayer.add(new ControlSquare(), i, n);
             }
         }
     }
 
     public void blockActionOnPlayerBoard() {
         ControlSquare controlSquare = new ControlSquare();
-        ObservableList<Node> childrenOfControlSquares = grid.getChildren();
+        ObservableList<Node> childrenOfControlSquares = gridPlayer.getChildren();
         ControlSquare button;
         for (Node node : childrenOfControlSquares) { // set actions for every ControlSquare object in the grid
             if (node.getClass() == controlSquare.getClass()) {
@@ -71,13 +73,15 @@ public class Player {
         System.out.println("Saved = " + savedMaxNumberOfMasts); // TEMPORARY ONLY **************************************
         ArrayList<Pair<Integer, Integer>> mastsCoordinates = new ArrayList<>();
         ControlSquare controlSquare = new ControlSquare();
-        ObservableList<Node> childrenOfControlSquares = grid.getChildren();
+        ObservableList<Node> childrenOfControlSquares = gridPlayer.getChildren();
         for (Node node : childrenOfControlSquares) { // set actions for every ControlSquare object in the grid
             if (node.getClass() == controlSquare.getClass()) {
                 ControlSquare button = (ControlSquare) node;
                 button.setOnAction(event -> {
-                    int column = (int) ((button.getLocalToParentTransform().getTx() - 81) / 27);
-                    int row = (int) ((button.getLocalToParentTransform().getTy() - 150) / 27);
+//                    int column = (int) ((button.getLocalToParentTransform().getTx() - 81) / 27);
+//                    int row = (int) ((button.getLocalToParentTransform().getTy() - 150) / 27);
+                    int column = (int) ((button.getLocalToParentTransform().getTx()) / 27);
+                    int row = (int) ((button.getLocalToParentTransform().getTy()) / 27);
                     ShipBattle.example(0, column, row); // CHECK POSITION ONLY ***********************************
                     System.out.println("Value of player board = " + playerBoard[column][row]);
                     System.out.println(maxNumberOfMasts); // FOR CHECK ONLY ********************************************
@@ -85,13 +89,12 @@ public class Player {
                         if (checkNeighbourDiagonally(column, row)) { // check player move is legal
                             if (firstMastOfShipChecker) {
                                 // adding first mast of ship
-                                grid.add(new ShipMast(), column, row + 4);
+                                gridPlayer.add(new ShipMast(), column, row);
                                 playerBoard[column][row] = 1;
                                 mastsCoordinates.add(new Pair<>(column, row));
                                 maxNumberOfMasts--;
                                 firstMastOfShipChecker = false;
-//                                removeShipMast(mastsCoordinates, maxNumberOfMasts); // setting action when clicked on ShipMast object
-                                removeShipMast(mastsCoordinates); // setting action when clicked on ShipMast object
+//                                removeShipMast(mastsCoordinates); // setting action when clicked on ShipMast object
                                 if (maxNumberOfMasts == 0) {
                                     changeSetOfShipsInShipsContainer(savedMaxNumberOfMasts, mastsCoordinates);
                                     protectShipPosition(mastsCoordinates);
@@ -109,12 +112,11 @@ public class Player {
                             } else {
                                 if (checkBuildingOnlyOneShipAtTime(column, row)) {
                                     // adding next mast of ship
-                                    grid.add(new ShipMast(), column, row + 4);
+                                    gridPlayer.add(new ShipMast(), column, row);
                                     playerBoard[column][row] = 1;
                                     mastsCoordinates.add(new Pair<>(column, row));
                                     maxNumberOfMasts--;
-//                                    removeShipMast(mastsCoordinates, maxNumberOfMasts); // setting action when clicked on ShipMast object
-                                    removeShipMast(mastsCoordinates); // setting action when clicked on ShipMast object
+//                                    removeShipMast(mastsCoordinates); // setting action when clicked on ShipMast object
                                     if (maxNumberOfMasts == 0) {
                                         changeSetOfShipsInShipsContainer(savedMaxNumberOfMasts, mastsCoordinates);
                                         protectShipPosition(mastsCoordinates);
@@ -455,17 +457,18 @@ public class Player {
 
     public void removeShipMast(ArrayList<Pair<Integer, Integer>> coordinates) {
         ShipMast shipMast = new ShipMast();
-        ObservableList<Node> childrenOfShipMasts = grid.getChildren();
+        ObservableList<Node> childrenOfShipMasts = gridPlayer.getChildren();
         for (Node node : childrenOfShipMasts) {
             if (node.getClass() == shipMast.getClass()) { // if (node.getClass().isInstance(shipMast))
                 ShipMast button = (ShipMast) node;
                 button.setOnAction(event -> {
-                    int column = (int)((button.getLocalToParentTransform().getTx()-81)/27);
-                    int row = (int)((button.getLocalToParentTransform().getTy()-150)/27);
+                    int column = (int)((button.getLocalToParentTransform().getTx())/27);
+                    int row = (int)((button.getLocalToParentTransform().getTy())/27);
                     ShipBattle.example(1, column, row); // CHECK POSITION ONLY
                     if (maxNumberOfMasts > 0 && coordinates.size() > 0) {
+                        // TUTAJ WARUNEK sprawdzający, czy wpis w tablicy == 3; jeśli jest, to można usuwać
                         if (checkRemoveMastIsAllowed(column, row)) { // check if not removing mast inside the ship
-                            grid.getChildren().remove(button);
+                            gridPlayer.getChildren().remove(button);
                             playerBoard[column][row] = 0;
                             System.out.println(coordinates.get(coordinates.size()-1));
                             coordinates.remove(coordinates.size()-1);
