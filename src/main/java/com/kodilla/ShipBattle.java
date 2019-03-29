@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,17 +86,15 @@ public class ShipBattle extends Application {
         grid.setPadding(insets);
         grid.setBackground(background);
 
-        Insets insetsForGrids = new Insets(0, 0, 0, 0);
+//        Insets insetsForGrids = new Insets(0, 0, 0, 0);
 
         GridPane gridPlayer = new GridPane();
         gridPlayer.setAlignment(grid.getAlignment());
-        gridPlayer.setPadding(insetsForGrids);
-        gridPlayer.setGridLinesVisible(true);
+//        gridPlayer.setPadding(insetsForGrids);
 
         GridPane gridComputer = new GridPane();
         gridComputer.setAlignment(Pos.TOP_LEFT);
-        gridComputer.setPadding(insetsForGrids);
-        gridComputer.setGridLinesVisible(true);
+//        gridComputer.setPadding(insetsForGrids);
 
         grid.add(gridPlayer, 0, 4, 10, 10);
         grid.add(gridComputer, 12, 4, 10, 10);
@@ -213,7 +212,9 @@ public class ShipBattle extends Application {
         });
 
         // setting actions for "Set ship" button
-        setShipButton.setOnAction(event -> System.out.println("Player accepts their ship built on the board"));
+        setShipButton.setOnAction(event -> {
+            System.out.println("Player accepts their ship built on the board");
+        });
 //        setShipButton.setDisable(true);
 
         // setting actions for "Start game" button

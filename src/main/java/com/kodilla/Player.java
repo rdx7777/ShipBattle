@@ -78,8 +78,6 @@ public class Player {
             if (node.getClass() == controlSquare.getClass()) {
                 ControlSquare button = (ControlSquare) node;
                 button.setOnAction(event -> {
-//                    int column = (int) ((button.getLocalToParentTransform().getTx() - 81) / 27);
-//                    int row = (int) ((button.getLocalToParentTransform().getTy() - 150) / 27);
                     int column = (int) ((button.getLocalToParentTransform().getTx()) / 27);
                     int row = (int) ((button.getLocalToParentTransform().getTy()) / 27);
                     ShipBattle.example(0, column, row); // CHECK POSITION ONLY ***********************************
@@ -89,7 +87,7 @@ public class Player {
                         if (checkNeighbourDiagonally(column, row)) { // check player move is legal
                             if (firstMastOfShipChecker) {
                                 // adding first mast of ship
-                                gridPlayer.add(new ShipMast(), column, row);
+                                gridPlayer.add(new ShipMast(new Pair<>(column, row), false), column, row);
                                 playerBoard[column][row] = 1;
                                 mastsCoordinates.add(new Pair<>(column, row));
                                 maxNumberOfMasts--;
@@ -112,7 +110,7 @@ public class Player {
                             } else {
                                 if (checkBuildingOnlyOneShipAtTime(column, row)) {
                                     // adding next mast of ship
-                                    gridPlayer.add(new ShipMast(), column, row);
+                                    gridPlayer.add(new ShipMast(new Pair<>(column, row), false), column, row);
                                     playerBoard[column][row] = 1;
                                     mastsCoordinates.add(new Pair<>(column, row));
                                     maxNumberOfMasts--;
@@ -248,7 +246,8 @@ public class Player {
 
     }
 
-    public boolean checkBuildingOnlyOneShipAtTime(int column, int row) {
+    public boolean checkBuildingOnlyOneShipAtTime(int column, int row) { // jeśli zmienię metodę removeShipMast,
+        // to wtedy tutaj też trzeba będzie zmienić jedynki na trójki
 
         boolean result = false;
 
@@ -456,16 +455,17 @@ public class Player {
     }
 
     public void removeShipMast(ArrayList<Pair<Integer, Integer>> coordinates) {
-        ShipMast shipMast = new ShipMast();
+        ShipMast shipMast = new ShipMast(new Pair<>(100, 100), false);
         ObservableList<Node> childrenOfShipMasts = gridPlayer.getChildren();
         for (Node node : childrenOfShipMasts) {
             if (node.getClass() == shipMast.getClass()) { // if (node.getClass().isInstance(shipMast))
                 ShipMast button = (ShipMast) node;
                 button.setOnAction(event -> {
-                    int column = (int)((button.getLocalToParentTransform().getTx())/27);
-                    int row = (int)((button.getLocalToParentTransform().getTy())/27);
+                    int column = (int)((button.getLocalToParentTransform().getTx())/27); // współrzędne będzie można pobrać
+                    int row = (int)((button.getLocalToParentTransform().getTy())/27); // z obiektu - get...
                     ShipBattle.example(1, column, row); // CHECK POSITION ONLY
-                    if (maxNumberOfMasts > 0 && coordinates.size() > 0) {
+                    if (maxNumberOfMasts > 0 && coordinates.size() > 0) { // !!!!!!!! druga część
+                        // !!!!!!!! pozwala rozbijać już wstawione statki - ten problem rozwiąże uwaga poniżej
                         // TUTAJ WARUNEK sprawdzający, czy wpis w tablicy == 3; jeśli jest, to można usuwać
                         if (checkRemoveMastIsAllowed(column, row)) { // check if not removing mast inside the ship
                             gridPlayer.getChildren().remove(button);
@@ -474,14 +474,15 @@ public class Player {
                             coordinates.remove(coordinates.size()-1);
                             maxNumberOfMasts++;
                         }
-                        if (maxNumberOfMasts > 1) {firstMastOfShipChecker = true;}
+                        if (maxNumberOfMasts > 1) {firstMastOfShipChecker = true;} // czy przypadkiem nie FALSE ???????
+                        // ewentualnie if == 1; lub saved... > 0 i < 5
                     }
                 });
             }
         }
     }
 
-    public boolean checkRemoveMastIsAllowed(int column, int row) {
+    public boolean checkRemoveMastIsAllowed(int column, int row) { // wtedy tutaj jedynki trzeba będzie zamienić na trójki
 
         boolean result = true;
 

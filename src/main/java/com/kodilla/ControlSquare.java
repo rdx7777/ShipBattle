@@ -17,8 +17,8 @@ public class ControlSquare extends Button {
     // method can be used in constructor
 /*    public void setOnActionMethod() {
         setOnAction(event -> {
-            int column = (int)((getLocalToParentTransform().getTx()-81)/27);
-            int row = (int)((getLocalToParentTransform().getTy()-150)/27);
+            int column = (int)((getLocalToParentTransform().getTx())/27);
+            int row = (int)((getLocalToParentTransform().getTy())/27);
             ShipBattle.example(0, column, row); // CHECK POSITION ONLY
         });
     }*/
@@ -32,8 +32,8 @@ public class ControlSquare extends Button {
             if(node.getClass() == controlSquare.getClass()) {
                 ControlSquare button = (ControlSquare) node;
                 button.setOnAction(event -> {
-                    int column = (int)((button.getLocalToParentTransform().getTx()-81)/27);
-                    int row = (int)((button.getLocalToParentTransform().getTy()-150)/27);
+                    int column = (int)((button.getLocalToParentTransform().getTx())/27);
+                    int row = (int)((button.getLocalToParentTransform().getTy())/27);
                     ShipBattle.example(0, column, row); // for check only **************************
                 });
             }

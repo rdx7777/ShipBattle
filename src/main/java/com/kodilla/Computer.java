@@ -11,7 +11,7 @@ public class Computer {
     private GridPane grid;
     private GridPane gridComputer;
     private ShipsContainer shipsContainer;
-    private int[][] computerBoard = new int[10][10];
+    private int[][] computerBoard = new int[10][10]; // ****** potrzebna kopia tej tablicy !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     int[][] playerBoard;
     int[][] copyOfPlayerBoard;
     Random random;
@@ -505,7 +505,7 @@ public class Computer {
         for (int i = 0; i < 10; i++) {
             for (int n = 0; n < 10; n++) {
                 if (computerBoard[i][n] == 1) {
-                    gridComputer.add(new ShipMast(), i, n);
+                    gridComputer.add(new ShipMast(new Pair<>(i, n), false), i, n);
                 }
             }
         }
@@ -549,8 +549,9 @@ public class Computer {
 
     public void missed(int column, int row) {
         System.out.println("Missed on [" + column + "][" + row + "]..."); // *************** TEMP ONLY *****************
-        computerBoard[column][row] = -2;
-//        grid.add(new Hit(), column + 12, row + 4);
+        computerBoard[column][row] = -2; // TO JEST BŁĄD !!!!!!!!!!!!!!!!!!!
+        // !!!!!!!! trzeba jakoś rozpracować wpisy do tabeli, poza tym chyba muszę mieć kopie obydwóch tabel
+//        grid.add(new Hit(), column, row);
 //        try {
 //            wait(time);
 //        } catch (InterruptedException e) {
@@ -568,37 +569,6 @@ public class Computer {
             System.out.println("Hit on player board!");
         }
         // metoda recognizeShip dla planszy gracza
-
-
     }
-
-
-//    ****** metoda NIEPOTRZEBNA
-//    public void blockActionOnComputerBoard() {
-//        ControlSquare controlSquare = new ControlSquare();
-//        ObservableList<Node> childrenOfControlSquares = grid.getChildren();
-//        for(Node node : childrenOfControlSquares) {
-//            if(node.getClass() == controlSquare.getClass()) {
-//                ControlSquare button = (ControlSquare) node;
-//                button.setOnAction(event -> { });
-//            }
-//        }
-//    }
-
-
-//    public void getPositionAndSetActionOfControlSquare() {
-//        ControlSquare controlSquare = new ControlSquare();
-//        ObservableList<Node> childrenOfControlSquares = grid.getChildren();
-//        for(Node node : childrenOfControlSquares) {
-//            if(node.getClass() == controlSquare.getClass()) {
-//                ControlSquare button = (ControlSquare) node;
-//                button.setOnAction(event -> {
-//                    int column = (int)((button.getLocalToParentTransform().getTx()-81)/27);
-//                    int row = (int)((button.getLocalToParentTransform().getTy()-150)/27);
-//                    ShipBattle.example(0, column, row);
-//                });
-//            }
-//        }
-//    }
 
 }
