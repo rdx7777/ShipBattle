@@ -409,9 +409,9 @@ public class Computer {
     }
 
     public void protectAllComputerShipsPositions() {
-        HashMap<Ship, Integer> map = shipsContainer.getSetOfComputerShips();
-        for (Map.Entry<Ship, Integer> entry : map.entrySet()) {
-            ArrayList<Pair<Integer, Integer>> shipCoordinates = entry.getKey().getMastsCoordinates();
+        HashMap<String, Ship> map = shipsContainer.getSetOfComputerShips();
+        for (Map.Entry<String, Ship> entry : map.entrySet()) {
+            ArrayList<Pair<Integer, Integer>> shipCoordinates = entry.getValue().getMastsCoordinates();
             protectComputerShipPosition(shipCoordinates);
         }
     }
@@ -514,8 +514,7 @@ public class Computer {
     public void shootOnComputerBoard(Player player) {
         playerBoard = player.getPlayerBoard();
         copyOfPlayerBoard = playerBoard;
-        Random random = new Random();
-        time = (long) 0.7;
+        random = new Random();
         ControlSquare controlSquare = new ControlSquare();
         ObservableList<Node> childrenOfControlSquares = gridComputer.getChildren();
         // set actions for every ControlSquare object in the grid on computer board

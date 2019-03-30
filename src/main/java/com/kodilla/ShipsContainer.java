@@ -4,26 +4,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ShipsContainer {
-    HashMap<Ship, Integer> setOfShips = new HashMap<>();
-    HashMap<Ship, Integer> setOfComputerShips = new HashMap<>();
+    HashMap<String, Ship> setOfShips = new HashMap<>();
+    HashMap<String, Ship> setOfComputerShips = new HashMap<>();
 
     public void addShipsToContainer(ArrayList<Ship> shipCollection) {
         for(Ship ship : shipCollection) {
-            setOfShips.put(ship, 0);
+            setOfShips.put(ship.getName(), ship);
         }
     }
 
-    public HashMap<Ship, Integer> getSetOfShips() {
+    public HashMap<String, Ship> getSetOfShips() {
         return setOfShips;
     }
 
     public void addComputerShipsToContainer(ArrayList<Ship> computerShipCollection) {
         for(Ship ship : computerShipCollection) {
-            setOfComputerShips.put(ship, 0);
+            setOfComputerShips.put(ship.getName(), ship);
         }
     }
 
-    public HashMap<Ship, Integer> getSetOfComputerShips() {
+    public HashMap<String, Ship> getSetOfComputerShips() {
         return setOfComputerShips;
     }
 

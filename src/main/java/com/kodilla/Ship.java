@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Ship {
     private String shipName;
     private ArrayList<Pair<Integer, Integer>> mastsCoordinates;
-    private int isShipSunk = 0; // 0 - not exist, 1 - exists, -1 - sunk
+    private int status = 0; // 0 - ship doesn't exist; 1 - ship exists; -1 - ship's sunk
 
     public Ship(String name, ArrayList<Pair<Integer, Integer>> mastsCoordinates) {
         this.shipName = name;
@@ -25,12 +25,12 @@ public class Ship {
         mastsCoordinates = coordinates;
     }
 
-    public int getIsShipSunk() {
-        return isShipSunk;
+    public int getStatus() {
+        return status;
     }
 
-    public void setIsShipSunk(int shipSunk) {
-        isShipSunk = shipSunk;
+    public void setStatus(int newStatus) {
+        status = newStatus;
     }
 
     @Override

@@ -157,14 +157,7 @@ public class ShipBattle extends Application {
         // preparing and adding set of ships to ships container
         ArrayList<Ship> shipCollection = new ArrayList<>(Arrays.asList(ship_4_1, ship_3_1, ship_3_2, ship_2_1, ship_2_2, ship_2_3,
                 ship_1_1, ship_1_2, ship_1_3, ship_1_4));
-
         shipsContainer.addShipsToContainer(shipCollection);
-
-        // ********** TEMPORARY ONLY **********
-        for(Map.Entry entry : shipsContainer.getSetOfShips().entrySet()) { // temporary check of creating and using ships container
-            System.out.println(entry.getKey());
-        }
-        // ************************************
 
         // creating main objects
         Player player = new Player(grid, gridPlayer, shipsContainer);
