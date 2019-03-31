@@ -1,9 +1,6 @@
 package com.kodilla;
 
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
 
 public class Hit extends Button {
 
@@ -13,8 +10,7 @@ public class Hit extends Button {
         setMaxSize(27, 27);
     }
 
-    // metoda obsługująca kliknięcie w pole "trafiony" nie jest potrzebna do niczego, oprócz ew. testowania
-    // kodu poczas pisania programu
+// method used only for testing in the beginning of writing this program
 
 //    public static void getPositionAndSetActionOfHit(GridPane grid) {
 //        Hit hit = new Hit();
@@ -23,10 +19,9 @@ public class Hit extends Button {
 //            if(node.getClass() == hit.getClass()) {
 //                Hit button = (Hit) node;
 //                button.setOnAction(event -> {
-//                    int column = (int)((button.getLocalToParentTransform().getTx()-81)/27);
-//                    int row = (int)((button.getLocalToParentTransform().getTy()-150)/27);
+//                    int column = (int)((button.getLocalToParentTransform().getTx())/27);
+//                    int row = (int)((button.getLocalToParentTransform().getTy())/27);
 //                    ShipBattle.example(-1, column, row);
-//                    grid.getChildren().remove(button);
 //                });
 //            }
 //        }

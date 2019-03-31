@@ -6,18 +6,10 @@ import javafx.util.Pair;
 public class ShipMast extends Button {
 
     private Pair<Integer, Integer> visibleShipMastCoordinates;
-    private boolean isShipMastHit; // if hit, isMastHit = true;
+    private Boolean isShipMastHit; // if hit, isMastHit = true;
 
-    public ShipMast(Pair<Integer, Integer> visibleShipMastCoordinates, boolean isShipMastHit) {
+    public ShipMast(Pair<Integer, Integer> visibleShipMastCoordinates) {
         this.visibleShipMastCoordinates = visibleShipMastCoordinates;
-        this.isShipMastHit = isShipMastHit;
-
-//        if (!isShipMastHit) {
-//            setStyle("-fx-background-image: url(grey_square.jpg);");
-//        } else {
-//            setStyle("-fx-background-image: url(explosion_square.jpg);");
-//
-//        }
 
         setMinSize(27, 27);
         setMaxSize(27, 27);
@@ -28,15 +20,11 @@ public class ShipMast extends Button {
         return visibleShipMastCoordinates;
     }
 
-    public boolean getIsShipMastHit() {
+    public Boolean getIsShipMastHit() {
         return isShipMastHit;
     }
 
-    public void setVisibleShipMastCoordinates(Pair<Integer, Integer> visibleShipMastCoordinates) {
-        this.visibleShipMastCoordinates = visibleShipMastCoordinates;
-    }
-
-    public void setIsShipMastHit(boolean shipMastHit) {
+    public void setShipMastHit(boolean shipMastHit) {
         isShipMastHit = shipMastHit;
     }
 
@@ -47,7 +35,7 @@ public class ShipMast extends Button {
         });
     }
 
-    //    public static void getPositionAndSetActionOfShipMast(GridPane grid) {
+//    public static void getPositionAndSetActionOfShipMast(GridPane grid) {
 //        ShipMast shipMast = new ShipMast();
 //        ObservableList<Node> childrenOfShipMasts = grid.getChildren();
 //        for(Node node : childrenOfShipMasts) {

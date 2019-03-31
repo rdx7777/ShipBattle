@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ShipsContainer {
-    HashMap<String, Ship> setOfShips = new HashMap<>();
-    HashMap<String, Ship> setOfComputerShips = new HashMap<>();
+    private HashMap<String, Ship> setOfShips = new HashMap<>();
+    private HashMap<String, Ship> setOfComputerShips = new HashMap<>();
+    private ArrayList<ShipMast> setOfShipMasts = new ArrayList<>();
+    private ArrayList<ShipMast> setOfComputerShipmasts = new ArrayList<>();
 
     public void addShipsToContainer(ArrayList<Ship> shipCollection) {
         for(Ship ship : shipCollection) {
@@ -25,6 +27,30 @@ public class ShipsContainer {
 
     public HashMap<String, Ship> getSetOfComputerShips() {
         return setOfComputerShips;
+    }
+
+    public void addShipMastToContainer(ShipMast shipMast) {
+        setOfShipMasts.add(shipMast);
+    }
+
+    public void removeShipMastFromContainer(ShipMast shipMast) {
+        setOfShipMasts.remove(shipMast);
+    }
+
+    public ArrayList<ShipMast> getSetOfShipMasts() {
+        return setOfShipMasts;
+    }
+
+    public void addComputerShipMastToContainer(ShipMast shipMast) {
+        setOfComputerShipmasts.add(shipMast);
+    }
+
+    public void removeComputerShipMastFromContainer(ShipMast shipMast) {
+        setOfComputerShipmasts.remove(shipMast);
+    }
+
+    public ArrayList<ShipMast> getSetOfComputerShipmasts() {
+        return setOfComputerShipmasts;
     }
 
 }

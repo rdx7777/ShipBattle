@@ -1,42 +1,20 @@
 package com.kodilla;
 
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
 
 import java.util.*;
 
 public class Computer {
-    private GridPane grid;
     private GridPane gridComputer;
     private ShipsContainer shipsContainer;
-    private int[][] computerBoard = new int[10][10]; // ****** potrzebna kopia tej tablicy !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    int[][] playerBoard;
-    int[][] copyOfPlayerBoard;
-    Random random;
-    long time;
+    private Player player;
+    private int[][] computerBoard = new int[10][10];
 
-    public Computer(GridPane grid, GridPane gridComputer, ShipsContainer shipsContainer) {
-        this.grid = grid;
+    public Computer(GridPane gridComputer, ShipsContainer shipsContainer, Player player) {
         this.gridComputer = gridComputer;
         this.shipsContainer = shipsContainer;
-    }
-
-    public void createComputerBoard() {
-        for(int i = 0; i < 10; i++) {
-            for(int n = 0; n < 10; n++) {
-                gridComputer.add(new ControlSquare(), i, n);
-            }
-        }
-    }
-
-    public void setEmptyComputerBoard() {
-        for(int i = 0; i < 10; i++) {
-            for(int n = 0; n < 10; n++) {
-                computerBoard[i][n] = 0;
-            }
-        }
+        this.player = player;
     }
 
     public void createShipsOnComputerBoard(int randomParameter) {
@@ -69,6 +47,7 @@ public class Computer {
             computerBoard[8][2] = 1;
             computerBoard[1][6] = 1;
             computerBoard[6][9] = 1;
+            player.setComputerBoard(computerBoard);
         }
 
         if (randomParameter == 1) {
@@ -99,6 +78,7 @@ public class Computer {
             computerBoard[0][7] = 1;
             computerBoard[9][7] = 1;
             computerBoard[4][9] = 1;
+            player.setComputerBoard(computerBoard);
         }
 
         if (randomParameter == 2) {
@@ -129,6 +109,7 @@ public class Computer {
             computerBoard[0][5] = 1;
             computerBoard[6][8] = 1;
             computerBoard[8][8] = 1;
+            player.setComputerBoard(computerBoard);
         }
 
         if (randomParameter == 3) {
@@ -159,6 +140,7 @@ public class Computer {
             computerBoard[4][5] = 1;
             computerBoard[3][8] = 1;
             computerBoard[9][9] = 1;
+            player.setComputerBoard(computerBoard);
         }
 
         if (randomParameter == 4) {
@@ -189,9 +171,10 @@ public class Computer {
             computerBoard[3][0] = 1;
             computerBoard[8][8] = 1;
             computerBoard[9][1] = 1;
+            player.setComputerBoard(computerBoard);
         }
 
-        System.out.println("Computer board #" + randomParameter);
+        System.out.println("Computer board #" + randomParameter); // ********** TEMP ONLY **********
     }
 
     public void createShipObjectsAndShipsCoordinates(int randomParameter){
@@ -228,7 +211,7 @@ public class Computer {
             ArrayList<Pair<Integer, Integer>> ship_1_4_coordinates = new ArrayList<>();
             ship_1_4_coordinates.add(new Pair<>(6, 9));
 
-            extractedCreateShipObjects(ship_4_1_coordinates, ship_3_1_coordinates, ship_3_2_coordinates,
+            extractedCreateShipObjectsAndAddingToContainer(ship_4_1_coordinates, ship_3_1_coordinates, ship_3_2_coordinates,
                     ship_2_1_coordinates, ship_2_2_coordinates, ship_2_3_coordinates, ship_1_1_coordinates,
                     ship_1_2_coordinates, ship_1_3_coordinates, ship_1_4_coordinates);
         }
@@ -265,7 +248,7 @@ public class Computer {
             ArrayList<Pair<Integer, Integer>> ship_1_4_coordinates = new ArrayList<>();
             ship_1_4_coordinates.add(new Pair<>(4, 9));
 
-            extractedCreateShipObjects(ship_4_1_coordinates, ship_3_1_coordinates, ship_3_2_coordinates,
+            extractedCreateShipObjectsAndAddingToContainer(ship_4_1_coordinates, ship_3_1_coordinates, ship_3_2_coordinates,
                     ship_2_1_coordinates, ship_2_2_coordinates, ship_2_3_coordinates, ship_1_1_coordinates,
                     ship_1_2_coordinates, ship_1_3_coordinates, ship_1_4_coordinates);
         }
@@ -302,7 +285,7 @@ public class Computer {
             ArrayList<Pair<Integer, Integer>> ship_1_4_coordinates = new ArrayList<>();
             ship_1_4_coordinates.add(new Pair<>(8, 8));
 
-            extractedCreateShipObjects(ship_4_1_coordinates, ship_3_1_coordinates, ship_3_2_coordinates,
+            extractedCreateShipObjectsAndAddingToContainer(ship_4_1_coordinates, ship_3_1_coordinates, ship_3_2_coordinates,
                     ship_2_1_coordinates, ship_2_2_coordinates, ship_2_3_coordinates, ship_1_1_coordinates,
                     ship_1_2_coordinates, ship_1_3_coordinates, ship_1_4_coordinates);
         }
@@ -339,7 +322,7 @@ public class Computer {
             ArrayList<Pair<Integer, Integer>> ship_1_4_coordinates = new ArrayList<>();
             ship_1_4_coordinates.add(new Pair<>(9, 9));
 
-            extractedCreateShipObjects(ship_4_1_coordinates, ship_3_1_coordinates, ship_3_2_coordinates,
+            extractedCreateShipObjectsAndAddingToContainer(ship_4_1_coordinates, ship_3_1_coordinates, ship_3_2_coordinates,
                     ship_2_1_coordinates, ship_2_2_coordinates, ship_2_3_coordinates, ship_1_1_coordinates,
                     ship_1_2_coordinates, ship_1_3_coordinates, ship_1_4_coordinates);
         }
@@ -376,14 +359,14 @@ public class Computer {
             ArrayList<Pair<Integer, Integer>> ship_1_4_coordinates = new ArrayList<>();
             ship_1_4_coordinates.add(new Pair<>(9, 1));
 
-            extractedCreateShipObjects(ship_4_1_coordinates, ship_3_1_coordinates, ship_3_2_coordinates,
+            extractedCreateShipObjectsAndAddingToContainer(ship_4_1_coordinates, ship_3_1_coordinates, ship_3_2_coordinates,
                     ship_2_1_coordinates, ship_2_2_coordinates, ship_2_3_coordinates, ship_1_1_coordinates,
                     ship_1_2_coordinates, ship_1_3_coordinates, ship_1_4_coordinates);
         }
 
     }
 
-    public void extractedCreateShipObjects
+    public void extractedCreateShipObjectsAndAddingToContainer
             (ArrayList<Pair<Integer, Integer>> ship_4_1_coordinates, ArrayList<Pair<Integer, Integer>> ship_3_1_coordinates,
              ArrayList<Pair<Integer, Integer>> ship_3_2_coordinates, ArrayList<Pair<Integer, Integer>> ship_2_1_coordinates,
              ArrayList<Pair<Integer, Integer>> ship_2_2_coordinates, ArrayList<Pair<Integer, Integer>> ship_2_3_coordinates,
@@ -410,164 +393,21 @@ public class Computer {
 
     public void protectAllComputerShipsPositions() {
         HashMap<String, Ship> map = shipsContainer.getSetOfComputerShips();
+        int[][] board = player.getComputerBoard();
         for (Map.Entry<String, Ship> entry : map.entrySet()) {
             ArrayList<Pair<Integer, Integer>> shipCoordinates = entry.getValue().getMastsCoordinates();
-            protectComputerShipPosition(shipCoordinates);
+            player.protectShipPosition(board, shipCoordinates);
         }
     }
-
-    public void protectComputerShipPosition(ArrayList<Pair<Integer, Integer>> coordinates) {
-        for (Pair<Integer, Integer> pair : coordinates) {
-            int column = pair.getKey();
-            int row = pair.getValue();
-
-            if (column > 0 && column < 9 && row > 0 && row < 9) {
-                extractedMethod3(column, row);
-                extractedMethod1(column, row);
-                computerBoard[column-1][row-1] = 2;
-                computerBoard[column+1][row-1] = 2;
-                computerBoard[column-1][row+1] = 2;
-                computerBoard[column+1][row+1] = 2;
-            }
-
-            if (column == 0 && row > 0 && row < 9) {
-                extractedMethod1(column, row);
-                if (computerBoard[column+1][row] != 1) {computerBoard[column+1][row] = 2;}
-                computerBoard[column+1][row-1] = 2;
-                computerBoard[column+1][row+1] = 2;
-            }
-
-            if (column == 9 && row > 0 && row < 9) {
-                extractedMethod1(column, row);
-                extractedMethod2(column, row);
-                computerBoard[column-1][row+1] = 2;
-            }
-
-            if (column > 0 && column < 9 && row == 0) {
-                extractedMethod3(column, row);
-                if (computerBoard[column][row+1] != 1) {computerBoard[column][row+1] = 2;}
-                computerBoard[column-1][row+1] = 2;
-                computerBoard[column+1][row+1] = 2;
-            }
-
-            if (column > 0 && column < 9 && row == 9) {
-                extractedMethod3(column, row);
-                if (computerBoard[column][row-1] != 1) {computerBoard[column][row-1] = 2;}
-                computerBoard[column-1][row-1] = 2;
-                computerBoard[column+1][row-1] = 2;
-            }
-
-            if (column == 0 && row == 0) {
-                if (computerBoard[column][row+1] != 1) {computerBoard[column][row+1] = 2;}
-                if (computerBoard[column+1][row] != 1) {computerBoard[column+1][row] = 2;}
-                computerBoard[column+1][row+1] = 2;
-            }
-
-            if (column == 9 && row == 0) {
-                if (computerBoard[column][row+1] != 1) {computerBoard[column][row+1] = 2;}
-                if (computerBoard[column-1][row] != 1) {computerBoard[column-1][row] = 2;}
-                computerBoard[column-1][row+1] = 2;
-            }
-
-            if (column == 0 && row == 9) {
-                if (computerBoard[column][row-1] != 1) {computerBoard[column][row-1] = 2;}
-                if (computerBoard[column+1][row] != 1) {computerBoard[column+1][row] = 2;}
-                computerBoard[column+1][row-1] = 2;
-            }
-
-            if (column == 9 && row == 9) {
-                if (computerBoard[column][row-1] != 1) {computerBoard[column][row-1] = 2;}
-                extractedMethod2(column, row);
-            }
-
-        }
-
-    }
-
-    private void extractedMethod1(int column, int row) {
-        if (computerBoard[column][row-1] != 1) {computerBoard[column][row-1] = 2;}
-        if (computerBoard[column][row+1] != 1) {computerBoard[column][row+1] = 2;}
-    }
-
-    private void extractedMethod2(int column, int row) {
-        if (computerBoard[column-1][row] != 1) {computerBoard[column-1][row] = 2;}
-        computerBoard[column-1][row-1] = 2;
-    }
-
-    private void extractedMethod3(int column, int row) {
-        if (computerBoard[column-1][row] != 1) {computerBoard[column-1][row] = 2;}
-        if (computerBoard[column+1][row] != 1) {computerBoard[column+1][row] = 2;}
-    }
-
-
 
     public void showAllShipsMastsOnComputerBoard() {
         for (int i = 0; i < 10; i++) {
             for (int n = 0; n < 10; n++) {
                 if (computerBoard[i][n] == 1) {
-                    gridComputer.add(new ShipMast(new Pair<>(i, n), false), i, n);
+                    gridComputer.add(new ShipMast(new Pair<>(i, n)), i, n);
                 }
             }
         }
-    }
-
-    public void shootOnComputerBoard(Player player) {
-        playerBoard = player.getPlayerBoard();
-        copyOfPlayerBoard = playerBoard;
-        random = new Random();
-        ControlSquare controlSquare = new ControlSquare();
-        ObservableList<Node> childrenOfControlSquares = gridComputer.getChildren();
-        // set actions for every ControlSquare object in the grid on computer board
-        for (Node node : childrenOfControlSquares) {
-            if (node.getClass() == controlSquare.getClass()) {
-                ControlSquare button = (ControlSquare) node;
-                button.setOnAction(event -> {
-                    int column = (int) ((button.getLocalToParentTransform().getTx()) / 27);
-                    int row = (int) ((button.getLocalToParentTransform().getTy()) / 27);
-                    ShipBattle.example(0, column, row); // CHECK POSITION ONLY ***********************************
-                    if (computerBoard[column][row] == 1) {
-                        hit(column, row);
-                        computerMove(random);
-                    } else {
-                        missed(column, row);
-                        computerMove(random);
-                    }
-                });
-            }
-
-        }
-    }
-
-    public void hit(int column, int row) {
-        System.out.println("HIT on [" + column + "][" + row + "]!"); // ***************** TEMP ONLY ********************
-        computerBoard[column][row] = -1;
-        gridComputer.add(new Hit(), column, row);
-        // coś trzeba zakombinować tutaj z obiektem - metoda recognizeShip (na planszy komputera)
-        // ingerencja w shipContainer LUB utworzenie jakiejś lokalnej kopii
-    }
-
-    public void missed(int column, int row) {
-        System.out.println("Missed on [" + column + "][" + row + "]..."); // *************** TEMP ONLY *****************
-        computerBoard[column][row] = -2; // TO JEST BŁĄD !!!!!!!!!!!!!!!!!!!
-        // !!!!!!!! trzeba jakoś rozpracować wpisy do tabeli, poza tym chyba muszę mieć kopie obydwóch tabel
-//        grid.add(new Hit(), column, row);
-//        try {
-//            wait(time);
-//        } catch (InterruptedException e) {
-//            System.out.println();
-//        }
-        gridComputer.add(new Missed(), column, row);
-        // i jeszcze dużo innych rzeczy, choć może i nie
-    }
-
-    public void computerMove(Random random) {
-        int column = random.nextInt(9);
-        int row = random.nextInt(9);
-        System.out.println("Computer shoots on [" + column + "][" + row + "]..."); // ********* TEMP ONLY **************
-        if (playerBoard[column][row] == 1) {
-            System.out.println("Hit on player board!");
-        }
-        // metoda recognizeShip dla planszy gracza
     }
 
 }

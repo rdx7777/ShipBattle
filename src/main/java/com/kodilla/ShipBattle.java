@@ -11,11 +11,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import javafx.util.Pair;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
 import java.util.Random;
 
 public class ShipBattle extends Application {
@@ -55,21 +50,6 @@ public class ShipBattle extends Application {
     GameButton exitGameButton = new GameButton(108, 40, "Exit");
     GameButton areYouSureExitGameButton = new GameButton(135, 40, "Are you sure?");
     GameButton cancelExitGameButton = new GameButton(135, 40, "Cancel");
-
-    // creating objects used in the game
-    Ship ship_4_1 = new Ship("Ship 4-masts (1)", new ArrayList<>());
-    Ship ship_3_1 = new Ship("Ship 3-masts (1)", new ArrayList<>());
-    Ship ship_3_2 = new Ship("Ship 3-masts (2)", new ArrayList<>());
-    Ship ship_2_1 = new Ship("Ship 2-masts (1)", new ArrayList<>());
-    Ship ship_2_2 = new Ship("Ship 2-masts (2)", new ArrayList<>());
-    Ship ship_2_3 = new Ship("Ship 2-masts (3)", new ArrayList<>());
-    Ship ship_1_1 = new Ship("Ship 1-masts (1)", new ArrayList<>());
-    Ship ship_1_2 = new Ship("Ship 1-masts (2)", new ArrayList<>());
-    Ship ship_1_3 = new Ship("Ship 1-masts (3)", new ArrayList<>());
-    Ship ship_1_4 = new Ship("Ship 1-masts (4)", new ArrayList<>());
-
-    // creating ships container
-    ShipsContainer shipsContainer = new ShipsContainer();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -154,14 +134,10 @@ public class ShipBattle extends Application {
         grid.add(computerNameLabel, 17, 2);
         grid.add(userInterfaceLabel, 5, 0);
 
-        // preparing and adding set of ships to ships container
-        ArrayList<Ship> shipCollection = new ArrayList<>(Arrays.asList(ship_4_1, ship_3_1, ship_3_2, ship_2_1, ship_2_2, ship_2_3,
-                ship_1_1, ship_1_2, ship_1_3, ship_1_4));
-        shipsContainer.addShipsToContainer(shipCollection);
-
         // creating main objects
-        Player player = new Player(grid, gridPlayer, shipsContainer);
-        Computer computer = new Computer(grid, gridComputer, shipsContainer);
+        ShipsContainer shipsContainer = new ShipsContainer();
+        Player player = new Player(grid, gridPlayer, gridComputer, shipsContainer);
+        Computer computer = new Computer(gridComputer, shipsContainer, player);
 
         // setting buttons to handle "exit" choice
         areYouSureExitGameButton.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
@@ -170,25 +146,21 @@ public class ShipBattle extends Application {
 
         // setting actions for "New game" button
         newGameButton.setOnAction(event -> {
+
             System.out.println("New game starts here."); // ******************* TEST ONLY ******************************
+
             userInterfaceLabel.setAlignment(Pos.TOP_LEFT);
             userInterfaceLabel.setPadding(new Insets(5, 0, 0, 5));
             userInterfaceLabel.setFont(Font.font("Verdana", FontWeight.MEDIUM, 12));
             userInterfaceLabel.setText("Now build your ships. \n" +
                     "FIRST build one 4-masts ship, then two 3-masts ships, \n" +
                     "then three 2-masts ships and finally four 1-mast ships.");
-//            setShipButton.setDisable(true); // unnecessary button (for possible use in future)
-            player.createPlayerBoard();
+
+            player.createBoard(gridPlayer);
             player.setEmptyPlayerBoard();
+            player.createShipObjectsAndAddingToContainer(shipsContainer);
             player.setShipMastOnControlSquareField();
-// unnecessary button (for possible use in future)
-/*
-            setShipButton.setOnAction(event1 -> { // TEMPORARY ONLY !!!!!!!!!!!!!!!!!!!!!!!!!
-                // NEED setting ship object etc.
-                player.setFirstMastOfShipChecker(true);
-                setShipButton.setDisable(true);
-            });
-*/
+
             newGameButton.setDisable(true);
 
             helpButton.setOnAction(event1 -> {
@@ -213,20 +185,19 @@ public class ShipBattle extends Application {
         // setting actions for "Start game" button
         startButton.setDisable(true);
         startButton.setOnAction(event -> {
-            player.blockActionOnPlayerBoard();
+            player.blockActionOnBoard(gridPlayer);
             startButton.setDisable(true);
             System.out.println("Starting game");
             Random random = new Random();
             int randomParameter = random.nextInt(5);
-            computer.createComputerBoard();
-            computer.setEmptyComputerBoard();
-            // nie trzeba blokować planszy komputera, ponieważ obiekty na niej utworzone
-            // już po wywołaniu metody obsługującej eventy dla ControlSquare nie są objęte tą obsługą
+            player.createBoard(gridComputer);
+            player.setEmptyComputerBoard();
             computer.createShipsOnComputerBoard(randomParameter);
 //            computer.showAllShipsMastsOnComputerBoard();
             computer.createShipObjectsAndShipsCoordinates(randomParameter);
             computer.protectAllComputerShipsPositions();
-            computer.shootOnComputerBoard(player);
+            player.shootOnComputerBoard();
+
         });
 
 

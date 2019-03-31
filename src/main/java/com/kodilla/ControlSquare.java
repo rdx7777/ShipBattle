@@ -1,9 +1,6 @@
 package com.kodilla;
 
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
 
 public class ControlSquare extends Button {
 
@@ -23,7 +20,7 @@ public class ControlSquare extends Button {
         });
     }*/
 
-    // method for use outside this class
+    // method for use outside of this class
 /*
     public static void getPositionAndSetActionOfControlSquare(GridPane grid) {
         ControlSquare controlSquare = new ControlSquare();
