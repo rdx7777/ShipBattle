@@ -48,6 +48,8 @@ public class Computer {
             computerBoard[1][6] = 1;
             computerBoard[6][9] = 1;
             player.setComputerBoard(computerBoard);
+            createAndAddComputerShipMasts();
+//            System.out.println(shipsContainer.getSetOfComputerShipMasts());
         }
 
         if (randomParameter == 1) {
@@ -79,6 +81,8 @@ public class Computer {
             computerBoard[9][7] = 1;
             computerBoard[4][9] = 1;
             player.setComputerBoard(computerBoard);
+            createAndAddComputerShipMasts();
+//            System.out.println(shipsContainer.getSetOfComputerShipMasts());
         }
 
         if (randomParameter == 2) {
@@ -110,6 +114,8 @@ public class Computer {
             computerBoard[6][8] = 1;
             computerBoard[8][8] = 1;
             player.setComputerBoard(computerBoard);
+            createAndAddComputerShipMasts();
+//            System.out.println(shipsContainer.getSetOfComputerShipMasts());
         }
 
         if (randomParameter == 3) {
@@ -141,6 +147,8 @@ public class Computer {
             computerBoard[3][8] = 1;
             computerBoard[9][9] = 1;
             player.setComputerBoard(computerBoard);
+            createAndAddComputerShipMasts();
+//            System.out.println(shipsContainer.getSetOfComputerShipMasts());
         }
 
         if (randomParameter == 4) {
@@ -172,9 +180,30 @@ public class Computer {
             computerBoard[8][8] = 1;
             computerBoard[9][1] = 1;
             player.setComputerBoard(computerBoard);
+            createAndAddComputerShipMasts();
+//            System.out.println(shipsContainer.getSetOfComputerShipMasts());
         }
 
         System.out.println("Computer board #" + randomParameter); // ********** TEMP ONLY **********
+
+//        for (int i = 0; i < 10; i++) {
+//            for (int n = 0; n < 10; n++) {
+//                if (computerBoard[i][n] == 1) {
+//                    shipsContainer.addComputerShipMastToContainer(new ShipMast(new Pair<>(i, n)));
+//                }
+//            }
+//        }
+
+    }
+
+    public void createAndAddComputerShipMasts() {
+        for (int i = 0; i < 10; i++) {
+            for (int n = 0; n < 10; n++) {
+                if (computerBoard[i][n] == 1) {
+                    shipsContainer.addComputerShipMastToContainer(new ShipMast(new Pair<>(i, n)));
+                }
+            }
+        }
     }
 
     public void createShipObjectsAndShipsCoordinates(int randomParameter){

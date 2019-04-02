@@ -6,7 +6,7 @@ import javafx.util.Pair;
 public class ShipMast extends Button {
 
     private Pair<Integer, Integer> visibleShipMastCoordinates;
-    private Boolean isShipMastHit; // if hit, isMastHit = true;
+    private boolean isShipMastHit; // if hit, isMastHit = true;
 
     public ShipMast(Pair<Integer, Integer> visibleShipMastCoordinates) {
         this.visibleShipMastCoordinates = visibleShipMastCoordinates;
@@ -20,7 +20,7 @@ public class ShipMast extends Button {
         return visibleShipMastCoordinates;
     }
 
-    public Boolean getIsShipMastHit() {
+    public boolean getIsShipMastHit() {
         return isShipMastHit;
     }
 

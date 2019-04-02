@@ -13,9 +13,9 @@ public class Player {
     private GridPane gridComputer;
     private ShipsContainer shipsContainer;
     private int[][] playerBoard = new int[10][10];
-    private int[][] copyOfPlayerBoard;
+    private int[][] copyOfPlayerBoard = new int [10][10];
     private int[][] computerBoard = new int[10][10];
-    private int[][] copyOfComputerBoard;
+    private int[][] copyOfComputerBoard = new int [10][10];
     private boolean firstMastOfShipChecker = true; // checks if player sets the first mast of the ship
     private int maxNumberOfMasts; // allows player to build a ship with max. number of masts
     private int maxNumberOfShips; // this declaration is 'must be', because the reference is used inside condition 'if'
@@ -133,10 +133,12 @@ public class Player {
                                 firstMastOfShipChecker = false;
                                 removeShipMast(mastsCoordinates); // setting action when clicked on ShipMast object
                                 if (maxNumberOfMasts == 0) {
-                                    changeShipStatusToExists(maxNumberOfShips, mastsCoordinates, map);
+                                    ArrayList<Pair<Integer, Integer>> mastsCoordinatesToSave = mastsCoordinates;
+                                    System.out.println("maxNumberOfShips before saving changes to ship = " + maxNumberOfShips); // TEMP
+                                    changeShipStatusToExists(maxNumberOfShips, mastsCoordinatesToSave, map);
                                     protectShipPosition(playerBoard, mastsCoordinates);
                                     maxNumberOfShips--;
-                                    mastsCoordinates.clear();
+//                                    mastsCoordinates.clear();
                                     firstMastOfShipChecker = true;
                                     System.out.println("Max. no of masts after saving ship: " +
                                             maxNumberOfMasts); // ******************************************************
@@ -148,6 +150,13 @@ public class Player {
 //                                            System.out.println(shipMastToPrint.getVisibleShipMastCoordinates());
 //                                        }
 //                                        // *****************************************************************************
+
+                                        for(Map.Entry<String, Ship> entry : map.entrySet()) {
+                                            System.out.println(entry.getValue().getName() + ", "
+                                                    + entry.getValue().getMastsCoordinates()
+                                                    + entry.getValue().getStatus());
+                                        }
+
                                         startButton.setDisable(false);
                                     }
                                 }
@@ -157,10 +166,12 @@ public class Player {
                                     extractedAddingShipMast(gridPlayer, playerBoard, column, row, mastsCoordinates);
                                     removeShipMast(mastsCoordinates); // setting action when clicked on ShipMast object
                                     if (maxNumberOfMasts == 0) {
-                                        changeShipStatusToExists(maxNumberOfShips, mastsCoordinates, map);
+                                        ArrayList<Pair<Integer, Integer>> mastsCoordinatesToSave = mastsCoordinates;
+                                        System.out.println("maxNumberOfShips before saving changes to ship = " + maxNumberOfShips); // TEMP
+                                        changeShipStatusToExists(maxNumberOfShips, mastsCoordinatesToSave, map);
                                         protectShipPosition(playerBoard, mastsCoordinates);
                                         maxNumberOfShips--;
-                                        mastsCoordinates.clear();
+//                                        mastsCoordinates.clear();
                                         firstMastOfShipChecker = true;
                                         System.out.println("Max no of masts after saving ship: " +
                                                 maxNumberOfMasts); // **************************************************
@@ -172,6 +183,13 @@ public class Player {
 //                                                System.out.println(shipMastToPrint.getVisibleShipMastCoordinates());
 //                                            }
 //                                            // ***********************************************************************
+
+                                            for(Map.Entry<String, Ship> entry : map.entrySet()) {
+                                                System.out.println(entry.getValue().getName() + ", "
+                                                        + entry.getValue().getMastsCoordinates() +
+                                                        entry.getValue().getStatus());
+                                            }
+
                                             startButton.setDisable(false);
                                         }
                                     }
@@ -409,18 +427,21 @@ public class Player {
     // method saves coordinates of current ship to the appropriate Ship object
     public void saveCoordinates(String name, ArrayList<Pair<Integer, Integer>> coordinates,
                                 HashMap<String, Ship> map) {
-        map.get(name).setStatus(1);
-        map.get(name).setCoordinates(coordinates);
-        System.out.println(name); // TEMP ONLY *******************************************************
-        System.out.println(map.get(name).getMastsCoordinates()); // TEMP ONLY *******************************
-//        for (Map.Entry<String, Ship> entry : map.entrySet()) {
-//            if (entry.getKey().equals(name)) {
-//                entry.getValue().setCoordinates(coordinates);
-//                System.out.println(entry.getKey()); // TEMP ONLY *******************************************************
-//                System.out.println(entry.getValue().getMastsCoordinates()); // TEMP ONLY *******************************
-//            }
-//        }
+//        map.get(name).setStatus(1);
+//        map.get(name).setCoordinates(coordinates);
+//        System.out.println(name); // TEMP ONLY *******************************************************
+//        System.out.println(map.get(name).getMastsCoordinates()); // TEMP ONLY *******************************
+        for (Map.Entry<String, Ship> entry : map.entrySet()) {
+            if (entry.getKey().equals(name)) {
+                entry.getValue().setStatus(1);
+                entry.getValue().setCoordinates(coordinates);
+                System.out.println(entry.getKey()); // TEMP ONLY *******************************************************
+                System.out.println(entry.getValue().getName() + ", "
+                        + entry.getValue().getMastsCoordinates()); // TEMP ONLY *******************************
+            }
+        }
     }
+
     public void protectShipPosition(int[][] board, ArrayList<Pair<Integer, Integer>> coordinates) {
 
         for (Pair<Integer, Integer> pair : coordinates) {
@@ -579,6 +600,137 @@ public class Player {
 
     }
 
+    private void extractedMethodArea1(int column, int row, GridPane grid, int[][] board) {
+        if (board[column][row-1] != 1) {grid.add(new Missed(), column, row-1);}
+        if (board[column][row+1] != 1) {grid.add(new Missed(), column, row+1);}
+    }
+
+    private void extractedMethodArea2(int column, int row, GridPane grid, int[][] board) {
+        if (board[column-1][row] != 1) {grid.add(new Missed(), column-1, row);}
+        grid.add(new Missed(), column-1, row-1);
+    }
+
+    private void extractedMethodArea3(int column, int row, GridPane grid, int[][] board) {
+        if (board[column-1][row] != 1) {grid.add(new Missed(), column-1, row);}
+        if (board[column+1][row] != 1) {grid.add(new Missed(), column+1, row);}
+    }
+
+    public void shootOnComputerBoard() {
+        ArrayList<ShipMast> playerShipMastsList = shipsContainer.getSetOfShipMasts();
+        ArrayList<ShipMast> computerShipMastsList = shipsContainer.getSetOfComputerShipMasts();
+        HashMap<String, Ship> playerShipsMap = shipsContainer.getSetOfShips();
+        HashMap<String, Ship> computerShipsMap = shipsContainer.getSetOfComputerShips();
+        for(Map.Entry<String, Ship> entry : playerShipsMap.entrySet()) {
+            System.out.println(entry.getValue().getName() + ", " + entry.getValue().getMastsCoordinates());
+        }
+        Random random = new Random();
+        ControlSquare controlSquare = new ControlSquare();
+        ObservableList<Node> childrenOfControlSquares = gridComputer.getChildren();
+        // set actions for every ControlSquare object in the grid on computer board
+        for (Node node : childrenOfControlSquares) {
+            if (node.getClass() == controlSquare.getClass()) {
+                ControlSquare button = (ControlSquare) node;
+                button.setOnAction(event -> {
+                    int column = (int) ((button.getLocalToParentTransform().getTx()) / 27);
+                    int row = (int) ((button.getLocalToParentTransform().getTy()) / 27);
+                    ShipBattle.example(0, column, row); // CHECK POSITION ONLY ***********************************
+                    if (computerBoard[column][row] == 1) {
+                        hit(column, row, computerShipMastsList, computerShipsMap);
+                        computerMove(random, playerShipMastsList, playerShipsMap);
+                    } else {
+                        missed(column, row);
+                        computerMove(random, playerShipMastsList, playerShipsMap);
+                    }
+                });
+            }
+
+        }
+    }
+
+    public void hit(int column, int row, ArrayList<ShipMast> computerShipMastsList,
+                    HashMap<String, Ship> computerShipsMap) {
+        System.out.println("HIT on [" + column + "][" + row + "]!"); // ***************** TEMP ONLY ********************
+        copyOfComputerBoard[column][row] = 1;
+        gridComputer.add(new Hit(), column, row);
+        ShipMast shipMast = identifyShipMast(column, row, computerShipMastsList);
+        shipMast.setShipMastHit(true);
+        Ship ship = identifyShip(column, row, computerShipsMap);
+        if (isShipSunk(ship, computerShipMastsList)) {
+            System.out.println("Statek komputera został zatopiony ********************************************");
+            showShipProtectedArea(ship, gridComputer, copyOfComputerBoard);
+        }
+
+        // to będzie wspólne dla hit() i computerMove() --- jako osobna metoda
+        // if all ships sunk ---> the end, print score, save score, ask for new game
+    }
+
+    public void missed(int column, int row) {
+        System.out.println("Missed on [" + column + "][" + row + "]..."); // *************** TEMP ONLY *****************
+        copyOfComputerBoard[column][row] = -2; // niepotrzebna instrukcja, tabela nie jest sprawdzana pod kątem tej wartości
+//        grid.add(new Hit(), column, row);
+//        try {
+//            wait(time);
+//        } catch (InterruptedException e) {
+//            System.out.println();
+//        }
+        gridComputer.add(new Missed(), column, row);
+    }
+
+    public void computerMove(Random random, ArrayList<ShipMast> playerShipMastsList,
+                             HashMap<String, Ship> playerShipsMap) {
+        // dodać warunek, żeby współrzędne nie trafiały w już trafione i zabezpieczone pola
+        int column = random.nextInt(9);
+        int row = random.nextInt(9);
+        ShipMast shipMast = identifyShipMast(column, row, playerShipMastsList);
+        Ship ship = identifyShip(column, row, playerShipsMap);
+        System.out.println("Computer shoots on [" + column + "][" + row + "]..."); // ********* TEMP ONLY **************
+        if (playerBoard[column][row] == 1) {
+            System.out.println("Hit on player board!");
+            copyOfPlayerBoard[column][row] = 1;
+            gridPlayer.add(new Hit(), column, row);
+            shipMast.setShipMastHit(true);
+            if (isShipSunk(ship, playerShipMastsList)) {
+                System.out.println("ZATOPIONY !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"); // TEST ********
+
+
+
+                showShipProtectedArea(ship, gridPlayer, copyOfPlayerBoard);
+            }
+        }  else {
+            copyOfPlayerBoard[column][row] = 2;
+        }
+
+        for (int i = 0; i < 10; i++) {
+            for (int n = 0; n < 10; n++) {
+                System.out.print(copyOfPlayerBoard[i][n] + ", ");
+            }
+            System.out.println();
+        }
+
+        ArrayList<Pair<Integer, Integer>> tempShipMastsCoordinates = ship.getMastsCoordinates();
+        for (Pair<Integer, Integer> coordinates : tempShipMastsCoordinates){
+            int tempColumn = coordinates.getKey();
+            int tempRow = coordinates.getValue();
+            ShipMast temporaryShipMast = identifyShipMast(tempColumn, tempRow, playerShipMastsList);
+            System.out.println(coordinates.getKey() + ", " + coordinates.getValue() + ", "
+                    + temporaryShipMast.getIsShipMastHit());
+        }
+
+        ArrayList<ShipMast> tempListOfShipMasts = shipsContainer.getSetOfShipMasts();
+        for (ShipMast tempShipMast : tempListOfShipMasts) {
+            System.out.println(tempShipMast.getVisibleShipMastCoordinates() + "; " + tempShipMast.getIsShipMastHit());
+        }
+
+        System.out.println("sunk-status of ship = " + ship.getStatus());
+        System.out.println(ship.getName());
+        System.out.println("hit-status of ship mast = " + shipMast.getIsShipMastHit());
+        System.out.println(ship.getMastsCoordinates());
+
+
+
+
+    }
+
     public ShipMast identifyShipMast(int column, int row, ArrayList<ShipMast> shipMastsList) {
         ShipMast wantedShipMast = new ShipMast(new Pair<>(100, 100));
         for (ShipMast shipMast : shipMastsList) {
@@ -592,8 +744,10 @@ public class Player {
 
     public Ship identifyShip(int column, int row, HashMap<String, Ship> shipsMap) {
         Pair<Integer, Integer> checkedCoordinates = new Pair<>(column, row);
+        System.out.println("************************ Method identifyShip - checked column & row: " + checkedCoordinates);
         Ship wantedShip = new Ship("Wanted Ship", new ArrayList<>());
         for (Map.Entry<String, Ship> entry : shipsMap.entrySet()) {
+            System.out.println("Currently checked column & row: "+ entry.getValue().getMastsCoordinates());
             if (entry.getValue().getMastsCoordinates().contains(checkedCoordinates)) {
                 wantedShip = entry.getValue();
             }
@@ -601,13 +755,10 @@ public class Player {
         return wantedShip;
     }
 
-    public void isShipSunk(int column, int row, HashMap<String, Ship> shipsMap,
-                           ArrayList<ShipMast> shipMastsList) {
+    public boolean isShipSunk(Ship ship, ArrayList<ShipMast> shipMastsList) {
 
         boolean checkIsShipSunk;
         boolean checker = true;
-
-        Ship ship = identifyShip(column, row, shipsMap);
 
         for (Pair<Integer, Integer> pair : ship.getMastsCoordinates()) {
             ShipMast shipMast = identifyShipMast(pair.getKey(), pair.getValue(), shipMastsList);
@@ -616,14 +767,9 @@ public class Player {
 
         checkIsShipSunk = checker;
 
-        if (checkIsShipSunk) {
-            ship.setStatus(-1);
-//            showShipProtectedArea(ship);
-            // POWYŻSZA METODA MUSI BYĆ WYWOŁYWANA BEZPOŚREDNIO PO WYWOŁANIU
-            // SPRAWDZENIU, CZY STATUS STATKU = -1 (zatopiony); wtedy można wyświetlić puste pola wokół statku na planszy
-            // wywołanie tej metody z tego miejsca generuje niepotrzebne przekazywanie argumentów do metod, które
-            // ich nie potrzebują
-        }
+        if (checkIsShipSunk) { ship.setStatus(-1); }
+
+        return checkIsShipSunk;
 
     }
 
@@ -697,83 +843,5 @@ public class Player {
         }
 
     }
-
-    private void extractedMethodArea1(int column, int row, GridPane grid, int[][] board) {
-        if (board[column][row-1] != 1) {grid.add(new Missed(), column, row-1);}
-        if (board[column][row+1] != 1) {grid.add(new Missed(), column, row+1);}
-    }
-
-    private void extractedMethodArea2(int column, int row, GridPane grid, int[][] board) {
-        if (board[column-1][row] != 1) {grid.add(new Missed(), column-1, row);}
-        grid.add(new Missed(), column-1, row-1);
-    }
-
-    private void extractedMethodArea3(int column, int row, GridPane grid, int[][] board) {
-        if (board[column-1][row] != 1) {grid.add(new Missed(), column-1, row);}
-        if (board[column+1][row] != 1) {grid.add(new Missed(), column+1, row);}
-    }
-
-    public void shootOnComputerBoard() {
-        copyOfPlayerBoard = playerBoard;
-        copyOfComputerBoard = computerBoard;
-        Random random = new Random();
-        ControlSquare controlSquare = new ControlSquare();
-        ObservableList<Node> childrenOfControlSquares = gridComputer.getChildren();
-        // set actions for every ControlSquare object in the grid on computer board
-        for (Node node : childrenOfControlSquares) {
-            if (node.getClass() == controlSquare.getClass()) {
-                ControlSquare button = (ControlSquare) node;
-                button.setOnAction(event -> {
-                    int column = (int) ((button.getLocalToParentTransform().getTx()) / 27);
-                    int row = (int) ((button.getLocalToParentTransform().getTy()) / 27);
-                    ShipBattle.example(0, column, row); // CHECK POSITION ONLY ***********************************
-                    if (computerBoard[column][row] == 1) {
-                        hit(column, row);
-                        computerMove(random);
-                    } else {
-                        missed(column, row);
-                        computerMove(random);
-                    }
-                });
-            }
-
-        }
-    }
-
-    public void hit(int column, int row) {
-        System.out.println("HIT on [" + column + "][" + row + "]!"); // ***************** TEMP ONLY ********************
-        copyOfComputerBoard[column][row] = -1;
-        gridComputer.add(new Hit(), column, row);
-        // coś trzeba zakombinować tutaj z obiektem - metoda recognizeShip (na planszy komputera)
-        // ingerencja w shipContainer LUB utworzenie jakiejś lokalnej kopii
-
-        // if all ships sunk ---> the end, print score, save score, ask for new game
-    }
-
-    public void missed(int column, int row) {
-        System.out.println("Missed on [" + column + "][" + row + "]..."); // *************** TEMP ONLY *****************
-        copyOfComputerBoard[column][row] = -2; // TO JEST BŁĄD !!!!!!!!!!!!!!!!!!!
-        // !!!!!!!! trzeba jakoś rozpracować wpisy do tabeli, poza tym chyba muszę mieć kopie obydwóch tabel
-//        grid.add(new Hit(), column, row);
-//        try {
-//            wait(time);
-//        } catch (InterruptedException e) {
-//            System.out.println();
-//        }
-        gridComputer.add(new Missed(), column, row);
-        // i jeszcze dużo innych rzeczy, choć może i nie
-    }
-
-    public void computerMove(Random random) {
-        int column = random.nextInt(9);
-        int row = random.nextInt(9);
-        System.out.println("Computer shoots on [" + column + "][" + row + "]..."); // ********* TEMP ONLY **************
-        if (playerBoard[column][row] == 1) {
-            System.out.println("Hit on player board!");
-            copyOfPlayerBoard[column][row] = -1;
-        }
-        // metoda recognizeShip dla planszy gracza
-    }
-
 
 }
