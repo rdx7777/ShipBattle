@@ -45,9 +45,9 @@ public class ShipsContainer {
         setOfComputerShipMasts.add(shipMast);
     }
 
-    public void removeComputerShipMastFromContainer(ShipMast shipMast) {
-        setOfComputerShipMasts.remove(shipMast);
-    }
+//    public void removeComputerShipMastFromContainer(ShipMast shipMast) {
+//        setOfComputerShipMasts.remove(shipMast);
+//    }
 
     public ArrayList<ShipMast> getSetOfComputerShipMasts() {
         return setOfComputerShipMasts;

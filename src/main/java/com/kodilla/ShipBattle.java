@@ -137,7 +137,7 @@ public class ShipBattle extends Application {
         // creating main objects
         ShipsContainer shipsContainer = new ShipsContainer();
         Player player = new Player(grid, gridPlayer, gridComputer, shipsContainer);
-        Computer computer = new Computer(gridComputer, shipsContainer, player);
+        Computer computer = new Computer(shipsContainer, player);
 
         // setting buttons to handle "exit" choice
         areYouSureExitGameButton.setFont(Font.font("Verdana", FontWeight.BOLD, 12));

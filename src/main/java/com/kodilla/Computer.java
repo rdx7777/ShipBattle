@@ -1,18 +1,15 @@
 package com.kodilla;
 
-import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
 
 import java.util.*;
 
 public class Computer {
-    private GridPane gridComputer;
     private ShipsContainer shipsContainer;
     private Player player;
     private int[][] computerBoard = new int[10][10];
 
-    public Computer(GridPane gridComputer, ShipsContainer shipsContainer, Player player) {
-        this.gridComputer = gridComputer;
+    public Computer(ShipsContainer shipsContainer, Player player) {
         this.shipsContainer = shipsContainer;
         this.player = player;
     }
@@ -49,7 +46,6 @@ public class Computer {
             computerBoard[6][9] = 1;
             player.setComputerBoard(computerBoard);
             createAndAddComputerShipMasts();
-//            System.out.println(shipsContainer.getSetOfComputerShipMasts());
         }
 
         if (randomParameter == 1) {
@@ -82,7 +78,6 @@ public class Computer {
             computerBoard[4][9] = 1;
             player.setComputerBoard(computerBoard);
             createAndAddComputerShipMasts();
-//            System.out.println(shipsContainer.getSetOfComputerShipMasts());
         }
 
         if (randomParameter == 2) {
@@ -115,7 +110,6 @@ public class Computer {
             computerBoard[8][8] = 1;
             player.setComputerBoard(computerBoard);
             createAndAddComputerShipMasts();
-//            System.out.println(shipsContainer.getSetOfComputerShipMasts());
         }
 
         if (randomParameter == 3) {
@@ -148,7 +142,6 @@ public class Computer {
             computerBoard[9][9] = 1;
             player.setComputerBoard(computerBoard);
             createAndAddComputerShipMasts();
-//            System.out.println(shipsContainer.getSetOfComputerShipMasts());
         }
 
         if (randomParameter == 4) {
@@ -181,18 +174,9 @@ public class Computer {
             computerBoard[9][1] = 1;
             player.setComputerBoard(computerBoard);
             createAndAddComputerShipMasts();
-//            System.out.println(shipsContainer.getSetOfComputerShipMasts());
         }
 
         System.out.println("Computer board #" + randomParameter); // ********** TEMP ONLY **********
-
-//        for (int i = 0; i < 10; i++) {
-//            for (int n = 0; n < 10; n++) {
-//                if (computerBoard[i][n] == 1) {
-//                    shipsContainer.addComputerShipMastToContainer(new ShipMast(new Pair<>(i, n)));
-//                }
-//            }
-//        }
 
     }
 
@@ -426,16 +410,6 @@ public class Computer {
         for (Map.Entry<String, Ship> entry : map.entrySet()) {
             ArrayList<Pair<Integer, Integer>> shipCoordinates = entry.getValue().getMastsCoordinates();
             player.protectShipPosition(board, shipCoordinates);
-        }
-    }
-
-    public void showAllShipsMastsOnComputerBoard() {
-        for (int i = 0; i < 10; i++) {
-            for (int n = 0; n < 10; n++) {
-                if (computerBoard[i][n] == 1) {
-                    gridComputer.add(new ShipMast(new Pair<>(i, n)), i, n);
-                }
-            }
         }
     }
 
