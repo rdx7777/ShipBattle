@@ -4,10 +4,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ShipsContainer {
+
     private HashMap<String, Ship> setOfShips = new HashMap<>();
     private HashMap<String, Ship> setOfComputerShips = new HashMap<>();
+
     private ArrayList<ShipMast> setOfShipMasts = new ArrayList<>();
     private ArrayList<ShipMast> setOfComputerShipMasts = new ArrayList<>();
+
+    private ArrayList<ControlSquare> setOfControlSquares = new ArrayList<>();
+    private ArrayList<ControlSquare> setOfComputerControlSquares = new ArrayList<>();
+
+    private ArrayList<Hit> setOfHits = new ArrayList<>();
+    private ArrayList<Hit> setOfComputerHits = new ArrayList<>();
+
+    private ArrayList<Missed> setOfMisseds = new ArrayList<>();
+    private ArrayList<Missed> setOfComputerMisseds = new ArrayList<>();
 
     public void addShipsToContainer(ArrayList<Ship> shipCollection) {
         for(Ship ship : shipCollection) {
@@ -53,4 +64,27 @@ public class ShipsContainer {
         return setOfComputerShipMasts;
     }
 
+    public ArrayList<ControlSquare> getSetOfControlSquares() {
+        return setOfControlSquares;
+    }
+
+    public ArrayList<ControlSquare> getSetOfComputerControlSquares() {
+        return setOfComputerControlSquares;
+    }
+
+    public ArrayList<Hit> getSetOfHits() {
+        return setOfHits;
+    }
+
+    public ArrayList<Hit> getSetOfComputerHits() {
+        return setOfComputerHits;
+    }
+
+    public ArrayList<Missed> getSetOfMisseds() {
+        return setOfMisseds;
+    }
+
+    public ArrayList<Missed> getSetOfComputerMisseds() {
+        return setOfComputerMisseds;
+    }
 }

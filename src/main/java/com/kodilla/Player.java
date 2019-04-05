@@ -1,8 +1,12 @@
 package com.kodilla;
 
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.util.Pair;
 
 import java.util.*;
@@ -12,6 +16,7 @@ public class Player {
     private GridPane gridPlayer;
     private GridPane gridComputer;
     private ShipsContainer shipsContainer;
+    private Scores scores;
     private int[][] playerBoard = new int[10][10];
     private int[][] copyOfPlayerBoard = new int [10][10];
     private int[][] computerBoard = new int[10][10];
@@ -20,30 +25,40 @@ public class Player {
     private int maxNumberOfMasts; // allows player to build a ship with max. number of masts
     private int maxNumberOfShips; // this declaration is 'must be', because the reference is used inside condition 'if'
     private GameButton startButton;
+    private GameButton newGameButton;
+    private GameLabel userInterfaceLabel;
+    private GameLabel playerScoreLabel;
+    private GameLabel computerScoreLabel;
 
-    public Player(GridPane grid, GridPane gridPlayer, GridPane gridComputer, ShipsContainer shipsContainer) {
+    public Player(GridPane grid, GridPane gridPlayer, GridPane gridComputer,
+                  ShipsContainer shipsContainer, Scores scores) {
         this.grid = grid;
         this.gridPlayer = gridPlayer;
         this.gridComputer = gridComputer;
         this.shipsContainer = shipsContainer;
+        this.scores = scores;
     }
 
-    public void createBoard(GridPane grid) {
-        for (int i = 0; i < 10; i++) {
-            for (int n = 0; n < 10; n++) {
-                grid.add(new ControlSquare(), i, n);
+    public void createBoard(GridPane grid, ArrayList<ControlSquare> controlSquaresSet) {
+        if (controlSquaresSet.isEmpty()) {
+            for (int i = 0; i < 10; i++) {
+                for (int n = 0; n < 10; n++) {
+                    ControlSquare controlSquare = new ControlSquare(new Pair<>(i, n));
+                    grid.add(controlSquare, i, n);
+                    controlSquaresSet.add(controlSquare);
+                }
             }
         }
     }
 
-    public void blockActionOnBoard(GridPane grid) {
-        ControlSquare controlSquare = new ControlSquare();
+    public void blockActionOnBoard(GridPane grid, boolean setStatus) {
+        ControlSquare controlSquare = new ControlSquare(new Pair<>(100, 100));
         ObservableList<Node> childrenOfControlSquares = grid.getChildren();
         ControlSquare button;
         for (Node node : childrenOfControlSquares) { // set actions for every ControlSquare object in the grid
             if (node.getClass() == controlSquare.getClass()) {
                 button = (ControlSquare) node;
-                button.setDisable(true);
+                button.setDisable(setStatus);
             }
         }
     }
@@ -94,7 +109,7 @@ public class Player {
     }
 
     public void setShipMastOnControlSquareField() {
-        startButton = findStartButton();
+        startButton = findButton("Start");
         maxNumberOfMasts = checkShipExistsInShipsContainer();
         if (maxNumberOfMasts == 4) {
             maxNumberOfShips = 10; // sets max number of ships
@@ -102,14 +117,16 @@ public class Player {
         System.out.println("Saved = " + maxNumberOfShips); // TEMPORARY ONLY **************************************
         HashMap<String, Ship> map = shipsContainer.getSetOfShips();
         ArrayList<Pair<Integer, Integer>> mastsCoordinates = new ArrayList<>();
-        ControlSquare controlSquare = new ControlSquare();
+        ControlSquare controlSquare = new ControlSquare(new Pair<>(100, 100));
         ObservableList<Node> childrenOfControlSquares = gridPlayer.getChildren();
         for (Node node : childrenOfControlSquares) { // set actions for every ControlSquare object in the grid
             if (node.getClass() == controlSquare.getClass()) {
                 ControlSquare button = (ControlSquare) node;
                 button.setOnAction(event -> {
-                    int column = (int) ((button.getLocalToParentTransform().getTx()) / 27);
-                    int row = (int) ((button.getLocalToParentTransform().getTy()) / 27);
+                    int column = button.getControlSquareCoordinates().getKey();
+                    int row = button.getControlSquareCoordinates().getValue();
+//                    int column = (int) ((button.getLocalToParentTransform().getTx()) / 27);
+//                    int row = (int) ((button.getLocalToParentTransform().getTy()) / 27);
                     ShipBattle.example(0, column, row); // CHECK POSITION ONLY ***********************************
                     System.out.println(maxNumberOfMasts); // FOR CHECK ONLY ********************************************
                     if (maxNumberOfMasts > 0) {
@@ -179,7 +196,7 @@ public class Player {
         maxNumberOfMasts--;
     }
 
-    public GameButton findStartButton() {
+    public GameButton findButton(String buttonName) {
         GameButton gameButton = new GameButton(100, 50, "A");
         GameButton wantedGameButton = new GameButton(100, 50, "B");
         ObservableList<Node> childrenOfGameButtons = grid.getChildren();
@@ -187,11 +204,26 @@ public class Player {
             if (node.getClass() == gameButton.getClass()) {
                 gameButton = (GameButton) node;
             }
-            if (gameButton.getButtonName() == "Start") {
+            if (gameButton.getButtonName() == buttonName) {
                 wantedGameButton = gameButton;
             }
         }
         return wantedGameButton;
+    }
+
+    public GameLabel findLabel (String labelName) {
+        GameLabel gameLabel = new GameLabel(100, 50, "A", "AA");
+        GameLabel wantedGameLabel = new GameLabel(100, 50, "B", "BB");
+        ObservableList<Node> childrenOfGameLabels = grid.getChildren();
+        for (Node node : childrenOfGameLabels) {
+            if (node.getClass() == gameLabel.getClass()) {
+                gameLabel = (GameLabel) node;
+            }
+            if (gameLabel.getName() == labelName) {
+                wantedGameLabel = gameLabel;
+            }
+        }
+        return wantedGameLabel;
     }
 
     // przerobić na kolejkę - argumentem mapa statków, a w klasie `Ship` prawdopodobnie trzeba będzie dodać pole
@@ -565,17 +597,18 @@ public class Player {
     }
 
     public void shootOnComputerBoard() {
+        newGameButton = findButton("New game");
+        userInterfaceLabel = findLabel("User Interface");
+        playerScoreLabel = findLabel("Player Score");
+        computerScoreLabel = findLabel("Computer Score");
         ArrayList<ShipMast> playerShipMastsList = shipsContainer.getSetOfShipMasts();
         ArrayList<ShipMast> computerShipMastsList = shipsContainer.getSetOfComputerShipMasts();
         HashMap<String, Ship> playerShipsMap = shipsContainer.getSetOfShips();
         HashMap<String, Ship> computerShipsMap = shipsContainer.getSetOfComputerShips();
-//        for(Map.Entry<String, Ship> entry : playerShipsMap.entrySet()) {
-//            System.out.println(entry.getValue().getName() + ", " + entry.getValue().getMastsCoordinates());
-//        }
         Random random = new Random();
-        ControlSquare controlSquare = new ControlSquare();
+        ControlSquare controlSquare = new ControlSquare(new Pair<>(100, 100));
         ObservableList<Node> childrenOfControlSquares = gridComputer.getChildren();
-        // set actions for every ControlSquare object in the grid on computer board
+        // sets actions for every ControlSquare object in the grid on computer board
         for (Node node : childrenOfControlSquares) {
             if (node.getClass() == controlSquare.getClass()) {
                 ControlSquare button = (ControlSquare) node;
@@ -585,21 +618,32 @@ public class Player {
 //                    ShipBattle.example(0, column, row); // CHECK POSITION ONLY ***********************************
                     if (computerBoard[column][row] == 1) {
                         hit(column, row, computerShipMastsList, computerShipsMap);
-                        computerMove(random, playerShipMastsList, playerShipsMap);
+                        if (!areAllShipsSunk(computerShipsMap)) {
+                            computerMove(random, playerShipMastsList, playerShipsMap);
+                        } else {
+                            // THE END OF THE GAME - player won
+                            blockActionOnBoard(gridComputer, true); // blocks computer board
+                            scores.playerWon(); // saves the result of the game (player won)
+                            printResult("Player"); // prints the result of the game
+                            newGameButton.setDisable(false); // unblocks New Game button
+//                            resetAllForNewGame();
+                            // ?????????? ASK FOR NEW GAME ?????????? *******************@@@@@@@@@@@@@@@@@@@############
+                        }
                     } else {
                         missed(column, row);
                         computerMove(random, playerShipMastsList, playerShipsMap);
                     }
                 });
             }
-
         }
     }
 
     public void hit(int column, int row, ArrayList<ShipMast> computerShipMastsList,
                     HashMap<String, Ship> computerShipsMap) {
         copyOfComputerBoard[column][row] = 1;
-        gridComputer.add(new Hit(), column, row);
+        Hit hit = new Hit(new Pair<>(column, row));
+        gridComputer.add(hit, column, row);
+        shipsContainer.getSetOfComputerHits().add(hit);
         ShipMast shipMast = identifyShipMast(column, row, computerShipMastsList);
         shipMast.setShipMastHit(true);
         Ship ship = identifyShip(column, row, computerShipsMap);
@@ -607,31 +651,28 @@ public class Player {
             System.out.println("Statek komputera został zatopiony **********************"); // ******** TEMP ONLY ******
             showShipProtectedArea(ship, gridComputer, copyOfComputerBoard);
         }
-
-        // to będzie wspólne dla hit() i computerMove() --- jako osobna metoda
-        // ZABLOKOWAC planszę komputera !!!!!!!!!!!!      (bo się program wiesza...)
-        // if all ships sunk ---> the end, print score, save score, ask for new game
     }
 
     public void missed(int column, int row) {
         System.out.println("Missed on [" + column + "][" + row + "]..."); // *************** TEMP ONLY *****************
-//        copyOfComputerBoard[column][row] = -2; // niepotrzebna instrukcja, w tabeli nie sprawdza się tej wartości ****
-        gridComputer.add(new Missed(), column, row);
+        Missed missed = new Missed(new Pair<>(column, row));
+        gridComputer.add(missed, column, row);
+        shipsContainer.getSetOfComputerMisseds().add(missed);
     }
 
     public void computerMove(Random random, ArrayList<ShipMast> playerShipMastsList,
                              HashMap<String, Ship> playerShipsMap) {
 
-        int cheater = random.nextInt(3);
+        int cheater = random.nextInt(5);
         boolean cheaterChecker = false;
         boolean checker = false;
         int column = 100;
         int row = 100;
 
-        if (cheater != 0) {
+        if (cheater != 0 || cheater !=3) { // an attempt to equalize the chances of winning computer
             while (!cheaterChecker) {
                 for (ShipMast cheatedShipMast : playerShipMastsList) {
-                    if (cheatedShipMast.getIsShipMastHit() == false) {
+                    if (!cheatedShipMast.getIsShipMastHit()) {
                         column = cheatedShipMast.getVisibleShipMastCoordinates().getKey();
                         row = cheatedShipMast.getVisibleShipMastCoordinates().getValue();
                         cheaterChecker = true;
@@ -664,21 +705,33 @@ public class Player {
         ShipMast shipMast = identifyShipMast(column, row, playerShipMastsList);
         Ship ship = identifyShip(column, row, playerShipsMap);
         System.out.println("Computer shoots on [" + column + "][" + row + "]..."); // ********* TEMP ONLY **************
+
         if (playerBoard[column][row] == 1) {
             copyOfPlayerBoard[column][row] = 1;
-            gridPlayer.add(new Hit(), column, row);
+            Hit hit = new Hit(new Pair<>(column, row));
+            gridPlayer.add(hit, column, row);
+            shipsContainer.getSetOfHits().add(hit);
             shipMast.setShipMastHit(true);
             if (isShipSunk(ship, playerShipMastsList)) {
-                System.out.println("ZATOPIONY !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"); // TEST ********
+                System.out.println("Ship's sunk !!!!!"); // ************** TEST ***************
                 protectShipPosition(copyOfPlayerBoard, ship.getMastsCoordinates());
                 showShipProtectedArea(ship, gridPlayer, copyOfPlayerBoard);
+                if (areAllShipsSunk(playerShipsMap)) {
+                    // THE END OF THE GAME - computer won
+                    blockActionOnBoard(gridComputer, true); // blocks computer board
+                    scores.computerWon(); // saves the result of the game (computer won)
+                    printResult("Computer"); // prints the result of the game
+                    newGameButton.setDisable(false); // unblocks New Game button
+//                    resetAllForNewGame();
+                    // ?????????? ASK FOR NEW GAME ?????????? *******************@@@@@@@@@@@@@@@@@@@############
+                }
             }
         }  else {
             copyOfPlayerBoard[column][row] = 2;
-            gridPlayer.add(new Missed(), column, row);
+            Missed missed = new Missed(new Pair<>(column, row));
+            gridPlayer.add(missed, column, row);
+            shipsContainer.getSetOfMisseds().add(missed);
         }
-
-        // TUTAJ: if all ships sunk ---> the end, print score, save score, ask for new game
 
     }
 
@@ -724,6 +777,18 @@ public class Player {
 
     }
 
+    public boolean areAllShipsSunk(HashMap<String, Ship> shipsMap) {
+        boolean result = false;
+        int cumulatedStatus = 0;
+        for (Map.Entry<String, Ship> entry : shipsMap.entrySet()) {
+            cumulatedStatus = cumulatedStatus + entry.getValue().getStatus();
+        }
+        if (cumulatedStatus == -10) {
+            result = true;
+        }
+        return result;
+    }
+
     public void showShipProtectedArea(Ship ship, GridPane grid, int[][]board) {
 
         ArrayList<Pair<Integer, Integer>> list = ship.getMastsCoordinates();
@@ -735,59 +800,59 @@ public class Player {
             if (column > 0 && column < 9 && row > 0 && row < 9) {
                 extractedMethodArea3(column, row, grid, board);
                 extractedMethodArea1(column, row, grid, board);
-                grid.add(new Missed(), column-1, row-1);
-                grid.add(new Missed(), column+1, row-1);
-                grid.add(new Missed(), column-1, row+1);
-                grid.add(new Missed(), column+1, row+1);
+                grid.add(new Missed(new Pair<>(column-1, row-1)), column-1, row-1);
+                grid.add(new Missed(new Pair<>(column+1, row-1)), column+1, row-1);
+                grid.add(new Missed(new Pair<>(column-1, row+1)), column-1, row+1);
+                grid.add(new Missed(new Pair<>(column+1, row+1)), column+1, row+1);
             }
 
             if (column == 0 && row > 0 && row < 9) {
                 extractedMethodArea1(column, row, grid, board);
-                if (board[column+1][row] != 1) {grid.add(new Missed(), column+1, row);}
-                grid.add(new Missed(), column+1, row-1);
-                grid.add(new Missed(), column+1, row+1);
+                if (board[column+1][row] != 1) {grid.add(new Missed(new Pair<>(column+1, row)), column+1, row);}
+                grid.add(new Missed(new Pair<>(column+1, row-1)), column+1, row-1);
+                grid.add(new Missed(new Pair<>(column+1, row+1)), column+1, row+1);
             }
 
             if (column == 9 && row > 0 && row < 9) {
                 extractedMethodArea1(column, row, grid, board);
                 extractedMethodArea2(column, row, grid, board);
-                grid.add(new Missed(), column-1, row+1);
+                grid.add(new Missed(new Pair<>(column-1, row+1)), column-1, row+1);
             }
 
             if (column > 0 && column < 9 && row == 0) {
                 extractedMethodArea3(column, row, grid, board);
-                if (board[column][row+1] != 1) {grid.add(new Missed(), column, row+1);}
-                grid.add(new Missed(), column-1, row+1);
-                grid.add(new Missed(), column+1, row+1);
+                if (board[column][row+1] != 1) {grid.add(new Missed(new Pair<>(column, row+1)), column, row+1);}
+                grid.add(new Missed(new Pair<>(column-1, row+1)), column-1, row+1);
+                grid.add(new Missed(new Pair<>(column+1, row+1)), column+1, row+1);
             }
 
             if (column > 0 && column < 9 && row == 9) {
                 extractedMethodArea3(column, row, grid, board);
-                if (board[column][row-1] != 1) {grid.add(new Missed(), column, row-1);}
-                grid.add(new Missed(), column-1, row-1);
-                grid.add(new Missed(), column+1, row-1);
+                if (board[column][row-1] != 1) {grid.add(new Missed(new Pair<>(column, row-1)), column, row-1);}
+                grid.add(new Missed(new Pair<>(column-1, row-1)), column-1, row-1);
+                grid.add(new Missed(new Pair<>(column+1, row-1)), column+1, row-1);
             }
 
             if (column == 0 && row == 0) {
-                if (board[column][row+1] != 1) {grid.add(new Missed(), column, row+1);}
-                if (board[column+1][row] != 1) {grid.add(new Missed(), column+1, row);}
-                grid.add(new Missed(), column+1, row+1);
+                if (board[column][row+1] != 1) {grid.add(new Missed(new Pair<>(column, row+1)), column, row+1);}
+                if (board[column+1][row] != 1) {grid.add(new Missed(new Pair<>(column+1, row)), column+1, row);}
+                grid.add(new Missed(new Pair<>(column+1, row+1)), column+1, row+1);
             }
 
             if (column == 9 && row == 0) {
-                if (board[column][row+1] != 1) {grid.add(new Missed(), column, row+1);}
-                if (board[column-1][row] != 1) {grid.add(new Missed(), column-1, row);}
-                grid.add(new Missed(), column-1, row+1);
+                if (board[column][row+1] != 1) {grid.add(new Missed(new Pair<>(column, row+1)), column, row+1);}
+                if (board[column-1][row] != 1) {grid.add(new Missed(new Pair<>(column-1, row)), column-1, row);}
+                grid.add(new Missed(new Pair<>(column-1, row+1)), column-1, row+1);
             }
 
             if (column == 0 && row == 9) {
-                if (board[column][row-1] != 1) {grid.add(new Missed(), column, row-1);}
-                if (board[column+1][row] != 1) {grid.add(new Missed(), column+1, row);}
-                grid.add(new Missed(), column+1, row-1);
+                if (board[column][row-1] != 1) {grid.add(new Missed(new Pair<>(column, row-1)), column, row-1);}
+                if (board[column+1][row] != 1) {grid.add(new Missed(new Pair<>(column+1, row)), column+1, row);}
+                grid.add(new Missed(new Pair<>(column+1, row-1)), column+1, row-1);
             }
 
             if (column == 9 && row == 9) {
-                if (board[column][row-1] != 1) {grid.add(new Missed(), column, row-1);}
+                if (board[column][row-1] != 1) {grid.add(new Missed(new Pair<>(column, row-1)), column, row-1);}
                 extractedMethodArea2(column, row, grid, board);
             }
 
@@ -796,18 +861,69 @@ public class Player {
     }
 
     private void extractedMethodArea1(int column, int row, GridPane grid, int[][] board) {
-        if (board[column][row-1] != 1) {grid.add(new Missed(), column, row-1);}
-        if (board[column][row+1] != 1) {grid.add(new Missed(), column, row+1);}
+        if (board[column][row-1] != 1) {grid.add(new Missed(new Pair<>(column, row-1)), column, row-1);}
+        if (board[column][row+1] != 1) {grid.add(new Missed(new Pair<>(column, row+1)), column, row+1);}
     }
 
     private void extractedMethodArea2(int column, int row, GridPane grid, int[][] board) {
-        if (board[column-1][row] != 1) {grid.add(new Missed(), column-1, row);}
-        grid.add(new Missed(), column-1, row-1);
+        if (board[column-1][row] != 1) {grid.add(new Missed(new Pair<>(column-1, row)), column-1, row);}
+        grid.add(new Missed(new Pair<>(column-1, row-1)), column-1, row-1);
     }
 
     private void extractedMethodArea3(int column, int row, GridPane grid, int[][] board) {
-        if (board[column-1][row] != 1) {grid.add(new Missed(), column-1, row);}
-        if (board[column+1][row] != 1) {grid.add(new Missed(), column+1, row);}
+        if (board[column-1][row] != 1) {grid.add(new Missed(new Pair<>(column-1, row)), column-1, row);}
+        if (board[column+1][row] != 1) {grid.add(new Missed(new Pair<>(column+1, row)), column+1, row);}
+    }
+
+    public void printResult(String whoWon) {
+        userInterfaceLabel.setAlignment(Pos.CENTER);
+        userInterfaceLabel.setPadding(new Insets(5, 0, 0, 5));
+        userInterfaceLabel.setFont(Font.font("Verdana", FontWeight.BOLD, 24));
+        userInterfaceLabel.setText(whoWon + " won!");
+        playerScoreLabel.setText(String.valueOf(scores.getPlayerScore()));
+        computerScoreLabel.setText(String.valueOf(scores.getComputerScore()));
+    }
+
+    public void resetAllForNewGame() {
+
+        ArrayList<ShipMast> playerShipMasts = shipsContainer.getSetOfShipMasts();
+        for (ShipMast shipMast : playerShipMasts) {
+            gridPlayer.getChildren().remove(shipMast);
+        }
+        playerShipMasts.clear();
+
+        ArrayList<ShipMast> computerShipMasts = shipsContainer.getSetOfComputerShipMasts();
+        for (ShipMast shipMast : computerShipMasts) {
+            gridComputer.getChildren().remove(shipMast);
+        }
+        computerShipMasts.clear();
+
+        ArrayList<Hit> playerHits = shipsContainer.getSetOfHits();
+        for (Hit hit : playerHits) {
+            gridPlayer.getChildren().remove(hit);
+        }
+        playerHits.clear();
+
+        ArrayList<Hit> computerHits = shipsContainer.getSetOfComputerHits();
+        for (Hit hit : computerHits) {
+            gridComputer.getChildren().remove(hit);
+        }
+        computerHits.clear();
+
+        ArrayList<Missed> playerMisseds = shipsContainer.getSetOfMisseds();
+        for (Missed missed : playerMisseds) {
+            gridPlayer.getChildren().remove(missed);
+        }
+        playerMisseds.clear();
+
+        ArrayList<Missed> computerMisseds = shipsContainer.getSetOfComputerMisseds();
+        for (Missed missed : computerMisseds) {
+            gridComputer.getChildren().remove(missed);
+        }
+        computerMisseds.clear();
+
+        blockActionOnBoard(gridPlayer, false);
+
     }
 
 }

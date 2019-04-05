@@ -36,11 +36,11 @@ public class ShipBattle extends Application {
     }
 
     // creating top labels
-    GameLabel userInterfaceLabel = new GameLabel(378, 54, "user-interface_background.jpg");
-    GameLabel playerScoreLabel = new GameLabel(54, 40, "score_background.jpg");
-    GameLabel computerScoreLabel = new GameLabel(54, 40, "score_background.jpg");
-    GameLabel playerNameLabel = new GameLabel(135, 40, "name_background.jpg");
-    GameLabel computerNameLabel = new GameLabel(135, 40, "name_background.jpg");
+    GameLabel userInterfaceLabel = new GameLabel(378, 54, "user-interface_background.jpg", "User Interface");
+    GameLabel playerScoreLabel = new GameLabel(54, 40, "score_background.jpg", "Player Score");
+    GameLabel computerScoreLabel = new GameLabel(54, 40, "score_background.jpg", "Computer Score");
+    GameLabel playerNameLabel = new GameLabel(135, 40, "name_background.jpg", "Player Name");
+    GameLabel computerNameLabel = new GameLabel(135, 40, "name_background.jpg", "Computer Name");
 
     // creating bottom buttons
     GameButton newGameButton = new GameButton(108, 40, "New game");
@@ -136,7 +136,8 @@ public class ShipBattle extends Application {
 
         // creating main objects
         ShipsContainer shipsContainer = new ShipsContainer();
-        Player player = new Player(grid, gridPlayer, gridComputer, shipsContainer);
+        Scores scores = new Scores();
+        Player player = new Player(grid, gridPlayer, gridComputer, shipsContainer, scores);
         Computer computer = new Computer(shipsContainer, player);
 
         // setting buttons to handle "exit" choice
@@ -156,7 +157,9 @@ public class ShipBattle extends Application {
                     "FIRST build one 4-masts ship, then two 3-masts ships, \n" +
                     "then three 2-masts ships and finally four 1-mast ships.");
 
-            player.createBoard(gridPlayer);
+            player.resetAllForNewGame();
+
+            player.createBoard(gridPlayer, shipsContainer.getSetOfControlSquares());
             player.setEmptyPlayerBoard();
             player.createShipObjectsAndAddingToContainer(shipsContainer);
             player.setShipMastOnControlSquareField();
@@ -185,12 +188,13 @@ public class ShipBattle extends Application {
         // setting actions for "Start game" button
         startButton.setDisable(true);
         startButton.setOnAction(event -> {
-            player.blockActionOnBoard(gridPlayer);
+            player.blockActionOnBoard(gridPlayer, true);
+            player.blockActionOnBoard(gridComputer, false);
             startButton.setDisable(true);
             System.out.println("Starting game");
             Random random = new Random();
             int randomParameter = random.nextInt(5);
-            player.createBoard(gridComputer);
+            player.createBoard(gridComputer, shipsContainer.getSetOfComputerControlSquares());
             player.setEmptyComputerBoard();
             computer.createShipsOnComputerBoard(randomParameter);
 //            computer.showAllShipsMastsOnComputerBoard();

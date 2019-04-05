@@ -28,12 +28,12 @@ public class ShipMast extends Button {
         isShipMastHit = shipMastHit;
     }
 
-    public void setShipMastAction() {
-        setOnAction(event -> {
-            System.out.println("Clicked on column: " + getVisibleShipMastCoordinates().getKey() +
-                    " and on row: " + getVisibleShipMastCoordinates().getValue());
-        });
-    }
+//    public void setShipMastAction() {
+//        setOnAction(event -> {
+//            System.out.println("Clicked on column: " + getVisibleShipMastCoordinates().getKey() +
+//                    " and on row: " + getVisibleShipMastCoordinates().getValue());
+//        });
+//    }
 
 //    public static void getPositionAndSetActionOfShipMast(GridPane grid) {
 //        ShipMast shipMast = new ShipMast();

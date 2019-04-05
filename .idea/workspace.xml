@@ -3,9 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="3dfb4645-2a3a-48c9-a185-7b7ce9306abf" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kodilla/Computer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kodilla/Computer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kodilla/ControlSquare.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kodilla/ControlSquare.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kodilla/GameLabel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kodilla/GameLabel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kodilla/Hit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kodilla/Hit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kodilla/Missed.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kodilla/Missed.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/kodilla/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kodilla/Player.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/kodilla/ShipBattle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kodilla/ShipBattle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kodilla/ShipMast.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kodilla/ShipMast.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/kodilla/ShipsContainer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kodilla/ShipsContainer.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -27,10 +31,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/ShipBattle.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
+            <state relative-caret-position="146">
+              <caret line="192" column="41" lean-forward="true" selection-start-line="192" selection-start-column="41" selection-end-line="192" selection-end-column="41" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -38,11 +43,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/Player.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="550" selection-start-line="550" selection-end-line="550" />
+            <state relative-caret-position="244">
+              <caret line="929" lean-forward="true" selection-start-line="929" selection-end-line="929" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#2464#2465#0" expanded="true" />
@@ -57,24 +62,41 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/ShipMast.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/ShipsContainer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
-              <caret line="26" column="23" lean-forward="true" selection-start-line="26" selection-start-column="23" selection-end-line="26" selection-end-column="23" />
+            <state relative-caret-position="-342">
+              <caret line="42" column="23" selection-start-line="42" selection-start-column="23" selection-end-line="42" selection-end-column="23" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#605#606#0" expanded="true" />
-                <element signature="e#682#683#0" expanded="true" />
-                <element signature="e#806#807#0" expanded="true" />
-                <element signature="e#849#850#0" expanded="true" />
+                <element signature="e#1022#1023#0" expanded="true" />
+                <element signature="e#1066#1067#0" expanded="true" />
+                <element signature="e#2150#2151#0" expanded="true" />
+                <element signature="e#2191#2192#0" expanded="true" />
+                <element signature="e#2268#2269#0" expanded="true" />
+                <element signature="e#2317#2318#0" expanded="true" />
+                <element signature="e#2334#2335#0" expanded="true" />
+                <element signature="e#2366#2367#0" expanded="true" />
+                <element signature="e#2418#2419#0" expanded="true" />
+                <element signature="e#2458#2459#0" expanded="true" />
+                <element signature="e#2508#2509#0" expanded="true" />
+                <element signature="e#2543#2544#0" expanded="true" />
+                <element signature="e#2601#2602#0" expanded="true" />
+                <element signature="e#2644#2645#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/ControlSquare.java">
-          <provider selected="true" editor-type-id="text-editor" />
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/Missed.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret column="17" lean-forward="true" selection-start-column="17" selection-end-column="17" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
         </entry>
       </file>
     </leaf>
@@ -88,27 +110,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>start</find>
-      <find>startga</find>
-      <find>if(</find>
-      <find>for(</find>
-      <find>grid.add</find>
-      <find>column +</find>
-      <find>row +</find>
-      <find>row+</find>
-      <find>misse</find>
-      <find>pair</find>
-      <find>remove</find>
-      <find>setshipbu</find>
-      <find>sav</find>
-      <find>saved</find>
-      <find>maxnumberofs</find>
-      <find>playerb</find>
-      <find>shipmast</find>
-      <find>getob</find>
-      <find>prote</find>
-      <find>hit()</find>
-      <find>player</find>
       <find>extrac</find>
       <find>get(nam</find>
       <find>map.get</find>
@@ -118,6 +119,27 @@
       <find>clear</find>
       <find>mastsCoordinates</find>
       <find>compu</find>
+      <find>hashm</find>
+      <find>the end</find>
+      <find>computerm</find>
+      <find>block</find>
+      <find>identi</find>
+      <find>find</find>
+      <find>shipsc</find>
+      <find>shoo</find>
+      <find>fin</find>
+      <find>newg</find>
+      <find>controls</find>
+      <find>hit</find>
+      <find>Hit()</find>
+      <find>new Hit()</find>
+      <find>new Hit(</find>
+      <find>gridPla</find>
+      <find>new Pair&lt;&gt;(</find>
+      <find>missed</find>
+      <find>missed()</find>
+      <find>missed(</find>
+      <find>setDisable(</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -127,29 +149,29 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/main/java/ShipBattle.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/GameLabel.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/kodilla/Scores.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/kodilla/GameButton.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/kodilla/Board.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/kodilla/ComputerBoard.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/kodilla/PlayerBoard.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/Hit.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/ControlSquare.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/ShipMast.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/Missed.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/kodilla/Ship.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/kodilla/Computer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/ShipBattle.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/GameLabel.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/ShipMast.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/ControlSquare.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/Hit.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/kodilla/ShipsContainer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/Missed.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/kodilla/Player.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/ShipBattle.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-1204" />
-    <option name="y" value="38" />
-    <option name="width" value="1294" />
-    <option name="height" value="688" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1382" />
+    <option name="height" value="744" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -201,7 +223,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554326317561" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554497476816" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -255,15 +277,15 @@
       <workItem from="1552221549342" duration="18947000" />
       <workItem from="1552503149514" duration="83031000" />
       <workItem from="1553072967260" duration="3639000" />
-      <workItem from="1553122621908" duration="210049000" />
+      <workItem from="1553122621908" duration="226272000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="315666000" />
+    <option name="totallyTimeSpent" value="331889000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-1374" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.356974" visible="true" weight="0.25416037" />
@@ -421,9 +443,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/Hit.java">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/Scores.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="165">
@@ -440,16 +459,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/Ship.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/GameLabel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
-          <caret line="18" selection-start-line="18" selection-end-line="18" />
+          <caret line="18" column="26" lean-forward="true" selection-start-line="18" selection-start-column="26" selection-end-line="18" selection-end-column="26" />
+          <folding>
+            <element signature="e#542#543#0" expanded="true" />
+            <element signature="e#573#574#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/GameButton.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
+        <state relative-caret-position="300">
           <caret line="24" selection-start-line="24" selection-end-line="24" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -459,26 +492,44 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/Missed.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/Computer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" column="23" lean-forward="true" selection-start-line="9" selection-start-column="23" selection-end-line="9" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/ShipBattle.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
+        <state relative-caret-position="3465">
+          <caret line="407" column="13" selection-start-line="407" selection-start-column="8" selection-end-line="407" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/Computer.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/ShipMast.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="2" selection-start-line="2" selection-end-line="2" />
+        <state>
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#556#557#0" expanded="true" />
+            <element signature="e#605#606#0" expanded="true" />
+            <element signature="e#646#647#0" expanded="true" />
+            <element signature="e#682#683#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/ControlSquare.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#570#571#0" expanded="true" />
+            <element signature="e#617#618#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/Hit.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="116">
+          <caret line="9" column="50" selection-start-line="9" selection-start-column="50" selection-end-line="9" selection-end-column="50" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -487,62 +538,42 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/ShipsContainer.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-342">
+          <caret line="42" column="23" selection-start-line="42" selection-start-column="23" selection-end-line="42" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1022#1023#0" expanded="true" />
+            <element signature="e#1066#1067#0" expanded="true" />
+            <element signature="e#2150#2151#0" expanded="true" />
+            <element signature="e#2191#2192#0" expanded="true" />
+            <element signature="e#2268#2269#0" expanded="true" />
+            <element signature="e#2317#2318#0" expanded="true" />
+            <element signature="e#2334#2335#0" expanded="true" />
+            <element signature="e#2366#2367#0" expanded="true" />
+            <element signature="e#2418#2419#0" expanded="true" />
+            <element signature="e#2458#2459#0" expanded="true" />
+            <element signature="e#2508#2509#0" expanded="true" />
+            <element signature="e#2543#2544#0" expanded="true" />
+            <element signature="e#2601#2602#0" expanded="true" />
+            <element signature="e#2644#2645#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/Missed.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state>
+          <caret column="17" lean-forward="true" selection-start-column="17" selection-end-column="17" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#395#396#0" expanded="true" />
-            <element signature="e#428#429#0" expanded="true" />
-            <element signature="e#738#739#0" expanded="true" />
-            <element signature="e#779#780#0" expanded="true" />
-            <element signature="e#926#927#0" expanded="true" />
-            <element signature="e#955#956#0" expanded="true" />
-            <element signature="e#1032#1033#0" expanded="true" />
-            <element signature="e#1061#1062#0" expanded="true" />
-            <element signature="e#1028#1029#0" expanded="true" />
-            <element signature="e#1064#1065#0" expanded="true" />
-            <element signature="e#1343#1344#0" expanded="true" />
-            <element signature="e#1376#1377#0" expanded="true" />
-            <element signature="e#1594#1595#0" expanded="true" />
-            <element signature="e#1638#1639#0" expanded="true" />
           </folding>
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/ShipMast.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="26" column="23" lean-forward="true" selection-start-line="26" selection-start-column="23" selection-end-line="26" selection-end-column="23" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#605#606#0" expanded="true" />
-            <element signature="e#682#683#0" expanded="true" />
-            <element signature="e#806#807#0" expanded="true" />
-            <element signature="e#849#850#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/Ship.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#582#583#0" expanded="true" />
-            <element signature="e#621#622#0" expanded="true" />
-            <element signature="e#702#703#0" expanded="true" />
-            <element signature="e#748#749#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/ControlSquare.java">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/Player.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
-          <caret line="550" selection-start-line="550" selection-end-line="550" />
+        <state relative-caret-position="244">
+          <caret line="929" lean-forward="true" selection-start-line="929" selection-end-line="929" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#2464#2465#0" expanded="true" />
@@ -551,6 +582,16 @@
             <element signature="e#2596#2597#0" expanded="true" />
             <element signature="e#23455#23456#0" expanded="true" />
             <element signature="e#23506#23507#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/ShipBattle.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="146">
+          <caret line="192" column="41" lean-forward="true" selection-start-line="192" selection-start-column="41" selection-end-line="192" selection-end-column="41" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
