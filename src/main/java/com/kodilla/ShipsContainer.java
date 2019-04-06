@@ -2,11 +2,12 @@ package com.kodilla;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class ShipsContainer {
 
-    private HashMap<String, Ship> setOfShips = new HashMap<>();
-    private HashMap<String, Ship> setOfComputerShips = new HashMap<>();
+    private LinkedHashMap<String, Ship> setOfShips = new LinkedHashMap<>();
+    private LinkedHashMap<String, Ship> setOfComputerShips = new LinkedHashMap<>();
 
     private ArrayList<ShipMast> setOfShipMasts = new ArrayList<>();
     private ArrayList<ShipMast> setOfComputerShipMasts = new ArrayList<>();
@@ -26,7 +27,7 @@ public class ShipsContainer {
         }
     }
 
-    public HashMap<String, Ship> getSetOfShips() {
+    public LinkedHashMap<String, Ship> getSetOfShips() {
         return setOfShips;
     }
 
@@ -36,7 +37,7 @@ public class ShipsContainer {
         }
     }
 
-    public HashMap<String, Ship> getSetOfComputerShips() {
+    public LinkedHashMap<String, Ship> getSetOfComputerShips() {
         return setOfComputerShips;
     }
 

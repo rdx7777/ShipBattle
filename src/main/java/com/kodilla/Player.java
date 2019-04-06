@@ -87,7 +87,7 @@ public class Player {
         computerBoard = computerBoardToSet;
     }
 
-    public void createShipObjectsAndAddingToContainer(ShipsContainer shipsContainer) {
+    public void createShipObjectsAndAddingToContainer() {
 
         // creating player's objects used in the game
         Ship ship_4_1 = new Ship("Ship 4-masts (1)", new ArrayList<>());
@@ -109,14 +109,22 @@ public class Player {
     }
 
     public void setShipMastOnControlSquareField() {
+        LinkedHashMap<String, Ship> map = shipsContainer.getSetOfShips();
+        ArrayDeque<Ship> theShipsForCheck = new ArrayDeque<>();
+        for (Map.Entry<String, Ship> entry : map.entrySet()) {
+            theShipsForCheck.offer(entry.getValue());
+        }
+        ArrayDeque<Ship> theShipsForSaveData = new ArrayDeque<>();
+        for (Map.Entry<String, Ship> entry : map.entrySet()) {
+            theShipsForSaveData.offer(entry.getValue());
+        }
+        ArrayList<Pair<Integer, Integer>> mastsCoordinates = new ArrayList<>();
         startButton = findButton("Start");
-        maxNumberOfMasts = checkShipExistsInShipsContainer();
+        maxNumberOfMasts = checkShipExistsInShipsContainer(theShipsForCheck);
         if (maxNumberOfMasts == 4) {
             maxNumberOfShips = 10; // sets max number of ships
         }
         System.out.println("Saved = " + maxNumberOfShips); // TEMPORARY ONLY **************************************
-        HashMap<String, Ship> map = shipsContainer.getSetOfShips();
-        ArrayList<Pair<Integer, Integer>> mastsCoordinates = new ArrayList<>();
         ControlSquare controlSquare = new ControlSquare(new Pair<>(100, 100));
         ObservableList<Node> childrenOfControlSquares = gridPlayer.getChildren();
         for (Node node : childrenOfControlSquares) { // set actions for every ControlSquare object in the grid
@@ -125,8 +133,6 @@ public class Player {
                 button.setOnAction(event -> {
                     int column = button.getControlSquareCoordinates().getKey();
                     int row = button.getControlSquareCoordinates().getValue();
-//                    int column = (int) ((button.getLocalToParentTransform().getTx()) / 27);
-//                    int row = (int) ((button.getLocalToParentTransform().getTy()) / 27);
                     ShipBattle.example(0, column, row); // CHECK POSITION ONLY ***********************************
                     System.out.println(maxNumberOfMasts); // FOR CHECK ONLY ********************************************
                     if (maxNumberOfMasts > 0) {
@@ -137,14 +143,14 @@ public class Player {
                                 removeShipMast(mastsCoordinates); // setting action when clicked on ShipMast object
                                 if (maxNumberOfMasts == 0) {
                                     ArrayList<Pair<Integer, Integer>> mastsCoordinatesToSave = new ArrayList<>(mastsCoordinates);
-                                    changeShipStatusToExists(maxNumberOfShips, mastsCoordinatesToSave, map);
-                                    protectShipPosition(playerBoard, mastsCoordinates);
+                                    changeShipStatusToExists(theShipsForSaveData, mastsCoordinatesToSave);
+                                    protectShipPosition(playerBoard, mastsCoordinatesToSave);
                                     maxNumberOfShips--;
                                     mastsCoordinates.clear();
                                     firstMastOfShipChecker = true;
                                     System.out.println("Max. no of masts after saving ship: " +
                                             maxNumberOfMasts); // ******************************************************
-                                    maxNumberOfMasts = checkShipExistsInShipsContainer();
+                                    maxNumberOfMasts = checkShipExistsInShipsContainer(theShipsForCheck);
                                     if (maxNumberOfMasts == 0 && maxNumberOfShips == 0) {
 //                                        for(Map.Entry<String, Ship> entry : map.entrySet()) {
 //                                            System.out.println(entry.getValue().getName() + ", "
@@ -162,12 +168,12 @@ public class Player {
                                     if (maxNumberOfMasts == 0) {
                                         // ######################## tak się tworzy kopię obiektu #######################
                                         ArrayList<Pair<Integer, Integer>> mastsCoordinatesToSave = new ArrayList<>(mastsCoordinates);
-                                        changeShipStatusToExists(maxNumberOfShips, mastsCoordinatesToSave, map);
-                                        protectShipPosition(playerBoard, mastsCoordinates);
+                                        changeShipStatusToExists(theShipsForSaveData, mastsCoordinatesToSave);
+                                        protectShipPosition(playerBoard, mastsCoordinatesToSave);
                                         maxNumberOfShips--;
                                         mastsCoordinates.clear();
                                         firstMastOfShipChecker = true;
-                                        maxNumberOfMasts = checkShipExistsInShipsContainer();
+                                        maxNumberOfMasts = checkShipExistsInShipsContainer(theShipsForCheck);
                                         if (maxNumberOfMasts == 0 && maxNumberOfShips == 0) {
 //                                            for(Map.Entry<String, Ship> entry : map.entrySet()) {
 //                                                System.out.println(entry.getValue().getName() + ", "
@@ -226,25 +232,27 @@ public class Player {
         return wantedGameLabel;
     }
 
-    // przerobić na kolejkę - argumentem mapa statków, a w klasie `Ship` prawdopodobnie trzeba będzie dodać pole
-    // "liczba masztów"; metoda wspólna dla gracza i dla komputera
-    // ew. z klucza mapy pobrać znak o indeksie 5 (czyli szósty), sparsować go do liczby i zwrócić przez metodę
-    // ALE NAJPIERW KOLEJKA MUSIAŁABY ZOSTAĆ UPORZĄDKOWANA... (??????????)
-
-    public int checkShipExistsInShipsContainer() { // method returns max. number of masts allowed
-        HashMap<String, Ship> map = shipsContainer.getSetOfShips();
-        if (map.get("Ship 4-masts (1)").getStatus() == 0) {return 4;}
-        if (map.get("Ship 3-masts (1)").getStatus() == 0) {return 3;}
-        if (map.get("Ship 3-masts (2)").getStatus() == 0) {return 3;}
-        if (map.get("Ship 2-masts (1)").getStatus() == 0) {return 2;}
-        if (map.get("Ship 2-masts (2)").getStatus() == 0) {return 2;}
-        if (map.get("Ship 2-masts (3)").getStatus() == 0) {return 2;}
-        if (map.get("Ship 1-masts (1)").getStatus() == 0) {return 1;}
-        if (map.get("Ship 1-masts (2)").getStatus() == 0) {return 1;}
-        if (map.get("Ship 1-masts (3)").getStatus() == 0) {return 1;}
-        if (map.get("Ship 1-masts (4)").getStatus() == 0) {return 1;}
+    public int checkShipExistsInShipsContainer(ArrayDeque<Ship> deque) { // method returns max. number of masts allowed
+        if (deque.size() > 0) {
+            return Character.getNumericValue(deque.poll().getName().charAt(5));
+        }
         return 0;
     }
+
+    // old version of method
+//    public int checkShipExistsInShipsContainer(HashMap<String, Ship> map) { // method returns max. number of masts allowed
+//        if (map.get("Ship 4-masts (1)").getStatus() == 0) {return 4;}
+//        if (map.get("Ship 3-masts (1)").getStatus() == 0) {return 3;}
+//        if (map.get("Ship 3-masts (2)").getStatus() == 0) {return 3;}
+//        if (map.get("Ship 2-masts (1)").getStatus() == 0) {return 2;}
+//        if (map.get("Ship 2-masts (2)").getStatus() == 0) {return 2;}
+//        if (map.get("Ship 2-masts (3)").getStatus() == 0) {return 2;}
+//        if (map.get("Ship 1-masts (1)").getStatus() == 0) {return 1;}
+//        if (map.get("Ship 1-masts (2)").getStatus() == 0) {return 1;}
+//        if (map.get("Ship 1-masts (3)").getStatus() == 0) {return 1;}
+//        if (map.get("Ship 1-masts (4)").getStatus() == 0) {return 1;}
+//        return 0;
+//    }
 
     public boolean checkNeighbourDiagonally(int[][] board, int column, int row) {
 
@@ -359,68 +367,65 @@ public class Player {
 
     }
 
-    public void changeShipStatusToExists(int number, ArrayList<Pair<Integer, Integer>> coordinates,
-                                         HashMap<String, Ship> map) {
-
-        // utworzyć kolejkę FIFO pobierając wszystkie wartości (czyli Shipy) z HashMapy, a potem po kolei
-        // dla każdego pobrania z kolejki (czyli dla statku) zapisać status (1) i listę współrzędnych
-        // KOLEJKĘ KONIECZNIE UPORZĄDKOWAC !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -------- DA SIĘ ????????????????????????
-
-        if (number == 10) {
-            String name = "Ship 4-masts (1)";
-            saveCoordinates(name, coordinates, map);
+    public void changeShipStatusToExists(ArrayDeque<Ship> deque, ArrayList<Pair<Integer, Integer>> coordinates) {
+        if (deque.size() > 0) {
+            Ship ship = deque.poll();
+            ship.setCoordinates(coordinates);
+            ship.setStatus(1);
+            // ********************************* BELOW ONLY FOR CHECK **************************************************
+            System.out.println(ship.getName() + "; " + ship.getMastsCoordinates() + "; " + ship.getStatus());
         }
-
-        if (number == 9) {
-            String name = "Ship 3-masts (1)";
-            saveCoordinates(name, coordinates, map);
-        }
-
-        if (number == 8) {
-            String name = "Ship 3-masts (2)";
-            saveCoordinates(name, coordinates, map);
-        }
-
-        if (number == 7) {
-            String name = "Ship 2-masts (1)";
-            saveCoordinates(name, coordinates, map);
-        }
-
-        if (number == 6) {
-            String name = "Ship 2-masts (2)";
-            saveCoordinates(name, coordinates, map);
-        }
-
-        if (number == 5) {
-            String name = "Ship 2-masts (3)";
-            saveCoordinates(name, coordinates, map);
-        }
-
-        if (number == 4) {
-            String name = "Ship 1-masts (1)";
-            saveCoordinates(name, coordinates, map);
-        }
-
-        if (number == 3) {
-            String name = "Ship 1-masts (2)";
-            saveCoordinates(name, coordinates, map);
-        }
-
-        if (number == 2) {
-            String name ="Ship 1-masts (3)";
-            saveCoordinates(name, coordinates, map);
-        }
-
-        if (number == 1) {
-            String name = "Ship 1-masts (4)";
-            saveCoordinates(name, coordinates, map);
-        }
-
     }
 
+    // old version of 2 methods
+//    public void changeShipStatusToExists(int number, ArrayList<Pair<Integer, Integer>> coordinates,
+//                                         LinkedHashMap<String, Ship> map) {
+//        if (number == 10) {
+//            String name = "Ship 4-masts (1)";
+//            saveCoordinates(name, coordinates, map);
+//        }
+//        if (number == 9) {
+//            String name = "Ship 3-masts (1)";
+//            saveCoordinates(name, coordinates, map);
+//        }
+//        if (number == 8) {
+//            String name = "Ship 3-masts (2)";
+//            saveCoordinates(name, coordinates, map);
+//        }
+//        if (number == 7) {
+//            String name = "Ship 2-masts (1)";
+//            saveCoordinates(name, coordinates, map);
+//        }
+//        if (number == 6) {
+//            String name = "Ship 2-masts (2)";
+//            saveCoordinates(name, coordinates, map);
+//        }
+//        if (number == 5) {
+//            String name = "Ship 2-masts (3)";
+//            saveCoordinates(name, coordinates, map);
+//        }
+//        if (number == 4) {
+//            String name = "Ship 1-masts (1)";
+//            saveCoordinates(name, coordinates, map);
+//        }
+//        if (number == 3) {
+//            String name = "Ship 1-masts (2)";
+//            saveCoordinates(name, coordinates, map);
+//        }
+//        if (number == 2) {
+//            String name ="Ship 1-masts (3)";
+//            saveCoordinates(name, coordinates, map);
+//        }
+//        if (number == 1) {
+//            String name = "Ship 1-masts (4)";
+//            saveCoordinates(name, coordinates, map);
+//        }
+//    }
+
+/*
     // method saves coordinates of current ship to the appropriate Ship object
     public void saveCoordinates(String name, ArrayList<Pair<Integer, Integer>> coordinates,
-                                HashMap<String, Ship> map) {
+                                LinkedHashMap<String, Ship> map) {
 //        map.get(name).setStatus(1);
 //        map.get(name).setCoordinates(coordinates);
 //        System.out.println(name); // TEMP ONLY *******************************************************
@@ -437,6 +442,7 @@ public class Player {
             }
         }
     }
+*/
 
     public void protectShipPosition(int[][] board, ArrayList<Pair<Integer, Integer>> coordinates) {
 
@@ -603,8 +609,10 @@ public class Player {
         computerScoreLabel = findLabel("Computer Score");
         ArrayList<ShipMast> playerShipMastsList = shipsContainer.getSetOfShipMasts();
         ArrayList<ShipMast> computerShipMastsList = shipsContainer.getSetOfComputerShipMasts();
-        HashMap<String, Ship> playerShipsMap = shipsContainer.getSetOfShips();
-        HashMap<String, Ship> computerShipsMap = shipsContainer.getSetOfComputerShips();
+        ArrayList<Missed> playerMissedsList = shipsContainer.getSetOfMisseds();
+        ArrayList<Missed> computerMissedsList = shipsContainer.getSetOfComputerMisseds();
+        LinkedHashMap<String, Ship> playerShipsMap = shipsContainer.getSetOfShips();
+        LinkedHashMap<String, Ship> computerShipsMap = shipsContainer.getSetOfComputerShips();
         Random random = new Random();
         ControlSquare controlSquare = new ControlSquare(new Pair<>(100, 100));
         ObservableList<Node> childrenOfControlSquares = gridComputer.getChildren();
@@ -617,9 +625,9 @@ public class Player {
                     int row = (int) ((button.getLocalToParentTransform().getTy()) / 27);
 //                    ShipBattle.example(0, column, row); // CHECK POSITION ONLY ***********************************
                     if (computerBoard[column][row] == 1) {
-                        hit(column, row, computerShipMastsList, computerShipsMap);
+                        hit(column, row, computerShipMastsList, computerMissedsList, computerShipsMap);
                         if (!areAllShipsSunk(computerShipsMap)) {
-                            computerMove(random, playerShipMastsList, playerShipsMap);
+                            computerMove(random, playerShipMastsList, playerMissedsList, playerShipsMap);
                         } else {
                             // THE END OF THE GAME - player won
                             blockActionOnBoard(gridComputer, true); // blocks computer board
@@ -631,7 +639,7 @@ public class Player {
                         }
                     } else {
                         missed(column, row);
-                        computerMove(random, playerShipMastsList, playerShipsMap);
+                        computerMove(random, playerShipMastsList, playerMissedsList, playerShipsMap);
                     }
                 });
             }
@@ -639,7 +647,7 @@ public class Player {
     }
 
     public void hit(int column, int row, ArrayList<ShipMast> computerShipMastsList,
-                    HashMap<String, Ship> computerShipsMap) {
+                    ArrayList<Missed> computerMissedsList, LinkedHashMap<String, Ship> computerShipsMap) {
         copyOfComputerBoard[column][row] = 1;
         Hit hit = new Hit(new Pair<>(column, row));
         gridComputer.add(hit, column, row);
@@ -649,7 +657,9 @@ public class Player {
         Ship ship = identifyShip(column, row, computerShipsMap);
         if (isShipSunk(ship, computerShipMastsList)) {
             System.out.println("Statek komputera został zatopiony **********************"); // ******** TEMP ONLY ******
-            showShipProtectedArea(ship, gridComputer, copyOfComputerBoard);
+            protectShipPosition(copyOfComputerBoard, ship.getMastsCoordinates());
+//            showShipProtectedArea(ship, gridComputer, copyOfComputerBoard);
+            showShipProtectedArea(gridComputer, copyOfComputerBoard, computerMissedsList);
         }
     }
 
@@ -661,7 +671,7 @@ public class Player {
     }
 
     public void computerMove(Random random, ArrayList<ShipMast> playerShipMastsList,
-                             HashMap<String, Ship> playerShipsMap) {
+                             ArrayList<Missed> playerMissedsList, LinkedHashMap<String, Ship> playerShipsMap) {
 
         int cheater = random.nextInt(5);
         boolean cheaterChecker = false;
@@ -715,7 +725,8 @@ public class Player {
             if (isShipSunk(ship, playerShipMastsList)) {
                 System.out.println("Ship's sunk !!!!!"); // ************** TEST ***************
                 protectShipPosition(copyOfPlayerBoard, ship.getMastsCoordinates());
-                showShipProtectedArea(ship, gridPlayer, copyOfPlayerBoard);
+//                showShipProtectedArea(ship, gridPlayer, copyOfPlayerBoard);
+                showShipProtectedArea(gridPlayer, copyOfPlayerBoard, playerMissedsList);
                 if (areAllShipsSunk(playerShipsMap)) {
                     // THE END OF THE GAME - computer won
                     blockActionOnBoard(gridComputer, true); // blocks computer board
@@ -746,7 +757,7 @@ public class Player {
         return wantedShipMast;
     }
 
-    public Ship identifyShip(int column, int row, HashMap<String, Ship> shipsMap) {
+    public Ship identifyShip(int column, int row, LinkedHashMap<String, Ship> shipsMap) {
         Pair<Integer, Integer> checkedCoordinates = new Pair<>(column, row);
         System.out.println("***** Method identifyShip is checking column & row: " + checkedCoordinates); // ******* TEMP
         Ship wantedShip = new Ship("Wanted Ship", new ArrayList<>());
@@ -777,7 +788,7 @@ public class Player {
 
     }
 
-    public boolean areAllShipsSunk(HashMap<String, Ship> shipsMap) {
+    public boolean areAllShipsSunk(LinkedHashMap<String, Ship> shipsMap) {
         boolean result = false;
         int cumulatedStatus = 0;
         for (Map.Entry<String, Ship> entry : shipsMap.entrySet()) {
@@ -789,7 +800,25 @@ public class Player {
         return result;
     }
 
-    public void showShipProtectedArea(Ship ship, GridPane grid, int[][]board) {
+    public void showShipProtectedArea(GridPane grid, int[][] board, ArrayList<Missed> missedsList) {
+        for (int i = 0; i < 10; i++) {
+            for (int n = 0; n < 10; n++) {
+                if (board[i][n] == 2) {
+                    Missed missed = new Missed(new Pair<>(i, n));
+                    grid.add(missed, i, n);
+                    if (!missedsList.contains(missed)) {
+                        missedsList.add(missed);
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+    public void oldAndUnusedShowShipProtectedArea(Ship ship, GridPane grid, int[][]board) {
 
         ArrayList<Pair<Integer, Integer>> list = ship.getMastsCoordinates();
 
@@ -886,43 +915,49 @@ public class Player {
 
     public void resetAllForNewGame() {
 
-        ArrayList<ShipMast> playerShipMasts = shipsContainer.getSetOfShipMasts();
-        for (ShipMast shipMast : playerShipMasts) {
+        for (ShipMast shipMast : shipsContainer.getSetOfShipMasts()) {
             gridPlayer.getChildren().remove(shipMast);
         }
-        playerShipMasts.clear();
+        shipsContainer.getSetOfShipMasts().clear();
 
-        ArrayList<ShipMast> computerShipMasts = shipsContainer.getSetOfComputerShipMasts();
-        for (ShipMast shipMast : computerShipMasts) {
+        for (ShipMast shipMast : shipsContainer.getSetOfComputerShipMasts()) {
             gridComputer.getChildren().remove(shipMast);
         }
-        computerShipMasts.clear();
+        shipsContainer.getSetOfComputerShipMasts().clear();
 
-        ArrayList<Hit> playerHits = shipsContainer.getSetOfHits();
-        for (Hit hit : playerHits) {
+        for (Hit hit : shipsContainer.getSetOfHits()) {
             gridPlayer.getChildren().remove(hit);
         }
-        playerHits.clear();
+        shipsContainer.getSetOfHits().clear();
 
-        ArrayList<Hit> computerHits = shipsContainer.getSetOfComputerHits();
-        for (Hit hit : computerHits) {
+        for (Hit hit : shipsContainer.getSetOfComputerHits()) {
             gridComputer.getChildren().remove(hit);
         }
-        computerHits.clear();
+        shipsContainer.getSetOfComputerHits().clear();
 
-        ArrayList<Missed> playerMisseds = shipsContainer.getSetOfMisseds();
-        for (Missed missed : playerMisseds) {
+        for (Missed missed : shipsContainer.getSetOfMisseds()) {
             gridPlayer.getChildren().remove(missed);
         }
-        playerMisseds.clear();
+        shipsContainer.getSetOfMisseds().clear();
 
-        ArrayList<Missed> computerMisseds = shipsContainer.getSetOfComputerMisseds();
-        for (Missed missed : computerMisseds) {
+        for (Missed missed : shipsContainer.getSetOfComputerMisseds()) {
             gridComputer.getChildren().remove(missed);
         }
-        computerMisseds.clear();
+        shipsContainer.getSetOfComputerMisseds().clear();
+
+        shipsContainer.getSetOfShips().clear();
+        shipsContainer.getSetOfComputerShips().clear();
+
+        for (int i = 0; i < 10; i++) {
+            for (int n = 0; n < 10; n++) {
+                copyOfPlayerBoard[i][n] = 0;
+                copyOfComputerBoard[i][n] = 0;
+            }
+        }
 
         blockActionOnBoard(gridPlayer, false);
+
+        firstMastOfShipChecker = true;
 
     }
 

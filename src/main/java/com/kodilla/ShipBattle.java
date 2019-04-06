@@ -44,12 +44,14 @@ public class ShipBattle extends Application {
 
     // creating bottom buttons
     GameButton newGameButton = new GameButton(108, 40, "New game");
-    GameButton setShipButton = new GameButton(108, 40, "Hello"); // "Set ship" in future use
+    GameButton resetButton = new GameButton(108, 40, "Reset");
     GameButton startButton = new GameButton(108, 40, "Start");
     GameButton helpButton = new GameButton(108, 40, "Help");
-    GameButton exitGameButton = new GameButton(108, 40, "Exit");
-    GameButton areYouSureExitGameButton = new GameButton(135, 40, "Are you sure?");
-    GameButton cancelExitGameButton = new GameButton(135, 40, "Cancel");
+    GameButton exitButton = new GameButton(108, 40, "Exit");
+    GameButton areYouSureExitButton = new GameButton(135, 40, "Are you sure?");
+    GameButton cancelExitButton = new GameButton(135, 40, "Cancel");
+    GameButton areYouSureResetButton = new GameButton(135, 40, "Are you sure?");
+    GameButton cancelResetButton = new GameButton(135, 40, "Cancel");
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -140,10 +142,15 @@ public class ShipBattle extends Application {
         Player player = new Player(grid, gridPlayer, gridComputer, shipsContainer, scores);
         Computer computer = new Computer(shipsContainer, player);
 
-        // setting buttons to handle "exit" choice
-        areYouSureExitGameButton.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
-        areYouSureExitGameButton.setTextFill(Color.RED);
-        cancelExitGameButton.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+        // setting buttons to handle choices for "Exit"
+        areYouSureResetButton.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+        areYouSureResetButton.setTextFill(Color.RED);
+        cancelResetButton.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+
+        // setting buttons to handle choices for "Exit"
+        areYouSureExitButton.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
+        areYouSureExitButton.setTextFill(Color.RED);
+        cancelExitButton.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
 
         // setting actions for "New game" button
         newGameButton.setOnAction(event -> {
@@ -158,13 +165,14 @@ public class ShipBattle extends Application {
                     "then three 2-masts ships and finally four 1-mast ships.");
 
             player.resetAllForNewGame();
-
             player.createBoard(gridPlayer, shipsContainer.getSetOfControlSquares());
             player.setEmptyPlayerBoard();
-            player.createShipObjectsAndAddingToContainer(shipsContainer);
+            player.createShipObjectsAndAddingToContainer();
+//            player.blockActionOnBoard(gridPlayer, false); // --- JEST JUŻ W metodzie reset...
             player.setShipMastOnControlSquareField();
 
             newGameButton.setDisable(true);
+            resetButton.setDisable(false);
 
             helpButton.setOnAction(event1 -> {
                 System.out.println("Help when player has started new game.");
@@ -172,21 +180,43 @@ public class ShipBattle extends Application {
                 userInterfaceLabel.setPadding(new Insets(5, 0, 0, 5));
                 userInterfaceLabel.setFont(Font.font("Verdana", FontWeight.MEDIUM, 12));
                 userInterfaceLabel.setText("To build your ship click on any field on Player board.\n" +
-                        "When ship is built, press \"Set ship\" button to accept it.\n" +
-                        "When all ships are built, press \"Start\" to start your game.");
+                        "When ship is built, build next ship until all ships are built.\n" +
+                        "Then press \"Start\" to start your game.");
                 helpButton.setDisable(true);
             });
 
         });
 
-        // setting actions for "Set ship" button
-        setShipButton.setOnAction(event -> {
-            System.out.println("Player accepts their ship built on the board");
+        resetButton.setDisable(true);
+
+        // setting actions for "Reset" button
+        resetButton.setOnAction(event -> {
+            System.out.println("Reset game");
+            grid.add(areYouSureResetButton, 5, 8);
+            grid.add(cancelResetButton, 12, 8);
+            resetButton.setDisable(true);
         });
-//        setShipButton.setDisable(true);
+
+        // setting actions for "Are you sure?" button for "Reset" choice
+        areYouSureResetButton.setOnAction(event -> {
+//            player.resetAllForNewGame();
+            grid.getChildren().remove(areYouSureResetButton);
+            grid.getChildren().remove(cancelResetButton);
+            player.blockActionOnBoard(gridPlayer, true);
+            player.blockActionOnBoard(gridComputer, true);
+            newGameButton.setDisable(false);
+        });
+
+        // setting actions for "Cancel" button for "Reset" choice
+        cancelResetButton.setOnAction(event -> {
+            grid.getChildren().remove(areYouSureResetButton);
+            grid.getChildren().remove(cancelResetButton);
+            resetButton.setDisable(false);
+        });
 
         // setting actions for "Start game" button
-        startButton.setDisable(true);
+        startButton.setDisable(true); // ************************ czy to jest potrzebne? *******************************
+
         startButton.setOnAction(event -> {
             player.blockActionOnBoard(gridPlayer, true);
             player.blockActionOnBoard(gridComputer, false);
@@ -216,33 +246,33 @@ public class ShipBattle extends Application {
         });
 
         // setting actions for "Exit" button
-        exitGameButton.setOnAction(event -> {
+        exitButton.setOnAction(event -> {
             System.out.println("Exit game");
-            grid.add(areYouSureExitGameButton, 5, 8);
-            grid.add(cancelExitGameButton, 12, 8);
-            exitGameButton.setDisable(true);
+            grid.add(areYouSureExitButton, 5, 8);
+            grid.add(cancelExitButton, 12, 8);
+            exitButton.setDisable(true);
         });
 
-        // setting actions for "Are you sure?" button
-        areYouSureExitGameButton.setOnAction(event -> {
+        // setting actions for "Are you sure?" button for "Exit" choice
+        areYouSureExitButton.setOnAction(event -> {
             System.out.println("Player confirmed their decision about exit game.");
             Platform.exit();
         });
 
-        // setting actions for "Cancel" button
-        cancelExitGameButton.setOnAction(event -> {
+        // setting actions for "Cancel" button for "Exit" choice
+        cancelExitButton.setOnAction(event -> {
             System.out.println("Player's changed their mind about exit game.");
-            grid.getChildren().remove(areYouSureExitGameButton);
-            grid.getChildren().remove(cancelExitGameButton);
-            exitGameButton.setDisable(false);
+            grid.getChildren().remove(areYouSureExitButton);
+            grid.getChildren().remove(cancelExitButton);
+            exitButton.setDisable(false);
         });
 
         // adding bottom buttons to grid
         grid.add(newGameButton, 0, 15);
-        grid.add(setShipButton, 5, 15);
+        grid.add(resetButton, 5, 15);
         grid.add(startButton, 10, 15);
         grid.add(helpButton, 13, 15);
-        grid.add(exitGameButton, 18, 15);
+        grid.add(exitButton, 18, 15);
 
         Scene scene = new Scene(grid, 810, 540, Color.BLACK);
 
