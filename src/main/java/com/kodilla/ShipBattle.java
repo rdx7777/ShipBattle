@@ -222,14 +222,19 @@ public class ShipBattle extends Application {
             player.blockActionOnBoard(gridComputer, false);
             startButton.setDisable(true);
             System.out.println("Starting game");
-            Random random = new Random();
-            int randomParameter = random.nextInt(5);
+//            Random random = new Random();
+//            int randomParameter = random.nextInt(5);
             player.createBoard(gridComputer, shipsContainer.getSetOfComputerControlSquares());
             player.setEmptyComputerBoard();
-            computer.createShipsOnComputerBoard(randomParameter);
-//            computer.showAllShipsMastsOnComputerBoard();
-            computer.createShipObjectsAndShipsCoordinates(randomParameter);
-            computer.protectAllComputerShipsPositions();
+// *********************************************************************************************************************
+            player.createComputerShipObjectsAndAddingToContainer();
+            player.buildShipsOnComputerBoard();
+
+// *********************************************************************************************************************
+//            computer.createShipsOnComputerBoard(randomParameter);
+//            computer.createShipObjectsAndShipsCoordinates(randomParameter);
+//            computer.protectAllComputerShipsPositions();
+// *********************************************************************************************************************
             player.shootOnComputerBoard();
 
         });

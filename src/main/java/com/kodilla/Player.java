@@ -108,6 +108,28 @@ public class Player {
 
     }
 
+    public void createComputerShipObjectsAndAddingToContainer() {
+
+        // creating computer's objects used in the game
+        Ship computerShip_4_1 = new Ship("Ship 4-masts (computer) (1)", new ArrayList<>());
+        Ship computerShip_3_1 = new Ship("Ship 3-masts (computer) (1)", new ArrayList<>());
+        Ship computerShip_3_2 = new Ship("Ship 3-masts (computer) (2)", new ArrayList<>());
+        Ship computerShip_2_1 = new Ship("Ship 2-masts (computer) (1)", new ArrayList<>());
+        Ship computerShip_2_2 = new Ship("Ship 2-masts (computer) (2)", new ArrayList<>());
+        Ship computerShip_2_3 = new Ship("Ship 2-masts (computer) (3)", new ArrayList<>());
+        Ship computerShip_1_1 = new Ship("Ship 1-masts (computer) (1)", new ArrayList<>());
+        Ship computerShip_1_2 = new Ship("Ship 1-masts (computer) (2)", new ArrayList<>());
+        Ship computerShip_1_3 = new Ship("Ship 1-masts (computer) (3)", new ArrayList<>());
+        Ship computerShip_1_4 = new Ship("Ship 1-masts (computer) (4)", new ArrayList<>());
+
+        // preparing and adding set of ships to ships container
+        ArrayList<Ship> shipCollection = new ArrayList<>(Arrays.asList(computerShip_4_1, computerShip_3_1,
+                computerShip_3_2, computerShip_2_1, computerShip_2_2, computerShip_2_3,
+                computerShip_1_1, computerShip_1_2, computerShip_1_3, computerShip_1_4));
+        shipsContainer.addComputerShipsToContainer(shipCollection);
+
+    }
+
     public void setShipMastOnControlSquareField() {
         LinkedHashMap<String, Ship> map = shipsContainer.getSetOfShips();
         ArrayDeque<Ship> theShipsForCheck = new ArrayDeque<>();
@@ -192,6 +214,7 @@ public class Player {
         }
     }
 
+    // REFACTORING: grid - gridPlayer; board - playerBoard
     public void extractedAddingShipMast(GridPane grid, int[][] board, int column, int row,
                                         ArrayList<Pair<Integer, Integer>> coordinates) {
         ShipMast shipMast = new ShipMast(new Pair<>(column, row));
@@ -561,12 +584,17 @@ public class Player {
                             coordinates.remove(new Pair<>(column, row));
                             maxNumberOfMasts++;
                         }
-                        if (maxNumberOfShips == 10 && maxNumberOfMasts == 4) {firstMastOfShipChecker = true;}
-                        if (maxNumberOfShips == 9 && maxNumberOfMasts == 3) {firstMastOfShipChecker = true;}
-                        if (maxNumberOfShips == 8 && maxNumberOfMasts == 3) {firstMastOfShipChecker = true;}
-                        if (maxNumberOfShips == 7 && maxNumberOfMasts == 2) {firstMastOfShipChecker = true;}
-                        if (maxNumberOfShips == 6 && maxNumberOfMasts == 2) {firstMastOfShipChecker = true;}
-                        if (maxNumberOfShips == 5 && maxNumberOfMasts == 2) {firstMastOfShipChecker = true;}
+                        if (maxNumberOfShips == 10 && maxNumberOfMasts == 4
+                                || maxNumberOfShips == 9 && maxNumberOfMasts == 3
+                                || maxNumberOfShips == 8 && maxNumberOfMasts == 3
+                                || maxNumberOfShips == 7 && maxNumberOfMasts == 2
+                                || maxNumberOfShips == 6 && maxNumberOfMasts == 2
+                                || maxNumberOfShips == 5 && maxNumberOfMasts == 2) {firstMastOfShipChecker = true;}
+//                        if (maxNumberOfShips == 9 && maxNumberOfMasts == 3) {firstMastOfShipChecker = true;}
+//                        if (maxNumberOfShips == 8 && maxNumberOfMasts == 3) {firstMastOfShipChecker = true;}
+//                        if (maxNumberOfShips == 7 && maxNumberOfMasts == 2) {firstMastOfShipChecker = true;}
+//                        if (maxNumberOfShips == 6 && maxNumberOfMasts == 2) {firstMastOfShipChecker = true;}
+//                        if (maxNumberOfShips == 5 && maxNumberOfMasts == 2) {firstMastOfShipChecker = true;}
                     }
                 });
             }
@@ -673,13 +701,13 @@ public class Player {
     public void computerMove(Random random, ArrayList<ShipMast> playerShipMastsList,
                              ArrayList<Missed> playerMissedsList, LinkedHashMap<String, Ship> playerShipsMap) {
 
-        int cheater = random.nextInt(5);
+        int cheater = random.nextInt(2);
         boolean cheaterChecker = false;
         boolean checker = false;
         int column = 100;
         int row = 100;
 
-        if (cheater != 0 || cheater !=3) { // an attempt to equalize the chances of winning computer
+        if (cheater != 0) { // an attempt to equalize the chances of winning computer
             while (!cheaterChecker) {
                 for (ShipMast cheatedShipMast : playerShipMastsList) {
                     if (!cheatedShipMast.getIsShipMastHit()) {
@@ -958,6 +986,204 @@ public class Player {
         blockActionOnBoard(gridPlayer, false);
 
         firstMastOfShipChecker = true;
+
+    }
+
+    public int getSumOfShipStatus(HashMap<String, Ship> map) {
+        int status = 0;
+        for (Map.Entry<String, Ship> entry : map.entrySet()) {
+            status = status + entry.getValue().getStatus();
+        }
+        return status;
+    }
+
+//    public String chooseBuildingDirection(Random random) {
+//        String result = "";
+//        int number = random.nextInt(4);
+//        switch (number) {
+//            case 0:
+//                result = "up";
+//                break;
+//            case 1:
+//                result = "right";
+//                break;
+//            case 2:
+//                result = "down";
+//                break;
+//            case 3:
+//                result = "left";
+//                break;
+//        }
+//        return result;
+//    }
+
+//    public String invertDirection(String direction) {
+//        if (direction.equals("up")) { return "down"; }
+//        if (direction.equals("down")) { return "up"; }
+//        if (direction.equals("left")) { return "right"; }
+//        if (direction.equals("right")) { return "left"; }
+//        return "";
+//    }
+
+    public String isEnoughSpaceForShip(int column, int row, int[][] board, int numberOfMasts) {
+
+        if (row + 1 - numberOfMasts >= 0) {
+            int sum = 0;
+            for (int i = 0; i < numberOfMasts - 1; i++) {
+                sum = sum + board[column][row - (i + 1)];
+            }
+            if (sum == 0) {
+                return "up";
+            }
+        }
+
+        if (column - 1 + numberOfMasts <= 9) {
+            int sum = 0;
+            for (int i = 0; i < numberOfMasts - 1; i++) {
+                sum = sum + board[column+(i+1)][row];
+            }
+            if (sum == 0) {
+                return "right";
+            }
+        }
+
+        if (row - 1 + numberOfMasts <= 9) {
+            int sum = 0;
+            for (int i = 0; i < numberOfMasts - 1; i++) {
+                sum = sum + board[column][row+(i+1)];
+            }
+            if (sum == 0) {
+                return "down";
+            }
+        }
+
+        if (column + 1 - numberOfMasts >= 0) {
+            int sum = 0;
+            for (int i = 0; i < numberOfMasts - 1; i++) {
+                sum = sum + board[column-(i+1)][row];
+            }
+            if (sum == 0) {
+                return "left";
+            }
+        }
+
+        return "";
+
+    }
+
+    public void buildShip(int approvedColumn, int approvedRow, String direction, int numberOfMasts,
+                          ArrayList<Pair<Integer, Integer>> coordinates, ArrayDeque<Ship> deque) {
+
+        switch (direction) {
+
+            case "up":
+                for (int i = 0; i < numberOfMasts; i++) {
+                    int column = approvedColumn;
+                    int row = approvedRow - i;
+                    extractedBuildShip(column, row, coordinates);
+                }
+                ArrayList<Pair<Integer, Integer>> coordinatesToSaveUP = new ArrayList<>(coordinates);
+                changeShipStatusToExists(deque, coordinatesToSaveUP);
+                protectShipPosition(computerBoard, coordinatesToSaveUP);
+                coordinates.clear();
+                break;
+
+            case "right":
+                for (int i = 0; i < numberOfMasts; i++) {
+                    int column = approvedColumn + i;
+                    int row = approvedRow;
+                    extractedBuildShip(column, row, coordinates);
+                }
+                ArrayList<Pair<Integer, Integer>> coordinatesToSaveRIGHT = new ArrayList<>(coordinates);
+                changeShipStatusToExists(deque, coordinatesToSaveRIGHT);
+                protectShipPosition(computerBoard, coordinatesToSaveRIGHT);
+                coordinates.clear();
+                break;
+
+            case "down":
+                for (int i = 0; i < numberOfMasts; i++) {
+                    int column = approvedColumn;
+                    int row = approvedRow + i;
+                    extractedBuildShip(column, row, coordinates);
+                }
+                ArrayList<Pair<Integer, Integer>> coordinatesToSaveDOWN = new ArrayList<>(coordinates);
+                changeShipStatusToExists(deque, coordinatesToSaveDOWN);
+                protectShipPosition(computerBoard, coordinatesToSaveDOWN);
+                coordinates.clear();
+                break;
+
+            case "left":
+                for (int i = 0; i < numberOfMasts; i++) {
+                    int column = approvedColumn - i;
+                    int row = approvedRow;
+                    extractedBuildShip(column, row, coordinates);
+                }
+                ArrayList<Pair<Integer, Integer>> coordinatesToSaveLEFT = new ArrayList<>(coordinates);
+                changeShipStatusToExists(deque, coordinatesToSaveLEFT);
+                protectShipPosition(computerBoard, coordinatesToSaveLEFT);
+                coordinates.clear();
+                break;
+
+        }
+
+    }
+
+    public void extractedBuildShip(int column, int row, ArrayList<Pair<Integer, Integer>> coordinates) {
+
+        ShipMast shipMast = new ShipMast(new Pair<>(column, row));
+//        gridComputer.add(shipMast, column, row);
+        shipsContainer.addComputerShipMastToContainer(shipMast);
+        computerBoard[column][row] = 1;
+        coordinates.add(new Pair<>(column, row));
+
+    }
+
+    public void buildShipsOnComputerBoard() {
+
+        LinkedHashMap<String, Ship> map = shipsContainer.getSetOfComputerShips();
+
+        ArrayDeque<Ship> theShipsForCheck = new ArrayDeque<>();
+        for (Map.Entry<String, Ship> entry : map.entrySet()) {
+            theShipsForCheck.offer(entry.getValue());
+            System.out.print(""); // ************************** FOR REMOVE !!!!! ***************************************
+        }
+
+        ArrayDeque<Ship> theShipsForSaveData = new ArrayDeque<>();
+        for (Map.Entry<String, Ship> entry : map.entrySet()) {
+            theShipsForSaveData.offer(entry.getValue());
+            System.out.print(" "); // ************************** FOR REMOVE !!!!! ***************************************
+        }
+
+        ArrayList<Pair<Integer, Integer>> mastsCoordinates = new ArrayList<>();
+        ArrayList<Pair<Integer, Integer>> prohibitedCoordinates = new ArrayList<>();
+
+        Random random = new Random();
+
+        while (getSumOfShipStatus(map) < 10) { // dopóki wszystkie shipy nie zostaną utworzone
+            int numberOfMasts = checkShipExistsInShipsContainer(theShipsForCheck);
+            boolean checker = false;
+            int column;
+            int row;
+            while (!checker) {
+                column = random.nextInt(10);
+                row = random.nextInt(10);
+                Pair<Integer, Integer> coordinates = new Pair<>(column, row);
+                if (!prohibitedCoordinates.contains(coordinates)) {
+                    if (computerBoard[column][row] == 0) {
+                        String direction = isEnoughSpaceForShip(column, row, computerBoard, numberOfMasts);
+                        if (!direction.equals("")) {
+                            buildShip(column, row, direction, numberOfMasts, mastsCoordinates, theShipsForSaveData);
+                            prohibitedCoordinates.clear();
+                            checker = true;
+                        } else {
+                            prohibitedCoordinates.add(coordinates);
+                        }
+                    } else {
+                        prohibitedCoordinates.add(coordinates);
+                    }
+                }
+            }
+        }
 
     }
 
