@@ -102,8 +102,8 @@ public class Player {
         Ship ship_1_4 = new Ship("Ship 1-masts (4)", new ArrayList<>());
 
         // preparing and adding set of ships to ships container
-        ArrayList<Ship> shipCollection = new ArrayList<>(Arrays.asList(ship_4_1, ship_3_1, ship_3_2, ship_2_1, ship_2_2, ship_2_3,
-                ship_1_1, ship_1_2, ship_1_3, ship_1_4));
+        ArrayList<Ship> shipCollection = new ArrayList<>(Arrays.asList(ship_4_1, ship_3_1, ship_3_2, ship_2_1,
+                ship_2_2, ship_2_3, ship_1_1, ship_1_2, ship_1_3, ship_1_4));
         shipsContainer.addShipsToContainer(shipCollection);
 
     }
@@ -132,11 +132,11 @@ public class Player {
 
     public void setShipMastOnControlSquareField() {
         LinkedHashMap<String, Ship> map = shipsContainer.getSetOfShips();
-        ArrayDeque<Ship> theShipsForCheck = new ArrayDeque<>();
+        ArrayDeque<Ship> theShipsForCheck = new ArrayDeque<>(); // create queue for check if ship exists
         for (Map.Entry<String, Ship> entry : map.entrySet()) {
             theShipsForCheck.offer(entry.getValue());
         }
-        ArrayDeque<Ship> theShipsForSaveData = new ArrayDeque<>();
+        ArrayDeque<Ship> theShipsForSaveData = new ArrayDeque<>(); // create queue for save ship built
         for (Map.Entry<String, Ship> entry : map.entrySet()) {
             theShipsForSaveData.offer(entry.getValue());
         }
@@ -160,7 +160,7 @@ public class Player {
                     if (maxNumberOfMasts > 0) {
                         if (checkNeighbourDiagonally(playerBoard, column, row)) { // check player move is legal
                             if (firstMastOfShipChecker) {// adding first mast of ship
-                                extractedAddingShipMast(gridPlayer, playerBoard, column, row, mastsCoordinates);
+                                extractedAddingShipMast(column, row, mastsCoordinates);
                                 firstMastOfShipChecker = false;
                                 removeShipMast(mastsCoordinates); // setting action when clicked on ShipMast object
                                 if (maxNumberOfMasts == 0) {
@@ -174,18 +174,13 @@ public class Player {
                                             maxNumberOfMasts); // ******************************************************
                                     maxNumberOfMasts = checkShipExistsInShipsContainer(theShipsForCheck);
                                     if (maxNumberOfMasts == 0 && maxNumberOfShips == 0) {
-//                                        for(Map.Entry<String, Ship> entry : map.entrySet()) {
-//                                            System.out.println(entry.getValue().getName() + ", "
-//                                                    + entry.getValue().getMastsCoordinates()
-//                                                    + entry.getValue().getStatus());
-//                                        }
                                         startButton.setDisable(false);
                                     }
                                 }
                             } else {
                                 if (checkBuildingOnlyOneShipAtTime(playerBoard, column, row)) {
                                     // adding next mast of ship
-                                    extractedAddingShipMast(gridPlayer, playerBoard, column, row, mastsCoordinates);
+                                    extractedAddingShipMast(column, row, mastsCoordinates);
                                     removeShipMast(mastsCoordinates); // setting action when clicked on ShipMast object
                                     if (maxNumberOfMasts == 0) {
                                         // ######################## tak się tworzy kopię obiektu #######################
@@ -197,11 +192,6 @@ public class Player {
                                         firstMastOfShipChecker = true;
                                         maxNumberOfMasts = checkShipExistsInShipsContainer(theShipsForCheck);
                                         if (maxNumberOfMasts == 0 && maxNumberOfShips == 0) {
-//                                            for(Map.Entry<String, Ship> entry : map.entrySet()) {
-//                                                System.out.println(entry.getValue().getName() + ", "
-//                                                        + entry.getValue().getMastsCoordinates() +
-//                                                        entry.getValue().getStatus());
-//                                            }
                                             startButton.setDisable(false);
                                         }
                                     }
@@ -214,13 +204,11 @@ public class Player {
         }
     }
 
-    // REFACTORING: grid - gridPlayer; board - playerBoard
-    public void extractedAddingShipMast(GridPane grid, int[][] board, int column, int row,
-                                        ArrayList<Pair<Integer, Integer>> coordinates) {
+    public void extractedAddingShipMast(int column, int row, ArrayList<Pair<Integer, Integer>> coordinates) {
         ShipMast shipMast = new ShipMast(new Pair<>(column, row));
-        grid.add(shipMast, column, row);
+        gridPlayer.add(shipMast, column, row);
         shipsContainer.addShipMastToContainer(shipMast);
-        board[column][row] = 3; // temporary until accepting whole ship; then 1
+        playerBoard[column][row] = 3; // temporary until accepting whole ship; then 1
         coordinates.add(new Pair<>(column, row));
         maxNumberOfMasts--;
     }
@@ -401,49 +389,51 @@ public class Player {
     }
 
     // old version of 2 methods
-//    public void changeShipStatusToExists(int number, ArrayList<Pair<Integer, Integer>> coordinates,
-//                                         LinkedHashMap<String, Ship> map) {
-//        if (number == 10) {
-//            String name = "Ship 4-masts (1)";
-//            saveCoordinates(name, coordinates, map);
-//        }
-//        if (number == 9) {
-//            String name = "Ship 3-masts (1)";
-//            saveCoordinates(name, coordinates, map);
-//        }
-//        if (number == 8) {
-//            String name = "Ship 3-masts (2)";
-//            saveCoordinates(name, coordinates, map);
-//        }
-//        if (number == 7) {
-//            String name = "Ship 2-masts (1)";
-//            saveCoordinates(name, coordinates, map);
-//        }
-//        if (number == 6) {
-//            String name = "Ship 2-masts (2)";
-//            saveCoordinates(name, coordinates, map);
-//        }
-//        if (number == 5) {
-//            String name = "Ship 2-masts (3)";
-//            saveCoordinates(name, coordinates, map);
-//        }
-//        if (number == 4) {
-//            String name = "Ship 1-masts (1)";
-//            saveCoordinates(name, coordinates, map);
-//        }
-//        if (number == 3) {
-//            String name = "Ship 1-masts (2)";
-//            saveCoordinates(name, coordinates, map);
-//        }
-//        if (number == 2) {
-//            String name ="Ship 1-masts (3)";
-//            saveCoordinates(name, coordinates, map);
-//        }
-//        if (number == 1) {
-//            String name = "Ship 1-masts (4)";
-//            saveCoordinates(name, coordinates, map);
-//        }
-//    }
+    /*
+    public void changeShipStatusToExists(int number, ArrayList<Pair<Integer, Integer>> coordinates,
+                                         LinkedHashMap<String, Ship> map) {
+        if (number == 10) {
+            String name = "Ship 4-masts (1)";
+            saveCoordinates(name, coordinates, map);
+        }
+        if (number == 9) {
+            String name = "Ship 3-masts (1)";
+            saveCoordinates(name, coordinates, map);
+        }
+        if (number == 8) {
+            String name = "Ship 3-masts (2)";
+            saveCoordinates(name, coordinates, map);
+        }
+        if (number == 7) {
+            String name = "Ship 2-masts (1)";
+            saveCoordinates(name, coordinates, map);
+        }
+        if (number == 6) {
+            String name = "Ship 2-masts (2)";
+            saveCoordinates(name, coordinates, map);
+        }
+        if (number == 5) {
+            String name = "Ship 2-masts (3)";
+            saveCoordinates(name, coordinates, map);
+        }
+        if (number == 4) {
+            String name = "Ship 1-masts (1)";
+            saveCoordinates(name, coordinates, map);
+        }
+        if (number == 3) {
+            String name = "Ship 1-masts (2)";
+            saveCoordinates(name, coordinates, map);
+        }
+        if (number == 2) {
+            String name ="Ship 1-masts (3)";
+            saveCoordinates(name, coordinates, map);
+        }
+        if (number == 1) {
+            String name = "Ship 1-masts (4)";
+            saveCoordinates(name, coordinates, map);
+        }
+    }
+    */
 
 /*
     // method saves coordinates of current ship to the appropriate Ship object
@@ -557,10 +547,6 @@ public class Player {
         if (board[column+1][row] != 1) {board[column+1][row] = 2;}
     }
 
-    public void setFirstMastOfShipChecker(boolean expression){
-        firstMastOfShipChecker = expression;
-    }
-
     public void removeShipMast(ArrayList<Pair<Integer, Integer>> coordinates) {
         ArrayList<ShipMast> shipMastsList = shipsContainer.getSetOfShipMasts();
         ShipMast shipMast = new ShipMast(new Pair<>(100, 100));
@@ -569,16 +555,13 @@ public class Player {
             if (node.getClass() == shipMast.getClass()) { // if (node.getClass().isInstance(shipMast)) {
                 ShipMast button = (ShipMast) node;
                 button.setOnAction(event -> {
-//                    int column = (int)((button.getLocalToParentTransform().getTx())/27);
-//                    int row = (int)((button.getLocalToParentTransform().getTy())/27);
                     int column = button.getVisibleShipMastCoordinates().getKey();
                     int row = button.getVisibleShipMastCoordinates().getValue();
                     ShipBattle.example(1, column, row); // CHECK POSITION ONLY
                     if (playerBoard[column][row] == 3) {
                         if (checkRemoveShipMastIsAllowed(column, row)) { // check if not removing mast inside the ship
                             ShipMast shipMastToRemove = identifyShipMast(column, row, shipMastsList);
-                            gridPlayer.getChildren().remove(shipMastToRemove);
-//                            gridPlayer.getChildren().remove(button);
+                            gridPlayer.getChildren().remove(shipMastToRemove); // gridPlayer.getChildren().remove(button);
                             shipsContainer.removeShipMastFromContainer(shipMastToRemove);
                             playerBoard[column][row] = 0;
                             coordinates.remove(new Pair<>(column, row));
@@ -590,11 +573,6 @@ public class Player {
                                 || maxNumberOfShips == 7 && maxNumberOfMasts == 2
                                 || maxNumberOfShips == 6 && maxNumberOfMasts == 2
                                 || maxNumberOfShips == 5 && maxNumberOfMasts == 2) {firstMastOfShipChecker = true;}
-//                        if (maxNumberOfShips == 9 && maxNumberOfMasts == 3) {firstMastOfShipChecker = true;}
-//                        if (maxNumberOfShips == 8 && maxNumberOfMasts == 3) {firstMastOfShipChecker = true;}
-//                        if (maxNumberOfShips == 7 && maxNumberOfMasts == 2) {firstMastOfShipChecker = true;}
-//                        if (maxNumberOfShips == 6 && maxNumberOfMasts == 2) {firstMastOfShipChecker = true;}
-//                        if (maxNumberOfShips == 5 && maxNumberOfMasts == 2) {firstMastOfShipChecker = true;}
                     }
                 });
             }
@@ -662,8 +640,6 @@ public class Player {
                             scores.playerWon(); // saves the result of the game (player won)
                             printResult("Player"); // prints the result of the game
                             newGameButton.setDisable(false); // unblocks New Game button
-//                            resetAllForNewGame();
-                            // ?????????? ASK FOR NEW GAME ?????????? *******************@@@@@@@@@@@@@@@@@@@############
                         }
                     } else {
                         missed(column, row);
@@ -686,7 +662,6 @@ public class Player {
         if (isShipSunk(ship, computerShipMastsList)) {
             System.out.println("Statek komputera został zatopiony **********************"); // ******** TEMP ONLY ******
             protectShipPosition(copyOfComputerBoard, ship.getMastsCoordinates());
-//            showShipProtectedArea(ship, gridComputer, copyOfComputerBoard);
             showShipProtectedArea(gridComputer, copyOfComputerBoard, computerMissedsList);
         }
     }
@@ -753,7 +728,6 @@ public class Player {
             if (isShipSunk(ship, playerShipMastsList)) {
                 System.out.println("Ship's sunk !!!!!"); // ************** TEST ***************
                 protectShipPosition(copyOfPlayerBoard, ship.getMastsCoordinates());
-//                showShipProtectedArea(ship, gridPlayer, copyOfPlayerBoard);
                 showShipProtectedArea(gridPlayer, copyOfPlayerBoard, playerMissedsList);
                 if (areAllShipsSunk(playerShipsMap)) {
                     // THE END OF THE GAME - computer won
@@ -761,8 +735,6 @@ public class Player {
                     scores.computerWon(); // saves the result of the game (computer won)
                     printResult("Computer"); // prints the result of the game
                     newGameButton.setDisable(false); // unblocks New Game button
-//                    resetAllForNewGame();
-                    // ?????????? ASK FOR NEW GAME ?????????? *******************@@@@@@@@@@@@@@@@@@@############
                 }
             }
         }  else {
@@ -818,11 +790,11 @@ public class Player {
 
     public boolean areAllShipsSunk(LinkedHashMap<String, Ship> shipsMap) {
         boolean result = false;
-        int cumulatedStatus = 0;
+        int calculatedStatus = 0;
         for (Map.Entry<String, Ship> entry : shipsMap.entrySet()) {
-            cumulatedStatus = cumulatedStatus + entry.getValue().getStatus();
+            calculatedStatus = calculatedStatus + entry.getValue().getStatus();
         }
-        if (cumulatedStatus == -10) {
+        if (calculatedStatus == -10) {
             result = true;
         }
         return result;
@@ -842,10 +814,8 @@ public class Player {
         }
     }
 
-
-
-
-
+    // old version of method + 3x extracted
+/*
     public void oldAndUnusedShowShipProtectedArea(Ship ship, GridPane grid, int[][]board) {
 
         ArrayList<Pair<Integer, Integer>> list = ship.getMastsCoordinates();
@@ -931,6 +901,7 @@ public class Player {
         if (board[column-1][row] != 1) {grid.add(new Missed(new Pair<>(column-1, row)), column-1, row);}
         if (board[column+1][row] != 1) {grid.add(new Missed(new Pair<>(column+1, row)), column+1, row);}
     }
+*/
 
     public void printResult(String whoWon) {
         userInterfaceLabel.setAlignment(Pos.CENTER);
@@ -996,34 +967,6 @@ public class Player {
         }
         return status;
     }
-
-//    public String chooseBuildingDirection(Random random) {
-//        String result = "";
-//        int number = random.nextInt(4);
-//        switch (number) {
-//            case 0:
-//                result = "up";
-//                break;
-//            case 1:
-//                result = "right";
-//                break;
-//            case 2:
-//                result = "down";
-//                break;
-//            case 3:
-//                result = "left";
-//                break;
-//        }
-//        return result;
-//    }
-
-//    public String invertDirection(String direction) {
-//        if (direction.equals("up")) { return "down"; }
-//        if (direction.equals("down")) { return "up"; }
-//        if (direction.equals("left")) { return "right"; }
-//        if (direction.equals("right")) { return "left"; }
-//        return "";
-//    }
 
     public String isEnoughSpaceForShip(int column, int row, int[][] board, int numberOfMasts) {
 
@@ -1145,13 +1088,11 @@ public class Player {
         ArrayDeque<Ship> theShipsForCheck = new ArrayDeque<>();
         for (Map.Entry<String, Ship> entry : map.entrySet()) {
             theShipsForCheck.offer(entry.getValue());
-            System.out.print(""); // ************************** FOR REMOVE !!!!! ***************************************
         }
 
         ArrayDeque<Ship> theShipsForSaveData = new ArrayDeque<>();
         for (Map.Entry<String, Ship> entry : map.entrySet()) {
             theShipsForSaveData.offer(entry.getValue());
-            System.out.print(" "); // ************************** FOR REMOVE !!!!! ***************************************
         }
 
         ArrayList<Pair<Integer, Integer>> mastsCoordinates = new ArrayList<>();
@@ -1159,7 +1100,7 @@ public class Player {
 
         Random random = new Random();
 
-        while (getSumOfShipStatus(map) < 10) { // dopóki wszystkie shipy nie zostaną utworzone
+        while (getSumOfShipStatus(map) < 10) { // until all computer ships built
             int numberOfMasts = checkShipExistsInShipsContainer(theShipsForCheck);
             boolean checker = false;
             int column;

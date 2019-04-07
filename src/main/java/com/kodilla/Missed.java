@@ -12,7 +12,6 @@ public class Missed extends Button {
         this.missedCoordinates = missedCoordinates;
 
         setStyle("-fx-background-image: url(missed_square.jpg);");
-//        setStyle("-fx-opacity: 0.5");
         setMinSize(27, 27);
         setMaxSize(27, 27);
 

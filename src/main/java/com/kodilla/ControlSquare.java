@@ -23,16 +23,18 @@ public class ControlSquare extends Button {
     }
 
     // method can be used in constructor
-/*    public void setOnActionMethod() {
+    /*
+    public void setOnActionMethod() {
         setOnAction(event -> {
             int column = (int)((getLocalToParentTransform().getTx())/27);
             int row = (int)((getLocalToParentTransform().getTy())/27);
             ShipBattle.example(0, column, row); // CHECK POSITION ONLY
         });
-    }*/
+    }
+    */
 
     // method for use outside of this class
-/*
+    /*
     public static void getPositionAndSetActionOfControlSquare(GridPane grid) {
         ControlSquare controlSquare = new ControlSquare();
         ObservableList<Node> childrenOfControlSquares = grid.getChildren();
@@ -47,6 +49,6 @@ public class ControlSquare extends Button {
             }
         }
     }
-*/
+    */
 
 }

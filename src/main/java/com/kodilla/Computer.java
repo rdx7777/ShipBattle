@@ -4,6 +4,8 @@ import javafx.util.Pair;
 
 import java.util.*;
 
+// all this class - for remember to not do it again :)
+
 public class Computer {
     private ShipsContainer shipsContainer;
     private Player player;

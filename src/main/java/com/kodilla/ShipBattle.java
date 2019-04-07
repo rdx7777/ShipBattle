@@ -11,7 +11,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import java.util.Random;
 
 public class ShipBattle extends Application {
 
@@ -54,7 +53,7 @@ public class ShipBattle extends Application {
     GameButton cancelResetButton = new GameButton(135, 40, "Cancel");
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
 
         BackgroundSize backgroundSize = new BackgroundSize(100, 100, true,
                 true, true, false);
@@ -68,15 +67,11 @@ public class ShipBattle extends Application {
         grid.setPadding(insets);
         grid.setBackground(background);
 
-//        Insets insetsForGrids = new Insets(0, 0, 0, 0);
-
         GridPane gridPlayer = new GridPane();
         gridPlayer.setAlignment(grid.getAlignment());
-//        gridPlayer.setPadding(insetsForGrids);
 
         GridPane gridComputer = new GridPane();
         gridComputer.setAlignment(Pos.TOP_LEFT);
-//        gridComputer.setPadding(insetsForGrids);
 
         grid.add(gridPlayer, 0, 4, 10, 10);
         grid.add(gridComputer, 12, 4, 10, 10);
@@ -140,7 +135,6 @@ public class ShipBattle extends Application {
         ShipsContainer shipsContainer = new ShipsContainer();
         Scores scores = new Scores();
         Player player = new Player(grid, gridPlayer, gridComputer, shipsContainer, scores);
-        Computer computer = new Computer(shipsContainer, player);
 
         // setting buttons to handle choices for "Exit"
         areYouSureResetButton.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
@@ -168,7 +162,6 @@ public class ShipBattle extends Application {
             player.createBoard(gridPlayer, shipsContainer.getSetOfControlSquares());
             player.setEmptyPlayerBoard();
             player.createShipObjectsAndAddingToContainer();
-//            player.blockActionOnBoard(gridPlayer, false); // --- JEST JUŻ W metodzie reset...
             player.setShipMastOnControlSquareField();
 
             newGameButton.setDisable(true);
@@ -199,7 +192,6 @@ public class ShipBattle extends Application {
 
         // setting actions for "Are you sure?" button for "Reset" choice
         areYouSureResetButton.setOnAction(event -> {
-//            player.resetAllForNewGame();
             grid.getChildren().remove(areYouSureResetButton);
             grid.getChildren().remove(cancelResetButton);
             player.blockActionOnBoard(gridPlayer, true);
@@ -215,26 +207,17 @@ public class ShipBattle extends Application {
         });
 
         // setting actions for "Start game" button
-        startButton.setDisable(true); // ************************ czy to jest potrzebne? *******************************
+        startButton.setDisable(true);
 
         startButton.setOnAction(event -> {
             player.blockActionOnBoard(gridPlayer, true);
             player.blockActionOnBoard(gridComputer, false);
             startButton.setDisable(true);
             System.out.println("Starting game");
-//            Random random = new Random();
-//            int randomParameter = random.nextInt(5);
             player.createBoard(gridComputer, shipsContainer.getSetOfComputerControlSquares());
             player.setEmptyComputerBoard();
-// *********************************************************************************************************************
             player.createComputerShipObjectsAndAddingToContainer();
             player.buildShipsOnComputerBoard();
-
-// *********************************************************************************************************************
-//            computer.createShipsOnComputerBoard(randomParameter);
-//            computer.createShipObjectsAndShipsCoordinates(randomParameter);
-//            computer.protectAllComputerShipsPositions();
-// *********************************************************************************************************************
             player.shootOnComputerBoard();
 
         });
