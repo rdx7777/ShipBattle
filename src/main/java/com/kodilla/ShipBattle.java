@@ -20,20 +20,6 @@ public class ShipBattle extends Application {
         launch(args);
     }
 
-    public static void example(int type, int column, int row) {
-        String typeString = "";
-        if (type == 0) {
-            typeString = "EMPTY";
-        }
-        if (type == 1) {
-            typeString = "MAST";
-        }
-        if (type == -1) {
-            typeString = "HIT";
-        }
-        System.out.println("Clicked on " + typeString + " field in column " + column + " and in row " + row);
-    }
-
     // creating top labels
     GameLabel userInterfaceLabel = new GameLabel(378, 54, "user-interface_background.jpg", "User Interface");
     GameLabel playerScoreLabel = new GameLabel(54, 40, "score_background.jpg", "Player Score");
@@ -149,8 +135,6 @@ public class ShipBattle extends Application {
         // setting actions for "New game" button
         newGameButton.setOnAction(event -> {
 
-            System.out.println("New game starts here."); // ******************* TEST ONLY ******************************
-
             userInterfaceLabel.setAlignment(Pos.TOP_LEFT);
             userInterfaceLabel.setPadding(new Insets(5, 0, 0, 5));
             userInterfaceLabel.setFont(Font.font("Verdana", FontWeight.MEDIUM, 12));
@@ -168,7 +152,6 @@ public class ShipBattle extends Application {
             resetButton.setDisable(false);
 
             helpButton.setOnAction(event1 -> {
-                System.out.println("Help when player has started new game.");
                 userInterfaceLabel.setAlignment(Pos.TOP_LEFT);
                 userInterfaceLabel.setPadding(new Insets(5, 0, 0, 5));
                 userInterfaceLabel.setFont(Font.font("Verdana", FontWeight.MEDIUM, 12));
@@ -184,7 +167,6 @@ public class ShipBattle extends Application {
 
         // setting actions for "Reset" button
         resetButton.setOnAction(event -> {
-            System.out.println("Reset game");
             grid.add(areYouSureResetButton, 5, 8);
             grid.add(cancelResetButton, 12, 8);
             resetButton.setDisable(true);
@@ -213,7 +195,6 @@ public class ShipBattle extends Application {
             player.blockActionOnBoard(gridPlayer, true);
             player.blockActionOnBoard(gridComputer, false);
             startButton.setDisable(true);
-            System.out.println("Starting game");
             player.createBoard(gridComputer, shipsContainer.getSetOfComputerControlSquares());
             player.setEmptyComputerBoard();
             player.createComputerShipObjectsAndAddingToContainer();
@@ -225,7 +206,6 @@ public class ShipBattle extends Application {
 
         // setting actions for "Help" button
         helpButton.setOnAction(event -> {
-            System.out.println("Help for player wanted to start new game.");
             userInterfaceLabel.setAlignment(Pos.CENTER_LEFT);
             userInterfaceLabel.setPadding(new Insets(7, 0, 8, 5));
             userInterfaceLabel.setFont(Font.font("Verdana", FontWeight.MEDIUM, 12));
@@ -235,7 +215,6 @@ public class ShipBattle extends Application {
 
         // setting actions for "Exit" button
         exitButton.setOnAction(event -> {
-            System.out.println("Exit game");
             grid.add(areYouSureExitButton, 5, 8);
             grid.add(cancelExitButton, 12, 8);
             exitButton.setDisable(true);
@@ -243,13 +222,11 @@ public class ShipBattle extends Application {
 
         // setting actions for "Are you sure?" button for "Exit" choice
         areYouSureExitButton.setOnAction(event -> {
-            System.out.println("Player confirmed their decision about exit game.");
             Platform.exit();
         });
 
         // setting actions for "Cancel" button for "Exit" choice
         cancelExitButton.setOnAction(event -> {
-            System.out.println("Player's changed their mind about exit game.");
             grid.getChildren().remove(areYouSureExitButton);
             grid.getChildren().remove(cancelExitButton);
             exitButton.setDisable(false);

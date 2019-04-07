@@ -17,21 +17,4 @@ public class Hit extends Button {
 
     }
 
-// method used only for testing in the beginning of writing this program
-
-//    public static void getPositionAndSetActionOfHit(GridPane grid) {
-//        Hit hit = new Hit();
-//        ObservableList<Node> childrenOfHits = grid.getChildren();
-//        for(Node node : childrenOfHits) {
-//            if(node.getClass() == hit.getClass()) {
-//                Hit button = (Hit) node;
-//                button.setOnAction(event -> {
-//                    int column = (int)((button.getLocalToParentTransform().getTx())/27);
-//                    int row = (int)((button.getLocalToParentTransform().getTy())/27);
-//                    ShipBattle.example(-1, column, row);
-//                });
-//            }
-//        }
-//    }
-
 }

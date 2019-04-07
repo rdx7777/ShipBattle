@@ -3,11 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="3dfb4645-2a3a-48c9-a185-7b7ce9306abf" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/src/main/java/com/kodilla/Computer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kodilla/Computer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kodilla/ControlSquare.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kodilla/ControlSquare.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kodilla/Missed.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kodilla/Missed.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kodilla/Hit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kodilla/Hit.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/kodilla/Player.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kodilla/Player.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/kodilla/ShipBattle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kodilla/ShipBattle.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kodilla/ShipsContainer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kodilla/ShipsContainer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kodilla/ShipMast.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kodilla/ShipMast.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
@@ -28,11 +27,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/ShipBattle.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="104">
-              <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
+            <state>
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -40,7 +38,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/Player.java">
           <provider selected="true" editor-type-id="text-editor">
             <state>
@@ -62,10 +60,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>gridPla</find>
-      <find>new Pair&lt;&gt;(</find>
-      <find>missed</find>
-      <find>missed()</find>
       <find>missed(</find>
       <find>setDisable(</find>
       <find>show</find>
@@ -92,6 +86,10 @@
       <find>extra</find>
       <find>set</find>
       <find>computermo</find>
+      <find>exampl</find>
+      <find>showShipProtectedArea</find>
+      <find>out</find>
+      <find>syste</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -108,14 +106,14 @@
         <option value="$PROJECT_DIR$/src/main/java/com/kodilla/PlayerBoard.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/kodilla/Ship.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/kodilla/GameLabel.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/ShipMast.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/Hit.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/kodilla/ControlSquare.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/Player.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/Computer.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/ShipBattle.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/kodilla/ShipsContainer.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/kodilla/Missed.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/ShipMast.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/ShipBattle.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/Hit.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/Computer.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/kodilla/Player.java" />
       </list>
     </option>
   </component>
@@ -175,7 +173,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554580070658" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1554672027377" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -230,12 +228,12 @@
       <workItem from="1552503149514" duration="83031000" />
       <workItem from="1553072967260" duration="3639000" />
       <workItem from="1553122621908" duration="245163000" />
-      <workItem from="1554587216031" duration="16197000" />
+      <workItem from="1554587216031" duration="18050000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="366977000" />
+    <option name="totallyTimeSpent" value="368830000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1374" y="-8" width="1382" height="744" extended-state="6" />
@@ -391,7 +389,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/ShipsContainer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
+        <state relative-caret-position="-343">
           <caret line="19" column="41" lean-forward="true" selection-start-line="19" selection-start-column="41" selection-end-line="19" selection-end-column="41" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -416,16 +414,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
           <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/ShipBattle.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="14" column="13" selection-start-line="14" selection-start-column="13" selection-end-line="14" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -476,7 +464,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/GameButton.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
+        <state relative-caret-position="355">
           <caret line="24" selection-start-line="24" selection-end-line="24" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -498,8 +486,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/Computer.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+        <state relative-caret-position="332">
+          <caret line="416" lean-forward="true" selection-start-line="416" selection-end-line="416" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -507,6 +495,15 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/Player.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/kodilla/ShipBattle.java">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <folding>

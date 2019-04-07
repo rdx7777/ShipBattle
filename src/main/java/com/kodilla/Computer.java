@@ -178,8 +178,6 @@ public class Computer {
             createAndAddComputerShipMasts();
         }
 
-        System.out.println("Computer board #" + randomParameter); // ********** TEMP ONLY **********
-
     }
 
     public void createAndAddComputerShipMasts() {
