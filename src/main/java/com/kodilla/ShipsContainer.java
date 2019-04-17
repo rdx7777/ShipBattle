@@ -2,41 +2,43 @@ package com.kodilla;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ShipsContainer {
 
-    private LinkedHashMap<String, Ship> setOfShips = new LinkedHashMap<>();
-    private LinkedHashMap<String, Ship> setOfComputerShips = new LinkedHashMap<>();
+    private Map<String, Ship> setOfShips = new LinkedHashMap<>();
+    private Map<String, Ship> setOfComputerShips = new LinkedHashMap<>();
 
-    private ArrayList<ShipMast> setOfShipMasts = new ArrayList<>();
-    private ArrayList<ShipMast> setOfComputerShipMasts = new ArrayList<>();
+    private List<ShipMast> setOfShipMasts = new ArrayList<>();
+    private List<ShipMast> setOfComputerShipMasts = new ArrayList<>();
 
-    private ArrayList<ControlSquare> setOfControlSquares = new ArrayList<>();
-    private ArrayList<ControlSquare> setOfComputerControlSquares = new ArrayList<>();
+    private List<ControlSquare> setOfControlSquares = new ArrayList<>();
+    private List<ControlSquare> setOfComputerControlSquares = new ArrayList<>();
 
-    private ArrayList<Hit> setOfHits = new ArrayList<>();
-    private ArrayList<Hit> setOfComputerHits = new ArrayList<>();
+    private List<Hit> setOfHits = new ArrayList<>();
+    private List<Hit> setOfComputerHits = new ArrayList<>();
 
-    private ArrayList<Missed> setOfMisseds = new ArrayList<>();
-    private ArrayList<Missed> setOfComputerMisseds = new ArrayList<>();
+    private List<Missed> setOfMissed = new ArrayList<>();
+    private List<Missed> setOfComputerMissed = new ArrayList<>();
 
-    public void addShipsToContainer(ArrayList<Ship> shipCollection) {
+    public void addShipsToContainer(List<Ship> shipCollection) {
         for(Ship ship : shipCollection) {
             setOfShips.put(ship.getName(), ship);
         }
     }
 
-    public LinkedHashMap<String, Ship> getSetOfShips() {
+    public Map<String, Ship> getSetOfShips() {
         return setOfShips;
     }
 
-    public void addComputerShipsToContainer(ArrayList<Ship> computerShipCollection) {
+    public void addComputerShipsToContainer(List<Ship> computerShipCollection) {
         for(Ship ship : computerShipCollection) {
             setOfComputerShips.put(ship.getName(), ship);
         }
     }
 
-    public LinkedHashMap<String, Ship> getSetOfComputerShips() {
+    public Map<String, Ship> getSetOfComputerShips() {
         return setOfComputerShips;
     }
 
@@ -48,7 +50,7 @@ public class ShipsContainer {
         setOfShipMasts.remove(shipMast);
     }
 
-    public ArrayList<ShipMast> getSetOfShipMasts() {
+    public List<ShipMast> getSetOfShipMasts() {
         return setOfShipMasts;
     }
 
@@ -56,31 +58,31 @@ public class ShipsContainer {
         setOfComputerShipMasts.add(shipMast);
     }
 
-    public ArrayList<ShipMast> getSetOfComputerShipMasts() {
+    public List<ShipMast> getSetOfComputerShipMasts() {
         return setOfComputerShipMasts;
     }
 
-    public ArrayList<ControlSquare> getSetOfControlSquares() {
+    public List<ControlSquare> getSetOfControlSquares() {
         return setOfControlSquares;
     }
 
-    public ArrayList<ControlSquare> getSetOfComputerControlSquares() {
+    public List<ControlSquare> getSetOfComputerControlSquares() {
         return setOfComputerControlSquares;
     }
 
-    public ArrayList<Hit> getSetOfHits() {
+    public List<Hit> getSetOfHits() {
         return setOfHits;
     }
 
-    public ArrayList<Hit> getSetOfComputerHits() {
+    public List<Hit> getSetOfComputerHits() {
         return setOfComputerHits;
     }
 
-    public ArrayList<Missed> getSetOfMisseds() {
-        return setOfMisseds;
+    public List<Missed> getSetOfMissed() {
+        return setOfMissed;
     }
 
-    public ArrayList<Missed> getSetOfComputerMisseds() {
-        return setOfComputerMisseds;
+    public List<Missed> getSetOfComputerMissed() {
+        return setOfComputerMissed;
     }
 }

@@ -13,6 +13,7 @@ public class ShipMast extends Button {
 
         setMinSize(27, 27);
         setMaxSize(27, 27);
+//        setStyle("-fx-border-style: none");
 //        setShipMastAction();
     }
 

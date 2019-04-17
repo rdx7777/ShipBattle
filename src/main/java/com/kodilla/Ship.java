@@ -1,14 +1,14 @@
 package com.kodilla;
 
 import javafx.util.Pair;
-import java.util.ArrayList;
+import java.util.List;
 
 public class Ship {
     private String shipName;
-    private ArrayList<Pair<Integer, Integer>> mastsCoordinates;
+    private List<Pair<Integer, Integer>> mastsCoordinates;
     private int status = 0; // 0 - ship doesn't exist; 1 - ship exists; -1 - ship's sunk
 
-    public Ship(String name, ArrayList<Pair<Integer, Integer>> mastsCoordinates) {
+    public Ship(String name, List<Pair<Integer, Integer>> mastsCoordinates) {
         this.shipName = name;
         this.mastsCoordinates = mastsCoordinates;
     }
@@ -17,11 +17,11 @@ public class Ship {
         return shipName;
     }
 
-    public ArrayList<Pair<Integer, Integer>> getMastsCoordinates() {
+    public List<Pair<Integer, Integer>> getMastsCoordinates() {
         return mastsCoordinates;
     }
 
-    public void setCoordinates(ArrayList<Pair<Integer, Integer>> coordinates) {
+    public void setCoordinates(List<Pair<Integer, Integer>> coordinates) {
         this.mastsCoordinates = coordinates;
     }
 

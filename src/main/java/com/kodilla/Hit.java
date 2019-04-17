@@ -14,6 +14,7 @@ public class Hit extends Button {
         setStyle("-fx-background-image: url(explosion_square.jpg);");
         setMinSize(27, 27);
         setMaxSize(27, 27);
+//        setStyle("-fx-border-style: none");
 
     }
 

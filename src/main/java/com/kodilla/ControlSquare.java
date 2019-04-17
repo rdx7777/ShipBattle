@@ -14,6 +14,7 @@ public class ControlSquare extends Button {
         setStyle("-fx-background-color: transparent;");
         setMinSize(27, 27);
         setMaxSize(27, 27);
+//        setStyle("-fx-border-style: none");
 //        setOnActionMethod();
 
     }
