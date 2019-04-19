@@ -25,6 +25,8 @@ public class Player {
     private int maxNumberOfMasts; // allows player to build a ship with max. number of masts
     private int maxNumberOfShips; // this declaration is 'must be', because the reference is used inside condition 'if'
     private List<Pair<Integer, Integer>> coordinatesForComputerShoot = new ArrayList<>();
+    private boolean wasPlayerMastHit;
+    private Pair<Integer, Integer> playerHitMastCoordinates;
     private GameButton startButton;
     private GameButton newGameButton;
     private GameLabel userInterfaceLabel;
@@ -544,8 +546,8 @@ public class Player {
             if (node.getClass() == controlSquare.getClass()) {
                 ControlSquare button = (ControlSquare) node;
                 button.setOnAction(event -> {
-                    int column = (int) ((button.getLocalToParentTransform().getTx()) / 27);
-                    int row = (int) ((button.getLocalToParentTransform().getTy()) / 27);
+                    int column = button.getControlSquareCoordinates().getKey();
+                    int row = button.getControlSquareCoordinates().getValue();
                     if (computerBoard[column][row] == 1) {
                         hit(column, row, computerShipMastsList, computerMissedList, computerShipsMap);
                         if (!areAllShipsSunk(computerShipsMap)) {
@@ -587,47 +589,35 @@ public class Player {
         shipsContainer.getSetOfComputerMissed().add(missed);
     }
 
-/*
     public void computerMove(Random random, List<ShipMast> playerShipMastsList,
                              List<Missed> playerMissedList, Map<String, Ship> playerShipsMap) {
 
-        int cheater = random.nextInt(2);
-        boolean cheaterChecker = false;
-        boolean checker = false;
-        int column = 100;
-        int row = 100;
+        int column;
+        int row;
 
-        if (cheater != 0) { // an attempt to equalize the chances of winning computer
-            while (!cheaterChecker) {
-                for (ShipMast cheatedShipMast : playerShipMastsList) {
-                    if (!cheatedShipMast.getIsShipMastHit()) {
-                        column = cheatedShipMast.getVisibleShipMastCoordinates().getKey();
-                        row = cheatedShipMast.getVisibleShipMastCoordinates().getValue();
-                        cheaterChecker = true;
-                    } else {
-                        while (!checker) {
-                            column = random.nextInt(9);
-                            row = random.nextInt(9);
-                            if (copyOfPlayerBoard[column][row] == 1 || copyOfPlayerBoard[column][row] == 2) {
-                                checker = false;
-                            } else {
-                                checker = true;
-                            }
-                        }
-                        cheaterChecker = true;
-                    }
-                }
+        if (wasPlayerMastHit) {
+            Pair<Integer, Integer> probableCoordinates = shootAroundHitMast(random);
+            Pair<Integer, Integer> prohibitedCoordinates = new Pair<>(100, 100);
+            if (!probableCoordinates.equals(prohibitedCoordinates)) {
+                column = probableCoordinates.getKey();
+                row = probableCoordinates.getValue();
+                coordinatesForComputerShoot.remove(probableCoordinates);
+                System.out.println(probableCoordinates); // ******************************************
+            } else {
+                Pair<Integer, Integer> randomCoordinates = coordinatesForComputerShoot.
+                        get(random.nextInt(coordinatesForComputerShoot.size()));
+                column = randomCoordinates.getKey();
+                row = randomCoordinates.getValue();
+                coordinatesForComputerShoot.remove(randomCoordinates);
+                System.out.println(randomCoordinates);
             }
         } else {
-            while (!checker) {
-                column = random.nextInt(9);
-                row = random.nextInt(9);
-                if (copyOfPlayerBoard[column][row] == 1 || copyOfPlayerBoard[column][row] == 2) {
-                    checker = false;
-                } else {
-                    checker = true;
-                }
-            }
+            Pair<Integer, Integer> randomCoordinates = coordinatesForComputerShoot.
+                    get(random.nextInt(coordinatesForComputerShoot.size()));
+            column = randomCoordinates.getKey();
+            row = randomCoordinates.getValue();
+            coordinatesForComputerShoot.remove(randomCoordinates);
+            System.out.println(randomCoordinates);
         }
 
         ShipMast shipMast = identifyShipMast(column, row, playerShipMastsList);
@@ -639,50 +629,13 @@ public class Player {
             gridPlayer.add(hit, column, row);
             shipsContainer.getSetOfHits().add(hit);
             shipMast.setShipMastHit(true);
-            if (isShipSunk(ship, playerShipMastsList)) {
-                protectShipPosition(copyOfPlayerBoard, ship.getMastsCoordinates());
-                showShipProtectedArea(gridPlayer, copyOfPlayerBoard, playerMissedList);
-                if (areAllShipsSunk(playerShipsMap)) {
-                    // THE END OF THE GAME - computer won
-                    blockActionOnBoard(gridComputer, true);
-                    scores.computerWon();
-                    printResult("Computer");
-                    newGameButton.setDisable(false);
-                }
-            }
-        }  else {
-            copyOfPlayerBoard[column][row] = 2;
-            Missed missed = new Missed(new Pair<>(column, row));
-            gridPlayer.add(missed, column, row);
-            shipsContainer.getSetOfMissed().add(missed);
-        }
-
-    }
-
-*/
-
-    public void computerMove(Random random, List<ShipMast> playerShipMastsList,
-                             List<Missed> playerMissedList, Map<String, Ship> playerShipsMap) {
-
-        Pair<Integer, Integer> randomCoordinates = coordinatesForComputerShoot.
-                get(random.nextInt(coordinatesForComputerShoot.size()));
-        int column = randomCoordinates.getKey();
-        int row = randomCoordinates.getValue();
-        coordinatesForComputerShoot.remove(randomCoordinates);
-
-        ShipMast shipMast = identifyShipMast(column, row, playerShipMastsList);
-        Ship ship = identifyShip(column, row, playerShipsMap);
-
-        if (playerBoard[column][row] == 1) {
-            copyOfPlayerBoard[column][row] = 1;
-            Hit hit = new Hit(new Pair<>(column, row));
-            gridPlayer.add(hit, column, row);
-            shipsContainer.getSetOfHits().add(hit);
-            shipMast.setShipMastHit(true);
+            wasPlayerMastHit = true;
+            playerHitMastCoordinates = new Pair<>(column, row);
             if (isShipSunk(ship, playerShipMastsList)) {
                 protectShipPosition(copyOfPlayerBoard, ship.getMastsCoordinates());
                 showShipProtectedArea(gridPlayer, copyOfPlayerBoard, playerMissedList);
                 removeProtectedAreaFromListOfCoordinatesForComputerShoot();
+                wasPlayerMastHit = false;
                 if (areAllShipsSunk(playerShipsMap)) {
                     // THE END OF THE GAME - computer won
                     blockActionOnBoard(gridComputer, true);
@@ -696,9 +649,107 @@ public class Player {
             Missed missed = new Missed(new Pair<>(column, row));
             gridPlayer.add(missed, column, row);
             shipsContainer.getSetOfMissed().add(missed);
+//            wasPlayerMastHit = false;
         }
 
     }
+
+    public Pair<Integer, Integer> shootAroundHitMast(Random random) {
+
+        int column = playerHitMastCoordinates.getKey();
+        int row = playerHitMastCoordinates.getValue();
+
+        Pair<Integer, Integer> probableCoordinates = new Pair<>(100, 100);
+        List<Pair<Integer, Integer>> temporarySetOfProbableCoordinates = new ArrayList<>();
+
+        if (column > 0 && column < 9 && row > 0 && row < 9) {
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row-1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row+1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column-1, row));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column+1, row));
+            probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
+        }
+
+        if (column == 0 && row > 0 && row < 9) {
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row-1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row+1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column+1, row));
+            probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
+        }
+
+        if (column == 9 && row > 0 && row < 9) {
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row-1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row+1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column-1, row));
+            probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
+        }
+
+        if (column > 0 && column < 9 && row == 0) {
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row+1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column-1, row));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column+1, row));
+            probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
+        }
+
+        if (column > 0 && column < 9 && row == 9) {
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row-1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column-1, row));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column+1, row));
+            probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
+        }
+
+        if (column == 0 && row == 0) {
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row+1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column+1, row));
+            probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
+        }
+
+        if (column == 9 && row == 0) {
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row+1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column-1, row));
+            probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
+        }
+
+        if (column == 0 && row == 9) {
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row-1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column+1, row));
+            probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
+        }
+
+        if (column == 9 && row == 9) {
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row-1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column-1, row));
+            probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
+        }
+
+        return probableCoordinates;
+
+    }
+
+    public Pair<Integer, Integer> extractedShootAroundHitMast(
+            List<Pair<Integer, Integer>> temporarySetOfProbableCoordinates, Random random) {
+
+        Pair<Integer, Integer> probableCoordinates = new Pair<>(100, 100);
+        List<Pair<Integer, Integer>> setOfProbableCoordinates = new ArrayList<>();
+
+        for (Pair<Integer, Integer> coordinates : temporarySetOfProbableCoordinates) {
+            if (coordinatesForComputerShoot.contains(coordinates)) {
+                setOfProbableCoordinates.add(coordinates);
+            }
+        }
+        if (setOfProbableCoordinates.size() > 1) {
+            probableCoordinates = setOfProbableCoordinates.get(random.
+                    nextInt(setOfProbableCoordinates.size()));
+        } else {
+            if (setOfProbableCoordinates.size() > 0) {
+                probableCoordinates = setOfProbableCoordinates.get(0);
+            }
+        }
+
+        return probableCoordinates;
+
+    }
+
 
     public ShipMast identifyShipMast(int column, int row, List<ShipMast> shipMastsList) {
         ShipMast wantedShipMast = new ShipMast(new Pair<>(100, 100));
@@ -772,9 +823,9 @@ public class Player {
         for (int i = 0; i < 10; i++) {
             for (int n = 0; n < 10; n++) {
                 if (copyOfPlayerBoard[i][n] == 2) {
-                    Pair<Integer, Integer> coordinatedToRemove = new Pair<>(i, n);
-                    if (coordinatesForComputerShoot.contains(coordinatedToRemove)) {
-                        coordinatesForComputerShoot.remove(coordinatedToRemove);
+                    Pair<Integer, Integer> coordinatesToRemove = new Pair<>(i, n);
+                    if (coordinatesForComputerShoot.contains(coordinatesToRemove)) {
+                        coordinatesForComputerShoot.remove(coordinatesToRemove);
                     }
                 }
             }
@@ -790,51 +841,49 @@ public class Player {
         computerScoreLabel.setText(String.valueOf(scores.getComputerScore()));
     }
 
-    public void resetAllForNewGame() {
+    public void buildShipsOnComputerBoard() {
 
-        for (ShipMast shipMast : shipsContainer.getSetOfShipMasts()) {
-            gridPlayer.getChildren().remove(shipMast);
+        Map<String, Ship> map = shipsContainer.getSetOfComputerShips();
+
+        Deque<Ship> theShipsForCheck = new ArrayDeque<>();
+        for (Map.Entry<String, Ship> entry : map.entrySet()) {
+            theShipsForCheck.offer(entry.getValue());
         }
-        shipsContainer.getSetOfShipMasts().clear();
 
-        for (ShipMast shipMast : shipsContainer.getSetOfComputerShipMasts()) {
-            gridComputer.getChildren().remove(shipMast);
+        Deque<Ship> theShipsForSaveData = new ArrayDeque<>();
+        for (Map.Entry<String, Ship> entry : map.entrySet()) {
+            theShipsForSaveData.offer(entry.getValue());
         }
-        shipsContainer.getSetOfComputerShipMasts().clear();
 
-        for (Hit hit : shipsContainer.getSetOfHits()) {
-            gridPlayer.getChildren().remove(hit);
-        }
-        shipsContainer.getSetOfHits().clear();
+        List<Pair<Integer, Integer>> prohibitedCoordinates = new ArrayList<>();
 
-        for (Hit hit : shipsContainer.getSetOfComputerHits()) {
-            gridComputer.getChildren().remove(hit);
-        }
-        shipsContainer.getSetOfComputerHits().clear();
+        Random random = new Random();
 
-        for (Missed missed : shipsContainer.getSetOfMissed()) {
-            gridPlayer.getChildren().remove(missed);
-        }
-        shipsContainer.getSetOfMissed().clear();
-
-        for (Missed missed : shipsContainer.getSetOfComputerMissed()) {
-            gridComputer.getChildren().remove(missed);
-        }
-        shipsContainer.getSetOfComputerMissed().clear();
-
-        shipsContainer.getSetOfShips().clear();
-        shipsContainer.getSetOfComputerShips().clear();
-
-        for (int i = 0; i < 10; i++) {
-            for (int n = 0; n < 10; n++) {
-                copyOfPlayerBoard[i][n] = 0;
-                copyOfComputerBoard[i][n] = 0;
+        while (getSumOfShipStatus(map) < 10) { // until all computer ships built
+            int numberOfMasts = checkShipExistsInShipsContainer(theShipsForCheck);
+            int column;
+            int row;
+            while (true) {
+                column = random.nextInt(10);
+                row = random.nextInt(10);
+                Pair<Integer, Integer> coordinates = new Pair<>(column, row);
+                if (!prohibitedCoordinates.contains(coordinates)) {
+                    if (computerBoard[column][row] == 0) {
+                        List<String> allowedDirections = isEnoughSpaceForShip(column, row, computerBoard, numberOfMasts);
+                        if (!allowedDirections.isEmpty()) {
+                            String direction = allowedDirections.get(random.nextInt(allowedDirections.size()));
+                            buildShip(column, row, direction, numberOfMasts, theShipsForSaveData);
+                            prohibitedCoordinates.clear();
+                            break;
+                        } else {
+                            prohibitedCoordinates.add(coordinates);
+                        }
+                    } else {
+                        prohibitedCoordinates.add(coordinates);
+                    }
+                }
             }
         }
-
-        blockActionOnBoard(gridPlayer, false);
-
-        firstMastOfShipChecker = true;
 
     }
 
@@ -962,50 +1011,54 @@ public class Player {
 
     }
 
-    public void buildShipsOnComputerBoard() {
+    public void resetAllForNewGame() {
 
-        Map<String, Ship> map = shipsContainer.getSetOfComputerShips();
-
-        Deque<Ship> theShipsForCheck = new ArrayDeque<>();
-        for (Map.Entry<String, Ship> entry : map.entrySet()) {
-            theShipsForCheck.offer(entry.getValue());
+        for (ShipMast shipMast : shipsContainer.getSetOfShipMasts()) {
+            gridPlayer.getChildren().remove(shipMast);
         }
+        shipsContainer.getSetOfShipMasts().clear();
 
-        Deque<Ship> theShipsForSaveData = new ArrayDeque<>();
-        for (Map.Entry<String, Ship> entry : map.entrySet()) {
-            theShipsForSaveData.offer(entry.getValue());
+        for (ShipMast shipMast : shipsContainer.getSetOfComputerShipMasts()) {
+            gridComputer.getChildren().remove(shipMast);
         }
+        shipsContainer.getSetOfComputerShipMasts().clear();
 
-        List<Pair<Integer, Integer>> prohibitedCoordinates = new ArrayList<>();
+        for (Hit hit : shipsContainer.getSetOfHits()) {
+            gridPlayer.getChildren().remove(hit);
+        }
+        shipsContainer.getSetOfHits().clear();
 
-        Random random = new Random();
+        for (Hit hit : shipsContainer.getSetOfComputerHits()) {
+            gridComputer.getChildren().remove(hit);
+        }
+        shipsContainer.getSetOfComputerHits().clear();
 
-        while (getSumOfShipStatus(map) < 10) { // until all computer ships built
-            int numberOfMasts = checkShipExistsInShipsContainer(theShipsForCheck);
-            int column;
-            int row;
-            while (true) {
-                column = random.nextInt(10);
-                row = random.nextInt(10);
-                Pair<Integer, Integer> coordinates = new Pair<>(column, row);
-                if (!prohibitedCoordinates.contains(coordinates)) {
-                    if (computerBoard[column][row] == 0) {
-                        List<String> allowedDirections = isEnoughSpaceForShip(column, row, computerBoard, numberOfMasts);
-                        if (!allowedDirections.isEmpty()) {
-                            String direction = isEnoughSpaceForShip(column, row, computerBoard, numberOfMasts).
-                                    get(random.nextInt(allowedDirections.size()));
-                            buildShip(column, row, direction, numberOfMasts, theShipsForSaveData);
-                            prohibitedCoordinates.clear();
-                            break;
-                        } else {
-                            prohibitedCoordinates.add(coordinates);
-                        }
-                    } else {
-                        prohibitedCoordinates.add(coordinates);
-                    }
-                }
+        for (Missed missed : shipsContainer.getSetOfMissed()) {
+            gridPlayer.getChildren().remove(missed);
+        }
+        shipsContainer.getSetOfMissed().clear();
+
+        for (Missed missed : shipsContainer.getSetOfComputerMissed()) {
+            gridComputer.getChildren().remove(missed);
+        }
+        shipsContainer.getSetOfComputerMissed().clear();
+
+        shipsContainer.getSetOfShips().clear();
+        shipsContainer.getSetOfComputerShips().clear();
+
+        for (int i = 0; i < 10; i++) {
+            for (int n = 0; n < 10; n++) {
+                copyOfPlayerBoard[i][n] = 0;
+                copyOfComputerBoard[i][n] = 0;
             }
         }
+
+        blockActionOnBoard(gridPlayer, false);
+
+        firstMastOfShipChecker = true;
+        coordinatesForComputerShoot.clear();
+        wasPlayerMastHit = false;
+        playerHitMastCoordinates = null;
 
     }
 
