@@ -4,9 +4,8 @@ import javafx.util.Pair;
 
 import java.util.*;
 
-// all this class - for remember to not do it again :)
-
 public class Computer {
+/*
     private ShipsContainer shipsContainer;
     private Player player;
     private int computerBoard[][] = new int[10][10];
@@ -225,8 +224,8 @@ public class Computer {
             ship_1_4_coordinates.add(new Pair<>(6, 9));
 
             extractedCreateShipObjectsAndAddingToContainer(ship_4_1_coordinates, ship_3_1_coordinates, ship_3_2_coordinates,
-                    ship_2_1_coordinates, ship_2_2_coordinates, ship_2_3_coordinates, ship_1_1_coordinates,
-                    ship_1_2_coordinates, ship_1_3_coordinates, ship_1_4_coordinates);
+                ship_2_1_coordinates, ship_2_2_coordinates, ship_2_3_coordinates, ship_1_1_coordinates,
+                ship_1_2_coordinates, ship_1_3_coordinates, ship_1_4_coordinates);
         }
 
         if (randomParameter == 1) {
@@ -262,8 +261,8 @@ public class Computer {
             ship_1_4_coordinates.add(new Pair<>(4, 9));
 
             extractedCreateShipObjectsAndAddingToContainer(ship_4_1_coordinates, ship_3_1_coordinates, ship_3_2_coordinates,
-                    ship_2_1_coordinates, ship_2_2_coordinates, ship_2_3_coordinates, ship_1_1_coordinates,
-                    ship_1_2_coordinates, ship_1_3_coordinates, ship_1_4_coordinates);
+                ship_2_1_coordinates, ship_2_2_coordinates, ship_2_3_coordinates, ship_1_1_coordinates,
+                ship_1_2_coordinates, ship_1_3_coordinates, ship_1_4_coordinates);
         }
 
         if (randomParameter == 2) {
@@ -299,8 +298,8 @@ public class Computer {
             ship_1_4_coordinates.add(new Pair<>(8, 8));
 
             extractedCreateShipObjectsAndAddingToContainer(ship_4_1_coordinates, ship_3_1_coordinates, ship_3_2_coordinates,
-                    ship_2_1_coordinates, ship_2_2_coordinates, ship_2_3_coordinates, ship_1_1_coordinates,
-                    ship_1_2_coordinates, ship_1_3_coordinates, ship_1_4_coordinates);
+                ship_2_1_coordinates, ship_2_2_coordinates, ship_2_3_coordinates, ship_1_1_coordinates,
+                ship_1_2_coordinates, ship_1_3_coordinates, ship_1_4_coordinates);
         }
 
         if (randomParameter == 3) {
@@ -336,8 +335,8 @@ public class Computer {
             ship_1_4_coordinates.add(new Pair<>(9, 9));
 
             extractedCreateShipObjectsAndAddingToContainer(ship_4_1_coordinates, ship_3_1_coordinates, ship_3_2_coordinates,
-                    ship_2_1_coordinates, ship_2_2_coordinates, ship_2_3_coordinates, ship_1_1_coordinates,
-                    ship_1_2_coordinates, ship_1_3_coordinates, ship_1_4_coordinates);
+                ship_2_1_coordinates, ship_2_2_coordinates, ship_2_3_coordinates, ship_1_1_coordinates,
+                ship_1_2_coordinates, ship_1_3_coordinates, ship_1_4_coordinates);
         }
 
         if (randomParameter == 4) {
@@ -373,18 +372,18 @@ public class Computer {
             ship_1_4_coordinates.add(new Pair<>(9, 1));
 
             extractedCreateShipObjectsAndAddingToContainer(ship_4_1_coordinates, ship_3_1_coordinates, ship_3_2_coordinates,
-                    ship_2_1_coordinates, ship_2_2_coordinates, ship_2_3_coordinates, ship_1_1_coordinates,
-                    ship_1_2_coordinates, ship_1_3_coordinates, ship_1_4_coordinates);
+                ship_2_1_coordinates, ship_2_2_coordinates, ship_2_3_coordinates, ship_1_1_coordinates,
+                ship_1_2_coordinates, ship_1_3_coordinates, ship_1_4_coordinates);
         }
 
     }
 
     public void extractedCreateShipObjectsAndAddingToContainer
-            (List<Pair<Integer, Integer>> ship_4_1_coordinates, List<Pair<Integer, Integer>> ship_3_1_coordinates,
-             List<Pair<Integer, Integer>> ship_3_2_coordinates, List<Pair<Integer, Integer>> ship_2_1_coordinates,
-             List<Pair<Integer, Integer>> ship_2_2_coordinates, List<Pair<Integer, Integer>> ship_2_3_coordinates,
-             List<Pair<Integer, Integer>> ship_1_1_coordinates, List<Pair<Integer, Integer>> ship_1_2_coordinates,
-             List<Pair<Integer, Integer>> ship_1_3_coordinates, List<Pair<Integer, Integer>> ship_1_4_coordinates) {
+        (List<Pair<Integer, Integer>> ship_4_1_coordinates, List<Pair<Integer, Integer>> ship_3_1_coordinates,
+         List<Pair<Integer, Integer>> ship_3_2_coordinates, List<Pair<Integer, Integer>> ship_2_1_coordinates,
+         List<Pair<Integer, Integer>> ship_2_2_coordinates, List<Pair<Integer, Integer>> ship_2_3_coordinates,
+         List<Pair<Integer, Integer>> ship_1_1_coordinates, List<Pair<Integer, Integer>> ship_1_2_coordinates,
+         List<Pair<Integer, Integer>> ship_1_3_coordinates, List<Pair<Integer, Integer>> ship_1_4_coordinates) {
 
         Ship computerShip_4_1 = new Ship("Ship 4-masts (computer) (1)", ship_4_1_coordinates);
         Ship computerShip_3_1 = new Ship("Ship 3-masts (computer) (1)", ship_3_1_coordinates);
@@ -397,8 +396,8 @@ public class Computer {
         Ship computerShip_1_3 = new Ship("Ship 1-masts (computer) (3)", ship_1_3_coordinates);
         Ship computerShip_1_4 = new Ship("Ship 1-masts (computer) (4)", ship_1_4_coordinates);
         List<Ship> shipCollection = new ArrayList<>(Arrays.asList(computerShip_4_1, computerShip_3_1,
-                computerShip_3_2, computerShip_2_1, computerShip_2_2, computerShip_2_3,
-                computerShip_1_1, computerShip_1_2, computerShip_1_3, computerShip_1_4));
+            computerShip_3_2, computerShip_2_1, computerShip_2_2, computerShip_2_3,
+            computerShip_1_1, computerShip_1_2, computerShip_1_3, computerShip_1_4));
 
         shipsContainer.addComputerShipsToContainer(shipCollection);
 
@@ -412,5 +411,8 @@ public class Computer {
             player.protectShipPosition(board, shipCoordinates);
         }
     }
+*/
 
 }
+
+// all this class - for remember to not do it again :)

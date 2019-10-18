@@ -67,13 +67,13 @@ public class ShipBattle extends Application {
                 81, 27,
                 27, 27, 27, 27, 27, 27, 27, 27, 27, 27};
         for(int i = 0; i<columnSizes.length; i++) {
-            grid.getColumnConstraints().add(new ColumnConstraints(columnSizes[i])); }
+            grid.getColumnConstraints().add(new ColumnConstraints(columnSizes[i]));
+        }
 
         // setting size of rows in the grid
         int rowSizes[] = {54, 14, 40, 14, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 40, 40};
         for(int i = 0; i<rowSizes.length; i++) {
             grid.getRowConstraints().add(new RowConstraints(rowSizes[i]));
-
         }
 
         int columnSizesForGrids[] = {27, 27, 27, 27, 27, 27, 27, 27, 27, 27};
@@ -86,7 +86,6 @@ public class ShipBattle extends Application {
         for(int i = 0; i<rowSizesForGrids.length; i++) {
             gridPlayer.getRowConstraints().add(new RowConstraints(rowSizesForGrids[i]));
             gridComputer.getRowConstraints().add(new RowConstraints(rowSizesForGrids[i]));
-
         }
 
         // setting top labels and adding to the grid
@@ -160,7 +159,6 @@ public class ShipBattle extends Application {
                         "Then press \"Start\" to start your game.");
                 helpButton.setDisable(true);
             });
-
         });
 
         resetButton.setDisable(true);
@@ -200,9 +198,7 @@ public class ShipBattle extends Application {
             player.createComputerShipObjectsAndAddingToContainer();
             player.buildShipsOnComputerBoard();
             player.shootOnComputerBoard();
-
         });
-
 
         // setting actions for "Help" button
         helpButton.setOnAction(event -> {
@@ -221,9 +217,7 @@ public class ShipBattle extends Application {
         });
 
         // setting actions for "Are you sure?" button for "Exit" choice
-        areYouSureExitButton.setOnAction(event -> {
-            Platform.exit();
-        });
+        areYouSureExitButton.setOnAction(event -> Platform.exit());
 
         // setting actions for "Cancel" button for "Exit" choice
         cancelExitButton.setOnAction(event -> {
@@ -246,8 +240,5 @@ public class ShipBattle extends Application {
         primaryStage.setResizable(false);
         primaryStage.sizeToScene();
         primaryStage.show();
-
     }
-
 }
-

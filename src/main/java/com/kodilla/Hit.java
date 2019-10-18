@@ -12,8 +12,8 @@ public class Hit extends Button {
         this.hitCoordinates = hitCoordinates;
 
         setStyle("-fx-background-image: url(explosion_square.jpg);");
-        setMinSize(27, 27);
-        setMaxSize(27, 27);
+        setMinSize(25, 25);
+        setMaxSize(25, 25);
 //        setStyle("-fx-border-style: none");
 
     }

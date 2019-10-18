@@ -17,16 +17,19 @@ public class Player {
     private GridPane gridComputer;
     private ShipsContainer shipsContainer;
     private Scores scores;
-    private int playerBoard[][] = new int[10][10];
-    private int copyOfPlayerBoard[][] = new int [10][10];
-    private int computerBoard[][] = new int[10][10];
-    private int copyOfComputerBoard[][] = new int [10][10];
+    private int[][] playerBoard = new int[10][10];
+    private int[][] copyOfPlayerBoard = new int[10][10];
+    private int[][] computerBoard = new int[10][10];
+    private int[][] copyOfComputerBoard = new int[10][10];
     private boolean firstMastOfShipChecker = true; // checks if player sets the first mast of the ship
     private int maxNumberOfMasts; // allows player to build a ship with max. number of masts
     private int maxNumberOfShips; // this declaration is 'must be', because the reference is used inside condition 'if'
     private List<Pair<Integer, Integer>> coordinatesForComputerShoot = new ArrayList<>();
     private boolean wasPlayerMastHit;
     private Pair<Integer, Integer> playerHitMastCoordinates;
+    private Deque<Pair<Integer, Integer>> queueOfPlayerMastsHit = new ArrayDeque<>(); // queue for store player masts hit
+    private Pair<Integer, Integer> playerLastHitMastCoordinates;
+    private Pair<Integer, Integer> playerPenultimateHitMastCoordinates;
     private GameButton startButton;
     private GameButton newGameButton;
     private GameLabel userInterfaceLabel;
@@ -75,8 +78,8 @@ public class Player {
     }
 
     public void setEmptyComputerBoard() {
-        for(int i = 0; i < 10; i++) {
-            for(int n = 0; n < 10; n++) {
+        for (int i = 0; i < 10; i++) {
+            for (int n = 0; n < 10; n++) {
                 computerBoard[i][n] = 0;
             }
         }
@@ -114,7 +117,7 @@ public class Player {
 
         // preparing and adding set of ships to ships container
         List<Ship> shipCollection = new ArrayList<>(Arrays.asList(ship_4_1, ship_3_1, ship_3_2, ship_2_1,
-                ship_2_2, ship_2_3, ship_1_1, ship_1_2, ship_1_3, ship_1_4));
+            ship_2_2, ship_2_3, ship_1_1, ship_1_2, ship_1_3, ship_1_4));
         shipsContainer.addShipsToContainer(shipCollection);
 
     }
@@ -135,8 +138,8 @@ public class Player {
 
         // preparing and adding set of ships to ships container
         List<Ship> shipCollection = new ArrayList<>(Arrays.asList(computerShip_4_1, computerShip_3_1,
-                computerShip_3_2, computerShip_2_1, computerShip_2_2, computerShip_2_3,
-                computerShip_1_1, computerShip_1_2, computerShip_1_3, computerShip_1_4));
+            computerShip_3_2, computerShip_2_1, computerShip_2_2, computerShip_2_3,
+            computerShip_1_1, computerShip_1_2, computerShip_1_3, computerShip_1_4));
         shipsContainer.addComputerShipsToContainer(shipCollection);
 
     }
@@ -226,14 +229,14 @@ public class Player {
             if (node.getClass() == gameButton.getClass()) {
                 gameButton = (GameButton) node;
             }
-            if (gameButton.getButtonName() == buttonName) {
+            if (gameButton.getButtonName().equals(buttonName)) {
                 wantedGameButton = gameButton;
             }
         }
         return wantedGameButton;
     }
 
-    public GameLabel findLabel (String labelName) {
+    public GameLabel findLabel(String labelName) {
         GameLabel gameLabel = new GameLabel(100, 50, "A", "AA");
         GameLabel wantedGameLabel = new GameLabel(100, 50, "B", "BB");
         ObservableList<Node> childrenOfGameLabels = grid.getChildren();
@@ -241,7 +244,7 @@ public class Player {
             if (node.getClass() == gameLabel.getClass()) {
                 gameLabel = (GameLabel) node;
             }
-            if (gameLabel.getName() == labelName) {
+            if (gameLabel.getName().equals(labelName)) {
                 wantedGameLabel = gameLabel;
             }
         }
@@ -255,62 +258,71 @@ public class Player {
         return 0;
     }
 
-    public boolean checkNeighbourDiagonally(int board[][], int column, int row) {
+    public boolean checkNeighbourDiagonally(int[][] board, int column, int row) {
 
         boolean result = false;
 
         if (board[column][row] != 2) {
 
             if (column > 0 && column < 9 && row > 0 && row < 9) {
-                if (board[column-1][row-1] != 1 && board[column+1][row-1] != 1
-                        && board[column-1][row+1] != 1 && board[column+1][row+1] != 1
-                        && board[column-1][row-1] != 3 && board[column+1][row-1] != 3
-                        && board[column-1][row+1] != 3 && board[column+1][row+1] != 3)
-                { result = true; }
+                if (board[column - 1][row - 1] != 1 && board[column + 1][row - 1] != 1
+                    && board[column - 1][row + 1] != 1 && board[column + 1][row + 1] != 1
+                    && board[column - 1][row - 1] != 3 && board[column + 1][row - 1] != 3
+                    && board[column - 1][row + 1] != 3 && board[column + 1][row + 1] != 3) {
+                    result = true;
+                }
             }
 
             if (column == 0 && row > 0 && row < 9) {
-                if (board[column+1][row-1] != 1 && board[column+1][row+1] != 1
-                        && board[column+1][row-1] != 3 && board[column+1][row+1] != 3)
-                { result = true; }
+                if (board[column + 1][row - 1] != 1 && board[column + 1][row + 1] != 1
+                    && board[column + 1][row - 1] != 3 && board[column + 1][row + 1] != 3) {
+                    result = true;
+                }
             }
 
             if (column == 9 && row > 0 && row < 9) {
-                if (board[column-1][row-1] != 1 && board[column-1][row+1] != 1
-                        && board[column-1][row-1] != 3 && board[column-1][row+1] != 3)
-                { result = true; }
+                if (board[column - 1][row - 1] != 1 && board[column - 1][row + 1] != 1
+                    && board[column - 1][row - 1] != 3 && board[column - 1][row + 1] != 3) {
+                    result = true;
+                }
             }
 
             if (column > 0 && column < 9 && row == 0) {
-                if (board[column-1][row+1] != 1 && board[column+1][row+1] != 1
-                        && board[column-1][row+1] != 3 && board[column+1][row+1] != 3)
-                { result = true; }
+                if (board[column - 1][row + 1] != 1 && board[column + 1][row + 1] != 1
+                    && board[column - 1][row + 1] != 3 && board[column + 1][row + 1] != 3) {
+                    result = true;
+                }
             }
 
             if (column > 0 && column < 9 && row == 9) {
-                if (board[column-1][row-1] != 1 && board[column+1][row-1] != 1
-                        && board[column-1][row-1] != 3 && board[column+1][row-1] != 3)
-                { result = true; }
+                if (board[column - 1][row - 1] != 1 && board[column + 1][row - 1] != 1
+                    && board[column - 1][row - 1] != 3 && board[column + 1][row - 1] != 3) {
+                    result = true;
+                }
             }
 
             if (column == 0 && row == 0) {
-                if (board[column+1][row+1] != 1 && board[column+1][row+1] != 3)
-                { result = true; }
+                if (board[column + 1][row + 1] != 1 && board[column + 1][row + 1] != 3) {
+                    result = true;
+                }
             }
 
             if (column == 9 && row == 0) {
-                if (board[column-1][row+1] != 1 && board[column-1][row+1] != 3)
-                { result = true; }
+                if (board[column - 1][row + 1] != 1 && board[column - 1][row + 1] != 3) {
+                    result = true;
+                }
             }
 
             if (column == 0 && row == 9) {
-                if (board[column+1][row-1] != 1 && board[column+1][row-1] != 3)
-                { result = true; }
+                if (board[column + 1][row - 1] != 1 && board[column + 1][row - 1] != 3) {
+                    result = true;
+                }
             }
 
             if (column == 9 && row == 9) {
-                if (board[column-1][row-1] != 1 && board[column-1][row-1] != 3)
-                { result = true; }
+                if (board[column - 1][row - 1] != 1 && board[column - 1][row - 1] != 3) {
+                    result = true;
+                }
             }
 
         }
@@ -319,49 +331,67 @@ public class Player {
 
     }
 
-    public boolean checkBuildingOnlyOneShipAtTime(int board[][], int column, int row) {
+    public boolean checkBuildingOnlyOneShipAtTime(int[][] board, int column, int row) {
 
         boolean result = false;
 
         if (column > 0 && column < 9 && row > 0 && row < 9) {
-            if (board[column][row-1] == 3 || board[column][row+1] == 3
-                    || board[column-1][row] == 3 || board[column+1][row] == 3) { result = true; }
+            if (board[column][row - 1] == 3 || board[column][row + 1] == 3
+                || board[column - 1][row] == 3 || board[column + 1][row] == 3) {
+                result = true;
+            }
         }
 
         if (column == 0 && row > 0 && row < 9) {
-            if (board[column][row-1] == 3 || board[column][row+1] == 3
-                    || board[column + 1][row] == 3) { result = true; }
+            if (board[column][row - 1] == 3 || board[column][row + 1] == 3
+                || board[column + 1][row] == 3) {
+                result = true;
+            }
         }
 
         if (column == 9 && row > 0 && row < 9) {
-            if (board[column][row-1] == 3 || board[column][row+1] == 3
-                    || board[column - 1][row] == 3) { result = true; }
+            if (board[column][row - 1] == 3 || board[column][row + 1] == 3
+                || board[column - 1][row] == 3) {
+                result = true;
+            }
         }
 
         if (column > 0 && column < 9 && row == 0) {
-            if (board[column][row+1] == 3
-                    || board[column-1][row] == 3 || board[column+1][row] == 3) { result = true; }
+            if (board[column][row + 1] == 3
+                || board[column - 1][row] == 3 || board[column + 1][row] == 3) {
+                result = true;
+            }
         }
 
         if (column > 0 && column < 9 && row == 9) {
-            if (board[column][row-1] == 3
-                    || board[column-1][row] == 3 || board[column+1][row] == 3) { result = true; }
+            if (board[column][row - 1] == 3
+                || board[column - 1][row] == 3 || board[column + 1][row] == 3) {
+                result = true;
+            }
         }
 
         if (column == 0 && row == 0) {
-            if (board[column][row+1] == 3 || board[column+1][row] == 3) { result = true; }
+            if (board[column][row + 1] == 3 || board[column + 1][row] == 3) {
+                result = true;
+            }
         }
 
         if (column == 9 && row == 0) {
-            if (board[column][row+1] == 3 || board[column-1][row] == 3) { result = true; }
+            if (board[column][row + 1] == 3 || board[column - 1][row] == 3) {
+                result = true;
+            }
         }
 
         if (column == 0 && row == 9) {
-            if (board[column][row-1] == 3 || board[column+1][row] == 3) { result = true; }
+            if (board[column][row - 1] == 3 || board[column + 1][row] == 3) {
+                result = true;
+            }
         }
 
         if (column == 9 && row == 9) {
-            if (board[column][row-1] == 3 || board[column-1][row] == 3) { result = true; }
+            if (board[column][row - 1] == 3 || board[column - 1][row] == 3) {
+                result = true;
+            }
         }
 
         return result;
@@ -376,7 +406,7 @@ public class Player {
         }
     }
 
-    public void protectShipPosition(int board[][], List<Pair<Integer, Integer>> coordinates) {
+    public void protectShipPosition(int[][] board, List<Pair<Integer, Integer>> coordinates) {
 
         for (Pair<Integer, Integer> pair : coordinates) {
             int column = pair.getKey();
@@ -391,79 +421,107 @@ public class Player {
             if (column > 0 && column < 9 && row > 0 && row < 9) {
                 extractedMethod3(board, column, row);
                 extractedMethod1(board, column, row);
-                board[column-1][row-1] = 2;
-                board[column+1][row-1] = 2;
-                board[column-1][row+1] = 2;
-                board[column+1][row+1] = 2;
+                board[column - 1][row - 1] = 2;
+                board[column + 1][row - 1] = 2;
+                board[column - 1][row + 1] = 2;
+                board[column + 1][row + 1] = 2;
             }
 
             if (column == 0 && row > 0 && row < 9) {
                 extractedMethod1(board, column, row);
-                if (board[column+1][row] != 1) {board[column+1][row] = 2;}
-                board[column+1][row-1] = 2;
-                board[column+1][row+1] = 2;
+                if (board[column + 1][row] != 1) {
+                    board[column + 1][row] = 2;
+                }
+                board[column + 1][row - 1] = 2;
+                board[column + 1][row + 1] = 2;
             }
 
             if (column == 9 && row > 0 && row < 9) {
                 extractedMethod1(board, column, row);
                 extractedMethod2(board, column, row);
-                board[column-1][row+1] = 2;
+                board[column - 1][row + 1] = 2;
             }
 
             if (column > 0 && column < 9 && row == 0) {
                 extractedMethod3(board, column, row);
-                if (board[column][row+1] != 1) {board[column][row+1] = 2;}
-                board[column-1][row+1] = 2;
-                board[column+1][row+1] = 2;
+                if (board[column][row + 1] != 1) {
+                    board[column][row + 1] = 2;
+                }
+                board[column - 1][row + 1] = 2;
+                board[column + 1][row + 1] = 2;
             }
 
             if (column > 0 && column < 9 && row == 9) {
                 extractedMethod3(board, column, row);
-                if (board[column][row-1] != 1) {board[column][row-1] = 2;}
-                board[column-1][row-1] = 2;
-                board[column+1][row-1] = 2;
+                if (board[column][row - 1] != 1) {
+                    board[column][row - 1] = 2;
+                }
+                board[column - 1][row - 1] = 2;
+                board[column + 1][row - 1] = 2;
             }
 
             if (column == 0 && row == 0) {
-                if (board[column][row+1] != 1) {board[column][row+1] = 2;}
-                if (board[column+1][row] != 1) {board[column+1][row] = 2;}
-                board[column+1][row+1] = 2;
+                if (board[column][row + 1] != 1) {
+                    board[column][row + 1] = 2;
+                }
+                if (board[column + 1][row] != 1) {
+                    board[column + 1][row] = 2;
+                }
+                board[column + 1][row + 1] = 2;
             }
 
             if (column == 9 && row == 0) {
-                if (board[column][row+1] != 1) {board[column][row+1] = 2;}
-                if (board[column-1][row] != 1) {board[column-1][row] = 2;}
-                board[column-1][row+1] = 2;
+                if (board[column][row + 1] != 1) {
+                    board[column][row + 1] = 2;
+                }
+                if (board[column - 1][row] != 1) {
+                    board[column - 1][row] = 2;
+                }
+                board[column - 1][row + 1] = 2;
             }
 
             if (column == 0 && row == 9) {
-                if (board[column][row-1] != 1) {board[column][row-1] = 2;}
-                if (board[column+1][row] != 1) {board[column+1][row] = 2;}
-                board[column+1][row-1] = 2;
+                if (board[column][row - 1] != 1) {
+                    board[column][row - 1] = 2;
+                }
+                if (board[column + 1][row] != 1) {
+                    board[column + 1][row] = 2;
+                }
+                board[column + 1][row - 1] = 2;
             }
 
             if (column == 9 && row == 9) {
-                if (board[column][row-1] != 1) {board[column][row-1] = 2;}
+                if (board[column][row - 1] != 1) {
+                    board[column][row - 1] = 2;
+                }
                 extractedMethod2(board, column, row);
             }
-
         }
-
     }
 
-    private void extractedMethod1(int board[][], int column, int row) {
-        if (board[column][row-1] != 1) {board[column][row-1] = 2;}
-        if (board[column][row+1] != 1) {board[column][row+1] = 2;}
+    private void extractedMethod1(int[][] board, int column, int row) {
+        if (board[column][row - 1] != 1) {
+            board[column][row - 1] = 2;
+        }
+        if (board[column][row + 1] != 1) {
+            board[column][row + 1] = 2;
+        }
     }
 
-    private void extractedMethod2(int board[][], int column, int row) {
-        if (board[column-1][row] != 1) {board[column-1][row] = 2;}
-        board[column-1][row-1] = 2;
+    private void extractedMethod2(int[][] board, int column, int row) {
+        if (board[column - 1][row] != 1) {
+            board[column - 1][row] = 2;
+        }
+        board[column - 1][row - 1] = 2;
     }
 
-    private void extractedMethod3(int board[][], int column, int row) {
-        if (board[column-1][row] != 1) {board[column-1][row] = 2;}
-        if (board[column+1][row] != 1) {board[column+1][row] = 2;}
+    private void extractedMethod3(int[][] board, int column, int row) {
+        if (board[column - 1][row] != 1) {
+            board[column - 1][row] = 2;
+        }
+        if (board[column + 1][row] != 1) {
+            board[column + 1][row] = 2;
+        }
     }
 
     public void removeShipMast(List<Pair<Integer, Integer>> coordinates) {
@@ -486,11 +544,13 @@ public class Player {
                             maxNumberOfMasts++;
                         }
                         if (maxNumberOfShips == 10 && maxNumberOfMasts == 4
-                                || maxNumberOfShips == 9 && maxNumberOfMasts == 3
-                                || maxNumberOfShips == 8 && maxNumberOfMasts == 3
-                                || maxNumberOfShips == 7 && maxNumberOfMasts == 2
-                                || maxNumberOfShips == 6 && maxNumberOfMasts == 2
-                                || maxNumberOfShips == 5 && maxNumberOfMasts == 2) {firstMastOfShipChecker = true;}
+                            || maxNumberOfShips == 9 && maxNumberOfMasts == 3
+                            || maxNumberOfShips == 8 && maxNumberOfMasts == 3
+                            || maxNumberOfShips == 7 && maxNumberOfMasts == 2
+                            || maxNumberOfShips == 6 && maxNumberOfMasts == 2
+                            || maxNumberOfShips == 5 && maxNumberOfMasts == 2) {
+                            firstMastOfShipChecker = true;
+                        }
                     }
                 });
             }
@@ -502,24 +562,34 @@ public class Player {
         boolean result = true;
 
         if (column > 0 && column < 9 && row > 0 && row < 9) {
-            if ((playerBoard[column-1][row] == 3 && playerBoard[column+1][row] == 3)
-                    || (playerBoard[column][row-1] == 3 && playerBoard[column][row+1] == 3)) { result = false; }
+            if ((playerBoard[column - 1][row] == 3 && playerBoard[column + 1][row] == 3)
+                || (playerBoard[column][row - 1] == 3 && playerBoard[column][row + 1] == 3)) {
+                result = false;
+            }
         }
 
         if (column == 0 && row > 0 && row < 9) {
-            if (playerBoard[column][row-1] == 3 && playerBoard[column][row+1] == 3) { result = false; }
+            if (playerBoard[column][row - 1] == 3 && playerBoard[column][row + 1] == 3) {
+                result = false;
+            }
         }
 
         if (column == 9 && row > 0 && row < 9) {
-            if (playerBoard[column][row-1] == 3 && playerBoard[column][row+1] == 3) { result = false; }
+            if (playerBoard[column][row - 1] == 3 && playerBoard[column][row + 1] == 3) {
+                result = false;
+            }
         }
 
         if (column > 0 && column < 9 && row == 0) {
-            if (playerBoard[column-1][row] == 3 && playerBoard[column+1][row] == 3) { result = false; }
+            if (playerBoard[column - 1][row] == 3 && playerBoard[column + 1][row] == 3) {
+                result = false;
+            }
         }
 
         if (column > 0 && column < 9 && row == 9) {
-            if (playerBoard[column-1][row] == 3 && playerBoard[column+1][row] == 3) { result = false; }
+            if (playerBoard[column - 1][row] == 3 && playerBoard[column + 1][row] == 3) {
+                result = false;
+            }
         }
 
         return result;
@@ -537,6 +607,7 @@ public class Player {
         List<Missed> computerMissedList = shipsContainer.getSetOfComputerMissed();
         Map<String, Ship> playerShipsMap = shipsContainer.getSetOfShips();
         Map<String, Ship> computerShipsMap = shipsContainer.getSetOfComputerShips();
+//        Deque<Ship> theQueueOfPlayerMastsHit = new ArrayDeque<>(); // create queue for store player masts hit
         createListOfCoordinatesToComputerShoot();
         Random random = new Random();
         ControlSquare controlSquare = new ControlSquare(new Pair<>(100, 100));
@@ -595,29 +666,117 @@ public class Player {
         int column;
         int row;
 
+//        playerPenultimateHitMastCoordinates = playerLastHitMastCoordinates;
+//        playerLastHitMastCoordinates = playerHitMastCoordinates;
+
+/*
         if (wasPlayerMastHit) {
+
+            System.out.println("FIRST shoot AFTER MAST WAS HIT *** playerHitMastCoordinates: " + playerHitMastCoordinates);
+            playerLastHitMastCoordinates = playerHitMastCoordinates; // ----------------------
+
+            Pair<Integer, Integer> probableCoordinates = shootAroundHitMast(random);
+            Pair<Integer, Integer> prohibitedCoordinates = new Pair<>(100, 100);
+
+            if (!probableCoordinates.equals(prohibitedCoordinates)) {
+                column = probableCoordinates.getKey();
+                row = probableCoordinates.getValue();
+                coordinatesForComputerShoot.remove(probableCoordinates);
+
+                playerPenultimateHitMastCoordinates = playerHitMastCoordinates; // ----------------------
+
+            } else {
+                // TUTAJ trzeba napisać mechanizm radzący sobie z końcem niezatopionego statku
+                // bo pola o wybranych współrzędnych (100, 100) nie ma w dozwolonym zbiorze
+                // a takie współrzędne zostały zwrócone, ponieważ poprzedni strzał w trafił już poza statek
+
+                // więc trzeba wrócić do strzelania w kierunku przeciwnym
+
+                // a cały czas mamy współrzędne ostatniego trafienia (playerHitMastCoordinates), na których właśnie przed chwilą
+                // pracowała metoda shootAroundHitMast
+                // oraz współrzędne poprzednio trafionego masztu (playerPreviouslyHitMastCoordinates)
+
+                System.out.println("SECOND shoot AFTER MAST WAS HIT *** playerHitMastCoordinates: " + playerHitMastCoordinates);
+                System.out.println("playerLastHitMastCoordinates: " + playerLastHitMastCoordinates);
+                playerHitMastCoordinates = playerLastHitMastCoordinates; // ----------------------
+
+                probableCoordinates = shootAroundHitMast(random);
+                prohibitedCoordinates = new Pair<>(100, 100);
+                if (!probableCoordinates.equals(prohibitedCoordinates)) {
+                    column = probableCoordinates.getKey();
+                    row = probableCoordinates.getValue();
+                    coordinatesForComputerShoot.remove(probableCoordinates);
+                } else {
+
+                    System.out.println("THIRD shoot AFTER MAST WAS HIT *** playerHitMastCoordinates: " + playerHitMastCoordinates);
+                    System.out.println("playerLastHitMastCoordinates: " + playerLastHitMastCoordinates);
+                    System.out.println("playerPenultimateHitMastCoordinates: " + playerPenultimateHitMastCoordinates);
+                    playerHitMastCoordinates = playerPenultimateHitMastCoordinates; // ----------------------
+
+                    probableCoordinates = shootAroundHitMast(random);
+                    prohibitedCoordinates = new Pair<>(100, 100);
+                    if (!probableCoordinates.equals(prohibitedCoordinates)) {
+                        column = probableCoordinates.getKey();
+                        row = probableCoordinates.getValue();
+                        coordinatesForComputerShoot.remove(probableCoordinates);
+                    } else {
+                        System.out.println("random shoot AFTER MAST WAS HIT ------------------------------ should not happen...");
+
+                        Pair<Integer, Integer> randomCoordinates = coordinatesForComputerShoot.
+                            get(random.nextInt(coordinatesForComputerShoot.size()));
+                        column = randomCoordinates.getKey();
+                        row = randomCoordinates.getValue();
+                        coordinatesForComputerShoot.remove(randomCoordinates);
+                    }
+                }
+            }
+        } else {
+
+            System.out.println("random shoot  ------  MAST WASN'T HIT");
+
+            Pair<Integer, Integer> randomCoordinates = coordinatesForComputerShoot.
+                get(random.nextInt(coordinatesForComputerShoot.size()));
+            column = randomCoordinates.getKey();
+            row = randomCoordinates.getValue();
+            coordinatesForComputerShoot.remove(randomCoordinates);
+        }
+*/
+
+        if (wasPlayerMastHit) {
+            System.out.println("FIRST trial AFTER MAST WAS HIT *** playerHitMastCoordinates: " + playerHitMastCoordinates);
             Pair<Integer, Integer> probableCoordinates = shootAroundHitMast(random);
             Pair<Integer, Integer> prohibitedCoordinates = new Pair<>(100, 100);
             if (!probableCoordinates.equals(prohibitedCoordinates)) {
                 column = probableCoordinates.getKey();
                 row = probableCoordinates.getValue();
                 coordinatesForComputerShoot.remove(probableCoordinates);
-                System.out.println(probableCoordinates); // ******************************************
             } else {
-                Pair<Integer, Integer> randomCoordinates = coordinatesForComputerShoot.
-                        get(random.nextInt(coordinatesForComputerShoot.size()));
-                column = randomCoordinates.getKey();
-                row = randomCoordinates.getValue();
-                coordinatesForComputerShoot.remove(randomCoordinates);
-                System.out.println(randomCoordinates);
+                // TUTAJ trzeba napisać mechanizm radzący sobie z końcem niezatopionego statku
+                // bo pola o wybranych współrzędnych (100, 100) nie ma w dozwolonym zbiorze
+                // a takie współrzędne zostały zwrócone, ponieważ poprzedni strzał w trafił już poza statek
+
+                // więc trzeba wrócić do strzelania w kierunku przeciwnym
+
+                // a cały czas mamy współrzędne ostatniego trafienia (playerHitMastCoordinates), na których właśnie przed chwilą
+                // pracowała metoda shootAroundHitMast
+                // oraz współrzędne poprzednio trafionego masztu (playerPreviouslyHitMastCoordinates)
+                do {
+                    playerHitMastCoordinates = queueOfPlayerMastsHit.pop();
+                    System.out.println("SECOND trial AFTER MAST WAS HIT *** playerHitMastCoordinates: " + playerHitMastCoordinates);
+                    probableCoordinates = shootAroundHitMast(random);
+//                    prohibitedCoordinates = new Pair<>(100, 100);
+                } while (probableCoordinates.equals(prohibitedCoordinates));
+                column = probableCoordinates.getKey();
+                row = probableCoordinates.getValue();
+                coordinatesForComputerShoot.remove(probableCoordinates);
             }
         } else {
+            System.out.println("random shoot  ------  MAST WASN'T HIT"); // -------------------------------
             Pair<Integer, Integer> randomCoordinates = coordinatesForComputerShoot.
-                    get(random.nextInt(coordinatesForComputerShoot.size()));
+                get(random.nextInt(coordinatesForComputerShoot.size()));
             column = randomCoordinates.getKey();
             row = randomCoordinates.getValue();
             coordinatesForComputerShoot.remove(randomCoordinates);
-            System.out.println(randomCoordinates);
         }
 
         ShipMast shipMast = identifyShipMast(column, row, playerShipMastsList);
@@ -630,12 +789,17 @@ public class Player {
             shipsContainer.getSetOfHits().add(hit);
             shipMast.setShipMastHit(true);
             wasPlayerMastHit = true;
+            protectWrongWayCoordinatesOnCopyOfPlayerBoard(column, row);
+            showShipProtectedArea(gridPlayer, copyOfPlayerBoard, playerMissedList); // for wrong way coordinates
+            removeProtectedAreaFromListOfCoordinatesForComputerShoot();
             playerHitMastCoordinates = new Pair<>(column, row);
+            queueOfPlayerMastsHit.push(playerHitMastCoordinates); // ***************************************************
             if (isShipSunk(ship, playerShipMastsList)) {
                 protectShipPosition(copyOfPlayerBoard, ship.getMastsCoordinates());
                 showShipProtectedArea(gridPlayer, copyOfPlayerBoard, playerMissedList);
                 removeProtectedAreaFromListOfCoordinatesForComputerShoot();
                 wasPlayerMastHit = false;
+                queueOfPlayerMastsHit.clear(); // **********************************************************************
                 if (areAllShipsSunk(playerShipsMap)) {
                     // THE END OF THE GAME - computer won
                     blockActionOnBoard(gridComputer, true);
@@ -644,90 +808,87 @@ public class Player {
                     newGameButton.setDisable(false);
                 }
             }
-        }  else {
+        } else {
             copyOfPlayerBoard[column][row] = 2;
             Missed missed = new Missed(new Pair<>(column, row));
             gridPlayer.add(missed, column, row);
             shipsContainer.getSetOfMissed().add(missed);
 //            wasPlayerMastHit = false;
         }
-
     }
 
     public Pair<Integer, Integer> shootAroundHitMast(Random random) {
 
         int column = playerHitMastCoordinates.getKey();
         int row = playerHitMastCoordinates.getValue();
-
         Pair<Integer, Integer> probableCoordinates = new Pair<>(100, 100);
         List<Pair<Integer, Integer>> temporarySetOfProbableCoordinates = new ArrayList<>();
 
         if (column > 0 && column < 9 && row > 0 && row < 9) {
-            temporarySetOfProbableCoordinates.add(new Pair<>(column, row-1));
-            temporarySetOfProbableCoordinates.add(new Pair<>(column, row+1));
-            temporarySetOfProbableCoordinates.add(new Pair<>(column-1, row));
-            temporarySetOfProbableCoordinates.add(new Pair<>(column+1, row));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row - 1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row + 1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column - 1, row));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column + 1, row));
+//            removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(temporarySetOfProbableCoordinates);
             probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
         }
-
         if (column == 0 && row > 0 && row < 9) {
-            temporarySetOfProbableCoordinates.add(new Pair<>(column, row-1));
-            temporarySetOfProbableCoordinates.add(new Pair<>(column, row+1));
-            temporarySetOfProbableCoordinates.add(new Pair<>(column+1, row));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row - 1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row + 1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column + 1, row));
+//            removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(temporarySetOfProbableCoordinates);
             probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
         }
-
         if (column == 9 && row > 0 && row < 9) {
-            temporarySetOfProbableCoordinates.add(new Pair<>(column, row-1));
-            temporarySetOfProbableCoordinates.add(new Pair<>(column, row+1));
-            temporarySetOfProbableCoordinates.add(new Pair<>(column-1, row));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row - 1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row + 1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column - 1, row));
+//            removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(temporarySetOfProbableCoordinates);
             probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
         }
-
         if (column > 0 && column < 9 && row == 0) {
-            temporarySetOfProbableCoordinates.add(new Pair<>(column, row+1));
-            temporarySetOfProbableCoordinates.add(new Pair<>(column-1, row));
-            temporarySetOfProbableCoordinates.add(new Pair<>(column+1, row));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row + 1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column - 1, row));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column + 1, row));
+//            removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(temporarySetOfProbableCoordinates);
             probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
         }
-
         if (column > 0 && column < 9 && row == 9) {
-            temporarySetOfProbableCoordinates.add(new Pair<>(column, row-1));
-            temporarySetOfProbableCoordinates.add(new Pair<>(column-1, row));
-            temporarySetOfProbableCoordinates.add(new Pair<>(column+1, row));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row - 1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column - 1, row));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column + 1, row));
+//            removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(temporarySetOfProbableCoordinates);
             probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
         }
-
         if (column == 0 && row == 0) {
-            temporarySetOfProbableCoordinates.add(new Pair<>(column, row+1));
-            temporarySetOfProbableCoordinates.add(new Pair<>(column+1, row));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row + 1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column + 1, row));
+//            removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(temporarySetOfProbableCoordinates);
             probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
         }
-
         if (column == 9 && row == 0) {
-            temporarySetOfProbableCoordinates.add(new Pair<>(column, row+1));
-            temporarySetOfProbableCoordinates.add(new Pair<>(column-1, row));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row + 1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column - 1, row));
+//            removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(temporarySetOfProbableCoordinates);
             probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
         }
-
         if (column == 0 && row == 9) {
-            temporarySetOfProbableCoordinates.add(new Pair<>(column, row-1));
-            temporarySetOfProbableCoordinates.add(new Pair<>(column+1, row));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row - 1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column + 1, row));
+//            removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(temporarySetOfProbableCoordinates);
             probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
         }
-
         if (column == 9 && row == 9) {
-            temporarySetOfProbableCoordinates.add(new Pair<>(column, row-1));
-            temporarySetOfProbableCoordinates.add(new Pair<>(column-1, row));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column, row - 1));
+            temporarySetOfProbableCoordinates.add(new Pair<>(column - 1, row));
+//            removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(temporarySetOfProbableCoordinates);
             probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
         }
-
         return probableCoordinates;
-
     }
 
     public Pair<Integer, Integer> extractedShootAroundHitMast(
-            List<Pair<Integer, Integer>> temporarySetOfProbableCoordinates, Random random) {
+        List<Pair<Integer, Integer>> temporarySetOfProbableCoordinates, Random random) {
 
         Pair<Integer, Integer> probableCoordinates = new Pair<>(100, 100);
         List<Pair<Integer, Integer>> setOfProbableCoordinates = new ArrayList<>();
@@ -739,23 +900,162 @@ public class Player {
         }
         if (setOfProbableCoordinates.size() > 1) {
             probableCoordinates = setOfProbableCoordinates.get(random.
-                    nextInt(setOfProbableCoordinates.size()));
+                nextInt(setOfProbableCoordinates.size()));
         } else {
             if (setOfProbableCoordinates.size() > 0) {
                 probableCoordinates = setOfProbableCoordinates.get(0);
             }
         }
-
+        System.out.println(setOfProbableCoordinates + "; " + probableCoordinates); // ----------------------------------
         return probableCoordinates;
-
     }
 
+//    public void removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(List<Pair<Integer, Integer>> temporarySetOfProbableCoordinates) {
+//        for (Pair<Integer, Integer> coordinates : temporarySetOfProbableCoordinates) {
+//            if (!coordinatesForComputerShoot.contains(coordinates)) {
+//                temporarySetOfProbableCoordinates.remove(coordinates);
+//            }
+//        }
+//    }
+
+    public void protectWrongWayCoordinatesOnCopyOfPlayerBoard(int column, int row) {
+        if (column > 0 && column < 9 && row > 0 && row < 9) {
+            if (copyOfPlayerBoard[column - 1][row] == 1) {
+                copyOfPlayerBoard[column][row - 1] = 2;
+                copyOfPlayerBoard[column][row + 1] = 2;
+                copyOfPlayerBoard[column - 1][row - 1] = 2;
+                copyOfPlayerBoard[column - 1][row + 1] = 2;
+            }
+            if (copyOfPlayerBoard[column + 1][row] == 1) {
+                copyOfPlayerBoard[column][row - 1] = 2;
+                copyOfPlayerBoard[column][row + 1] = 2;
+                copyOfPlayerBoard[column + 1][row - 1] = 2;
+                copyOfPlayerBoard[column + 1][row + 1] = 2;
+            }
+            if (copyOfPlayerBoard[column][row - 1] == 1) {
+                copyOfPlayerBoard[column - 1][row] = 2;
+                copyOfPlayerBoard[column + 1][row] = 2;
+                copyOfPlayerBoard[column - 1][row - 1] = 2;
+                copyOfPlayerBoard[column + 1][row - 1] = 2;
+            }
+            if (copyOfPlayerBoard[column][row + 1] == 1) {
+                copyOfPlayerBoard[column - 1][row] = 2;
+                copyOfPlayerBoard[column + 1][row] = 2;
+                copyOfPlayerBoard[column - 1][row + 1] = 2;
+                copyOfPlayerBoard[column + 1][row + 1] = 2;
+            }
+        }
+        if (column == 0 && row > 0 && row < 9) {
+            if (copyOfPlayerBoard[column + 1][row] == 1) {
+                copyOfPlayerBoard[column][row - 1] = 2;
+                copyOfPlayerBoard[column][row + 1] = 2;
+                copyOfPlayerBoard[column + 1][row - 1] = 2;
+                copyOfPlayerBoard[column + 1][row + 1] = 2;
+            }
+            if (copyOfPlayerBoard[column][row - 1] == 1) {
+                copyOfPlayerBoard[column + 1][row] = 2;
+                copyOfPlayerBoard[column + 1][row - 1] = 2;
+            }
+            if (copyOfPlayerBoard[column][row + 1] == 1) {
+                copyOfPlayerBoard[column + 1][row] = 2;
+                copyOfPlayerBoard[column + 1][row + 1] = 2;
+            }
+        }
+        if (column == 9 && row > 0 && row < 9) {
+            if (copyOfPlayerBoard[column - 1][row] == 1) {
+                copyOfPlayerBoard[column][row - 1] = 2;
+                copyOfPlayerBoard[column][row + 1] = 2;
+                copyOfPlayerBoard[column - 1][row - 1] = 2;
+                copyOfPlayerBoard[column - 1][row + 1] = 2;
+            }
+            if (copyOfPlayerBoard[column][row - 1] == 1) {
+                copyOfPlayerBoard[column - 1][row] = 2;
+                copyOfPlayerBoard[column - 1][row - 1] = 2;
+            }
+            if (copyOfPlayerBoard[column][row + 1] == 1) {
+                copyOfPlayerBoard[column - 1][row] = 2;
+                copyOfPlayerBoard[column - 1][row + 1] = 2;
+            }
+        }
+        if (column > 0 && column < 9 && row == 0) {
+            if (copyOfPlayerBoard[column - 1][row] == 1) {
+                copyOfPlayerBoard[column][row + 1] = 2;
+                copyOfPlayerBoard[column - 1][row + 1] = 2;
+            }
+            if (copyOfPlayerBoard[column + 1][row] == 1) {
+                copyOfPlayerBoard[column][row + 1] = 2;
+                copyOfPlayerBoard[column + 1][row + 1] = 2;
+            }
+            if (copyOfPlayerBoard[column][row + 1] == 1) {
+                copyOfPlayerBoard[column - 1][row] = 2;
+                copyOfPlayerBoard[column + 1][row] = 2;
+                copyOfPlayerBoard[column - 1][row + 1] = 2;
+                copyOfPlayerBoard[column + 1][row + 1] = 2;
+            }
+        }
+        if (column > 0 && column < 9 && row == 9) {
+            if (copyOfPlayerBoard[column - 1][row] == 1) {
+                copyOfPlayerBoard[column][row - 1] = 2;
+                copyOfPlayerBoard[column - 1][row - 1] = 2;
+            }
+            if (copyOfPlayerBoard[column + 1][row] == 1) {
+                copyOfPlayerBoard[column][row - 1] = 2;
+                copyOfPlayerBoard[column + 1][row - 1] = 2;
+            }
+            if (copyOfPlayerBoard[column][row - 1] == 1) {
+                copyOfPlayerBoard[column - 1][row] = 2;
+                copyOfPlayerBoard[column + 1][row] = 2;
+                copyOfPlayerBoard[column - 1][row - 1] = 2;
+                copyOfPlayerBoard[column + 1][row - 1] = 2;
+            }
+        }
+        if (column == 0 && row == 0) {
+            if (copyOfPlayerBoard[column + 1][row] == 1) {
+                copyOfPlayerBoard[column][row + 1] = 2;
+                copyOfPlayerBoard[column + 1][row + 1] = 2;
+            }
+            if (copyOfPlayerBoard[column][row + 1] == 1) {
+                copyOfPlayerBoard[column + 1][row] = 2;
+                copyOfPlayerBoard[column + 1][row + 1] = 2;
+            }
+        }
+        if (column == 9 && row == 0) {
+            if (copyOfPlayerBoard[column - 1][row] == 1) {
+                copyOfPlayerBoard[column][row + 1] = 2;
+                copyOfPlayerBoard[column - 1][row + 1] = 2;
+            }
+            if (copyOfPlayerBoard[column][row + 1] == 1) {
+                copyOfPlayerBoard[column - 1][row] = 2;
+                copyOfPlayerBoard[column - 1][row + 1] = 2;
+            }
+        }
+        if (column == 0 && row == 9) {
+            if (copyOfPlayerBoard[column + 1][row] == 1) {
+                copyOfPlayerBoard[column][row - 1] = 2;
+                copyOfPlayerBoard[column + 1][row - 1] = 2;
+            }
+            if (copyOfPlayerBoard[column][row - 1] == 1) {
+                copyOfPlayerBoard[column + 1][row] = 2;
+                copyOfPlayerBoard[column + 1][row - 1] = 2;
+            }
+        }
+        if (column == 9 && row == 9) {
+            if (copyOfPlayerBoard[column - 1][row] == 1) {
+                copyOfPlayerBoard[column][row - 1] = 2;
+                copyOfPlayerBoard[column - 1][row - 1] = 2;
+            }
+            if (copyOfPlayerBoard[column][row - 1] == 1) {
+                copyOfPlayerBoard[column - 1][row] = 2;
+                copyOfPlayerBoard[column - 1][row - 1] = 2;
+            }
+        }
+    }
 
     public ShipMast identifyShipMast(int column, int row, List<ShipMast> shipMastsList) {
         ShipMast wantedShipMast = new ShipMast(new Pair<>(100, 100));
         for (ShipMast shipMast : shipMastsList) {
             if (shipMast.getVisibleShipMastCoordinates().getKey() == column
-                    && shipMast.getVisibleShipMastCoordinates().getValue() == row) {
+                && shipMast.getVisibleShipMastCoordinates().getValue() == row) {
                 wantedShipMast = shipMast;
             }
         }
@@ -785,7 +1085,9 @@ public class Player {
 
         checkIsShipSunk = checker;
 
-        if (checkIsShipSunk) { ship.setStatus(-1); }
+        if (checkIsShipSunk) {
+            ship.setStatus(-1);
+        }
 
         return checkIsShipSunk;
 
@@ -808,7 +1110,7 @@ public class Player {
             for (int n = 0; n < 10; n++) {
                 if (board[i][n] == 2) {
                     Missed missed = new Missed(new Pair<>(i, n));
-                    if(!grid.getChildren().contains(missed)) {
+                    if (!grid.getChildren().contains(missed)) {
                         grid.add(missed, i, n);
                     }
                     if (!missedList.contains(missed)) {
@@ -912,7 +1214,7 @@ public class Player {
         if (column - 1 + numberOfMasts <= 9) {
             int sum = 0;
             for (int i = 0; i < numberOfMasts - 1; i++) {
-                sum = sum + board[column+(i+1)][row];
+                sum = sum + board[column + (i + 1)][row];
             }
             if (sum == 0) {
                 allowedDirections.add("right");
@@ -922,7 +1224,7 @@ public class Player {
         if (row - 1 + numberOfMasts <= 9) {
             int sum = 0;
             for (int i = 0; i < numberOfMasts - 1; i++) {
-                sum = sum + board[column][row+(i+1)];
+                sum = sum + board[column][row + (i + 1)];
             }
             if (sum == 0) {
                 allowedDirections.add("down");
@@ -932,7 +1234,7 @@ public class Player {
         if (column + 1 - numberOfMasts >= 0) {
             int sum = 0;
             for (int i = 0; i < numberOfMasts - 1; i++) {
-                sum = sum + board[column-(i+1)][row];
+                sum = sum + board[column - (i + 1)][row];
             }
             if (sum == 0) {
                 allowedDirections.add("left");

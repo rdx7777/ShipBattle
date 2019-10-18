@@ -6,13 +6,17 @@ import javafx.util.Pair;
 public class ShipMast extends Button {
 
     private Pair<Integer, Integer> visibleShipMastCoordinates;
-    private boolean isShipMastHit; // if hit, isMastHit = true;
+    private boolean isShipMastHit; // if hit, isShipMastHit = true;
 
     public ShipMast(Pair<Integer, Integer> visibleShipMastCoordinates) {
         this.visibleShipMastCoordinates = visibleShipMastCoordinates;
 
         setMinSize(27, 27);
         setMaxSize(27, 27);
+//        setStyle("-fx-border-style: solid");
+//        setStyle("-fx-border-width: 0");
+//        setStyle("-fx-background-radius: 0");
+
 //        setStyle("-fx-border-style: none");
 //        setShipMastAction();
     }
