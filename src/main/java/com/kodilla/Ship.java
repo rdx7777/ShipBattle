@@ -37,9 +37,7 @@ public class Ship {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Ship)) return false;
-
         Ship ship = (Ship) o;
-
         if (!shipName.equals(ship.shipName)) return false;
         return mastsCoordinates.equals(ship.mastsCoordinates);
     }
@@ -50,5 +48,4 @@ public class Ship {
         result = 31 * result + mastsCoordinates.hashCode();
         return result;
     }
-
 }

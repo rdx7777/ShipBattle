@@ -11,7 +11,7 @@ import javafx.util.Pair;
 
 import java.util.*;
 
-public class Player {
+public class Game {
     private GridPane grid;
     private GridPane gridPlayer;
     private GridPane gridComputer;
@@ -28,15 +28,13 @@ public class Player {
     private boolean wasPlayerMastHit;
     private Pair<Integer, Integer> playerHitMastCoordinates;
     private Deque<Pair<Integer, Integer>> queueOfPlayerMastsHit = new ArrayDeque<>(); // queue for store player masts hit
-    private Pair<Integer, Integer> playerLastHitMastCoordinates;
-    private Pair<Integer, Integer> playerPenultimateHitMastCoordinates;
     private GameButton startButton;
     private GameButton newGameButton;
     private GameLabel userInterfaceLabel;
     private GameLabel playerScoreLabel;
     private GameLabel computerScoreLabel;
 
-    public Player(GridPane grid, GridPane gridPlayer, GridPane gridComputer,
+    public Game(GridPane grid, GridPane gridPlayer, GridPane gridComputer,
                   ShipsContainer shipsContainer, Scores scores) {
         this.grid = grid;
         this.gridPlayer = gridPlayer;
@@ -93,16 +91,7 @@ public class Player {
         }
     }
 
-    public int[][] getComputerBoard() {
-        return computerBoard;
-    }
-
-    public void setComputerBoard(int computerBoardToSet[][]) {
-        computerBoard = computerBoardToSet;
-    }
-
-    public void createShipObjectsAndAddingToContainer() {
-
+    public void createPlayerShipObjectsAndAddToContainer() {
         // creating player's objects used in the game
         Ship ship_4_1 = new Ship("Ship 4-masts (1)", new ArrayList<>());
         Ship ship_3_1 = new Ship("Ship 3-masts (1)", new ArrayList<>());
@@ -114,16 +103,13 @@ public class Player {
         Ship ship_1_2 = new Ship("Ship 1-masts (2)", new ArrayList<>());
         Ship ship_1_3 = new Ship("Ship 1-masts (3)", new ArrayList<>());
         Ship ship_1_4 = new Ship("Ship 1-masts (4)", new ArrayList<>());
-
         // preparing and adding set of ships to ships container
         List<Ship> shipCollection = new ArrayList<>(Arrays.asList(ship_4_1, ship_3_1, ship_3_2, ship_2_1,
             ship_2_2, ship_2_3, ship_1_1, ship_1_2, ship_1_3, ship_1_4));
-        shipsContainer.addShipsToContainer(shipCollection);
-
+        shipsContainer.addPlayerShipsToContainer(shipCollection);
     }
 
     public void createComputerShipObjectsAndAddingToContainer() {
-
         // creating computer's objects used in the game
         Ship computerShip_4_1 = new Ship("Ship 4-masts (computer) (1)", new ArrayList<>());
         Ship computerShip_3_1 = new Ship("Ship 3-masts (computer) (1)", new ArrayList<>());
@@ -135,17 +121,15 @@ public class Player {
         Ship computerShip_1_2 = new Ship("Ship 1-masts (computer) (2)", new ArrayList<>());
         Ship computerShip_1_3 = new Ship("Ship 1-masts (computer) (3)", new ArrayList<>());
         Ship computerShip_1_4 = new Ship("Ship 1-masts (computer) (4)", new ArrayList<>());
-
         // preparing and adding set of ships to ships container
         List<Ship> shipCollection = new ArrayList<>(Arrays.asList(computerShip_4_1, computerShip_3_1,
             computerShip_3_2, computerShip_2_1, computerShip_2_2, computerShip_2_3,
             computerShip_1_1, computerShip_1_2, computerShip_1_3, computerShip_1_4));
         shipsContainer.addComputerShipsToContainer(shipCollection);
-
     }
 
-    public void setShipMastOnControlSquareField() {
-        Map<String, Ship> map = shipsContainer.getSetOfShips();
+    public void buildShipsOnPlayerBoard() {
+        Map<String, Ship> map = shipsContainer.getSetOfPlayerShips();
         Deque<Ship> theShipsForCheck = new ArrayDeque<>(); // create queue for check if ship exists
         for (Map.Entry<String, Ship> entry : map.entrySet()) {
             theShipsForCheck.offer(entry.getValue());
@@ -215,7 +199,7 @@ public class Player {
     public void extractedAddingShipMast(int column, int row, List<Pair<Integer, Integer>> coordinates) {
         ShipMast shipMast = new ShipMast(new Pair<>(column, row));
         gridPlayer.add(shipMast, column, row);
-        shipsContainer.addShipMastToContainer(shipMast);
+        shipsContainer.addPlayerShipMastToContainer(shipMast);
         playerBoard[column][row] = 3; // temporary until accepting whole ship; then 1
         coordinates.add(new Pair<>(column, row));
         maxNumberOfMasts--;
@@ -259,11 +243,8 @@ public class Player {
     }
 
     public boolean checkNeighbourDiagonally(int[][] board, int column, int row) {
-
         boolean result = false;
-
         if (board[column][row] != 2) {
-
             if (column > 0 && column < 9 && row > 0 && row < 9) {
                 if (board[column - 1][row - 1] != 1 && board[column + 1][row - 1] != 1
                     && board[column - 1][row + 1] != 1 && board[column + 1][row + 1] != 1
@@ -272,130 +253,107 @@ public class Player {
                     result = true;
                 }
             }
-
             if (column == 0 && row > 0 && row < 9) {
                 if (board[column + 1][row - 1] != 1 && board[column + 1][row + 1] != 1
                     && board[column + 1][row - 1] != 3 && board[column + 1][row + 1] != 3) {
                     result = true;
                 }
             }
-
             if (column == 9 && row > 0 && row < 9) {
                 if (board[column - 1][row - 1] != 1 && board[column - 1][row + 1] != 1
                     && board[column - 1][row - 1] != 3 && board[column - 1][row + 1] != 3) {
                     result = true;
                 }
             }
-
             if (column > 0 && column < 9 && row == 0) {
                 if (board[column - 1][row + 1] != 1 && board[column + 1][row + 1] != 1
                     && board[column - 1][row + 1] != 3 && board[column + 1][row + 1] != 3) {
                     result = true;
                 }
             }
-
             if (column > 0 && column < 9 && row == 9) {
                 if (board[column - 1][row - 1] != 1 && board[column + 1][row - 1] != 1
                     && board[column - 1][row - 1] != 3 && board[column + 1][row - 1] != 3) {
                     result = true;
                 }
             }
-
             if (column == 0 && row == 0) {
                 if (board[column + 1][row + 1] != 1 && board[column + 1][row + 1] != 3) {
                     result = true;
                 }
             }
-
             if (column == 9 && row == 0) {
                 if (board[column - 1][row + 1] != 1 && board[column - 1][row + 1] != 3) {
                     result = true;
                 }
             }
-
             if (column == 0 && row == 9) {
                 if (board[column + 1][row - 1] != 1 && board[column + 1][row - 1] != 3) {
                     result = true;
                 }
             }
-
             if (column == 9 && row == 9) {
                 if (board[column - 1][row - 1] != 1 && board[column - 1][row - 1] != 3) {
                     result = true;
                 }
             }
-
         }
-
         return result;
-
     }
 
     public boolean checkBuildingOnlyOneShipAtTime(int[][] board, int column, int row) {
-
         boolean result = false;
-
         if (column > 0 && column < 9 && row > 0 && row < 9) {
             if (board[column][row - 1] == 3 || board[column][row + 1] == 3
                 || board[column - 1][row] == 3 || board[column + 1][row] == 3) {
                 result = true;
             }
         }
-
         if (column == 0 && row > 0 && row < 9) {
             if (board[column][row - 1] == 3 || board[column][row + 1] == 3
                 || board[column + 1][row] == 3) {
                 result = true;
             }
         }
-
         if (column == 9 && row > 0 && row < 9) {
             if (board[column][row - 1] == 3 || board[column][row + 1] == 3
                 || board[column - 1][row] == 3) {
                 result = true;
             }
         }
-
         if (column > 0 && column < 9 && row == 0) {
             if (board[column][row + 1] == 3
                 || board[column - 1][row] == 3 || board[column + 1][row] == 3) {
                 result = true;
             }
         }
-
         if (column > 0 && column < 9 && row == 9) {
             if (board[column][row - 1] == 3
                 || board[column - 1][row] == 3 || board[column + 1][row] == 3) {
                 result = true;
             }
         }
-
         if (column == 0 && row == 0) {
             if (board[column][row + 1] == 3 || board[column + 1][row] == 3) {
                 result = true;
             }
         }
-
         if (column == 9 && row == 0) {
             if (board[column][row + 1] == 3 || board[column - 1][row] == 3) {
                 result = true;
             }
         }
-
         if (column == 0 && row == 9) {
             if (board[column][row - 1] == 3 || board[column + 1][row] == 3) {
                 result = true;
             }
         }
-
         if (column == 9 && row == 9) {
             if (board[column][row - 1] == 3 || board[column - 1][row] == 3) {
                 result = true;
             }
         }
-
         return result;
-
     }
 
     public void changeShipStatusToExists(Deque<Ship> deque, List<Pair<Integer, Integer>> coordinates) {
@@ -407,17 +365,14 @@ public class Player {
     }
 
     public void protectShipPosition(int[][] board, List<Pair<Integer, Integer>> coordinates) {
-
         for (Pair<Integer, Integer> pair : coordinates) {
             int column = pair.getKey();
             int row = pair.getValue();
             board[column][row] = 1;
         }
-
         for (Pair<Integer, Integer> pair : coordinates) {
             int column = pair.getKey();
             int row = pair.getValue();
-
             if (column > 0 && column < 9 && row > 0 && row < 9) {
                 extractedMethod3(board, column, row);
                 extractedMethod1(board, column, row);
@@ -426,7 +381,6 @@ public class Player {
                 board[column - 1][row + 1] = 2;
                 board[column + 1][row + 1] = 2;
             }
-
             if (column == 0 && row > 0 && row < 9) {
                 extractedMethod1(board, column, row);
                 if (board[column + 1][row] != 1) {
@@ -435,13 +389,11 @@ public class Player {
                 board[column + 1][row - 1] = 2;
                 board[column + 1][row + 1] = 2;
             }
-
             if (column == 9 && row > 0 && row < 9) {
                 extractedMethod1(board, column, row);
                 extractedMethod2(board, column, row);
                 board[column - 1][row + 1] = 2;
             }
-
             if (column > 0 && column < 9 && row == 0) {
                 extractedMethod3(board, column, row);
                 if (board[column][row + 1] != 1) {
@@ -450,7 +402,6 @@ public class Player {
                 board[column - 1][row + 1] = 2;
                 board[column + 1][row + 1] = 2;
             }
-
             if (column > 0 && column < 9 && row == 9) {
                 extractedMethod3(board, column, row);
                 if (board[column][row - 1] != 1) {
@@ -459,7 +410,6 @@ public class Player {
                 board[column - 1][row - 1] = 2;
                 board[column + 1][row - 1] = 2;
             }
-
             if (column == 0 && row == 0) {
                 if (board[column][row + 1] != 1) {
                     board[column][row + 1] = 2;
@@ -469,7 +419,6 @@ public class Player {
                 }
                 board[column + 1][row + 1] = 2;
             }
-
             if (column == 9 && row == 0) {
                 if (board[column][row + 1] != 1) {
                     board[column][row + 1] = 2;
@@ -479,7 +428,6 @@ public class Player {
                 }
                 board[column - 1][row + 1] = 2;
             }
-
             if (column == 0 && row == 9) {
                 if (board[column][row - 1] != 1) {
                     board[column][row - 1] = 2;
@@ -489,7 +437,6 @@ public class Player {
                 }
                 board[column + 1][row - 1] = 2;
             }
-
             if (column == 9 && row == 9) {
                 if (board[column][row - 1] != 1) {
                     board[column][row - 1] = 2;
@@ -525,7 +472,7 @@ public class Player {
     }
 
     public void removeShipMast(List<Pair<Integer, Integer>> coordinates) {
-        List<ShipMast> shipMastsList = shipsContainer.getSetOfShipMasts();
+        List<ShipMast> shipMastsList = shipsContainer.getSetOfPlayerShipMasts();
         ShipMast shipMast = new ShipMast(new Pair<>(100, 100));
         ObservableList<Node> childrenOfShipMasts = gridPlayer.getChildren();
         for (Node node : childrenOfShipMasts) {
@@ -537,8 +484,8 @@ public class Player {
                     if (playerBoard[column][row] == 3) {
                         if (checkRemoveShipMastIsAllowed(column, row)) { // check if not removing mast inside the ship
                             ShipMast shipMastToRemove = identifyShipMast(column, row, shipMastsList);
-                            gridPlayer.getChildren().remove(shipMastToRemove); // gridPlayer.getChildren().remove(button);
-                            shipsContainer.removeShipMastFromContainer(shipMastToRemove);
+                            gridPlayer.getChildren().remove(shipMastToRemove);
+                            shipsContainer.removePlayerShipMastFromContainer(shipMastToRemove);
                             playerBoard[column][row] = 0;
                             coordinates.remove(new Pair<>(column, row));
                             maxNumberOfMasts++;
@@ -558,42 +505,34 @@ public class Player {
     }
 
     public boolean checkRemoveShipMastIsAllowed(int column, int row) {
-
         boolean result = true;
-
         if (column > 0 && column < 9 && row > 0 && row < 9) {
             if ((playerBoard[column - 1][row] == 3 && playerBoard[column + 1][row] == 3)
                 || (playerBoard[column][row - 1] == 3 && playerBoard[column][row + 1] == 3)) {
                 result = false;
             }
         }
-
         if (column == 0 && row > 0 && row < 9) {
             if (playerBoard[column][row - 1] == 3 && playerBoard[column][row + 1] == 3) {
                 result = false;
             }
         }
-
         if (column == 9 && row > 0 && row < 9) {
             if (playerBoard[column][row - 1] == 3 && playerBoard[column][row + 1] == 3) {
                 result = false;
             }
         }
-
         if (column > 0 && column < 9 && row == 0) {
             if (playerBoard[column - 1][row] == 3 && playerBoard[column + 1][row] == 3) {
                 result = false;
             }
         }
-
         if (column > 0 && column < 9 && row == 9) {
             if (playerBoard[column - 1][row] == 3 && playerBoard[column + 1][row] == 3) {
                 result = false;
             }
         }
-
         return result;
-
     }
 
     public void shootOnComputerBoard() {
@@ -601,13 +540,12 @@ public class Player {
         userInterfaceLabel = findLabel("User Interface");
         playerScoreLabel = findLabel("Player Score");
         computerScoreLabel = findLabel("Computer Score");
-        List<ShipMast> playerShipMastsList = shipsContainer.getSetOfShipMasts();
+        List<ShipMast> playerShipMastsList = shipsContainer.getSetOfPlayerShipMasts();
         List<ShipMast> computerShipMastsList = shipsContainer.getSetOfComputerShipMasts();
-        List<Missed> playerMissedList = shipsContainer.getSetOfMissed();
+        List<Missed> playerMissedList = shipsContainer.getSetOfPlayerMissed();
         List<Missed> computerMissedList = shipsContainer.getSetOfComputerMissed();
-        Map<String, Ship> playerShipsMap = shipsContainer.getSetOfShips();
+        Map<String, Ship> playerShipsMap = shipsContainer.getSetOfPlayerShips();
         Map<String, Ship> computerShipsMap = shipsContainer.getSetOfComputerShips();
-//        Deque<Ship> theQueueOfPlayerMastsHit = new ArrayDeque<>(); // create queue for store player masts hit
         createListOfCoordinatesToComputerShoot();
         Random random = new Random();
         ControlSquare controlSquare = new ControlSquare(new Pair<>(100, 100));
@@ -662,88 +600,9 @@ public class Player {
 
     public void computerMove(Random random, List<ShipMast> playerShipMastsList,
                              List<Missed> playerMissedList, Map<String, Ship> playerShipsMap) {
-
         int column;
         int row;
-
-//        playerPenultimateHitMastCoordinates = playerLastHitMastCoordinates;
-//        playerLastHitMastCoordinates = playerHitMastCoordinates;
-
-/*
         if (wasPlayerMastHit) {
-
-            System.out.println("FIRST shoot AFTER MAST WAS HIT *** playerHitMastCoordinates: " + playerHitMastCoordinates);
-            playerLastHitMastCoordinates = playerHitMastCoordinates; // ----------------------
-
-            Pair<Integer, Integer> probableCoordinates = shootAroundHitMast(random);
-            Pair<Integer, Integer> prohibitedCoordinates = new Pair<>(100, 100);
-
-            if (!probableCoordinates.equals(prohibitedCoordinates)) {
-                column = probableCoordinates.getKey();
-                row = probableCoordinates.getValue();
-                coordinatesForComputerShoot.remove(probableCoordinates);
-
-                playerPenultimateHitMastCoordinates = playerHitMastCoordinates; // ----------------------
-
-            } else {
-                // TUTAJ trzeba napisać mechanizm radzący sobie z końcem niezatopionego statku
-                // bo pola o wybranych współrzędnych (100, 100) nie ma w dozwolonym zbiorze
-                // a takie współrzędne zostały zwrócone, ponieważ poprzedni strzał w trafił już poza statek
-
-                // więc trzeba wrócić do strzelania w kierunku przeciwnym
-
-                // a cały czas mamy współrzędne ostatniego trafienia (playerHitMastCoordinates), na których właśnie przed chwilą
-                // pracowała metoda shootAroundHitMast
-                // oraz współrzędne poprzednio trafionego masztu (playerPreviouslyHitMastCoordinates)
-
-                System.out.println("SECOND shoot AFTER MAST WAS HIT *** playerHitMastCoordinates: " + playerHitMastCoordinates);
-                System.out.println("playerLastHitMastCoordinates: " + playerLastHitMastCoordinates);
-                playerHitMastCoordinates = playerLastHitMastCoordinates; // ----------------------
-
-                probableCoordinates = shootAroundHitMast(random);
-                prohibitedCoordinates = new Pair<>(100, 100);
-                if (!probableCoordinates.equals(prohibitedCoordinates)) {
-                    column = probableCoordinates.getKey();
-                    row = probableCoordinates.getValue();
-                    coordinatesForComputerShoot.remove(probableCoordinates);
-                } else {
-
-                    System.out.println("THIRD shoot AFTER MAST WAS HIT *** playerHitMastCoordinates: " + playerHitMastCoordinates);
-                    System.out.println("playerLastHitMastCoordinates: " + playerLastHitMastCoordinates);
-                    System.out.println("playerPenultimateHitMastCoordinates: " + playerPenultimateHitMastCoordinates);
-                    playerHitMastCoordinates = playerPenultimateHitMastCoordinates; // ----------------------
-
-                    probableCoordinates = shootAroundHitMast(random);
-                    prohibitedCoordinates = new Pair<>(100, 100);
-                    if (!probableCoordinates.equals(prohibitedCoordinates)) {
-                        column = probableCoordinates.getKey();
-                        row = probableCoordinates.getValue();
-                        coordinatesForComputerShoot.remove(probableCoordinates);
-                    } else {
-                        System.out.println("random shoot AFTER MAST WAS HIT ------------------------------ should not happen...");
-
-                        Pair<Integer, Integer> randomCoordinates = coordinatesForComputerShoot.
-                            get(random.nextInt(coordinatesForComputerShoot.size()));
-                        column = randomCoordinates.getKey();
-                        row = randomCoordinates.getValue();
-                        coordinatesForComputerShoot.remove(randomCoordinates);
-                    }
-                }
-            }
-        } else {
-
-            System.out.println("random shoot  ------  MAST WASN'T HIT");
-
-            Pair<Integer, Integer> randomCoordinates = coordinatesForComputerShoot.
-                get(random.nextInt(coordinatesForComputerShoot.size()));
-            column = randomCoordinates.getKey();
-            row = randomCoordinates.getValue();
-            coordinatesForComputerShoot.remove(randomCoordinates);
-        }
-*/
-
-        if (wasPlayerMastHit) {
-            System.out.println("FIRST trial AFTER MAST WAS HIT *** playerHitMastCoordinates: " + playerHitMastCoordinates);
             Pair<Integer, Integer> probableCoordinates = shootAroundHitMast(random);
             Pair<Integer, Integer> prohibitedCoordinates = new Pair<>(100, 100);
             if (!probableCoordinates.equals(prohibitedCoordinates)) {
@@ -751,55 +610,41 @@ public class Player {
                 row = probableCoordinates.getValue();
                 coordinatesForComputerShoot.remove(probableCoordinates);
             } else {
-                // TUTAJ trzeba napisać mechanizm radzący sobie z końcem niezatopionego statku
-                // bo pola o wybranych współrzędnych (100, 100) nie ma w dozwolonym zbiorze
-                // a takie współrzędne zostały zwrócone, ponieważ poprzedni strzał w trafił już poza statek
-
-                // więc trzeba wrócić do strzelania w kierunku przeciwnym
-
-                // a cały czas mamy współrzędne ostatniego trafienia (playerHitMastCoordinates), na których właśnie przed chwilą
-                // pracowała metoda shootAroundHitMast
-                // oraz współrzędne poprzednio trafionego masztu (playerPreviouslyHitMastCoordinates)
                 do {
                     playerHitMastCoordinates = queueOfPlayerMastsHit.pop();
-                    System.out.println("SECOND trial AFTER MAST WAS HIT *** playerHitMastCoordinates: " + playerHitMastCoordinates);
                     probableCoordinates = shootAroundHitMast(random);
-//                    prohibitedCoordinates = new Pair<>(100, 100);
                 } while (probableCoordinates.equals(prohibitedCoordinates));
                 column = probableCoordinates.getKey();
                 row = probableCoordinates.getValue();
                 coordinatesForComputerShoot.remove(probableCoordinates);
             }
         } else {
-            System.out.println("random shoot  ------  MAST WASN'T HIT"); // -------------------------------
             Pair<Integer, Integer> randomCoordinates = coordinatesForComputerShoot.
                 get(random.nextInt(coordinatesForComputerShoot.size()));
             column = randomCoordinates.getKey();
             row = randomCoordinates.getValue();
             coordinatesForComputerShoot.remove(randomCoordinates);
         }
-
         ShipMast shipMast = identifyShipMast(column, row, playerShipMastsList);
         Ship ship = identifyShip(column, row, playerShipsMap);
-
         if (playerBoard[column][row] == 1) {
             copyOfPlayerBoard[column][row] = 1;
             Hit hit = new Hit(new Pair<>(column, row));
             gridPlayer.add(hit, column, row);
-            shipsContainer.getSetOfHits().add(hit);
+            shipsContainer.getSetOfPlayerHits().add(hit);
             shipMast.setShipMastHit(true);
             wasPlayerMastHit = true;
-            protectWrongWayCoordinatesOnCopyOfPlayerBoard(column, row);
+            protectShootingOnWrongWayOnPlayerBoard(column, row);
             showShipProtectedArea(gridPlayer, copyOfPlayerBoard, playerMissedList); // for wrong way coordinates
             removeProtectedAreaFromListOfCoordinatesForComputerShoot();
             playerHitMastCoordinates = new Pair<>(column, row);
-            queueOfPlayerMastsHit.push(playerHitMastCoordinates); // ***************************************************
+            queueOfPlayerMastsHit.push(playerHitMastCoordinates);
             if (isShipSunk(ship, playerShipMastsList)) {
                 protectShipPosition(copyOfPlayerBoard, ship.getMastsCoordinates());
                 showShipProtectedArea(gridPlayer, copyOfPlayerBoard, playerMissedList);
                 removeProtectedAreaFromListOfCoordinatesForComputerShoot();
                 wasPlayerMastHit = false;
-                queueOfPlayerMastsHit.clear(); // **********************************************************************
+                queueOfPlayerMastsHit.clear();
                 if (areAllShipsSunk(playerShipsMap)) {
                     // THE END OF THE GAME - computer won
                     blockActionOnBoard(gridComputer, true);
@@ -812,76 +657,64 @@ public class Player {
             copyOfPlayerBoard[column][row] = 2;
             Missed missed = new Missed(new Pair<>(column, row));
             gridPlayer.add(missed, column, row);
-            shipsContainer.getSetOfMissed().add(missed);
-//            wasPlayerMastHit = false;
+            shipsContainer.getSetOfPlayerMissed().add(missed);
         }
     }
 
     public Pair<Integer, Integer> shootAroundHitMast(Random random) {
-
         int column = playerHitMastCoordinates.getKey();
         int row = playerHitMastCoordinates.getValue();
         Pair<Integer, Integer> probableCoordinates = new Pair<>(100, 100);
         List<Pair<Integer, Integer>> temporarySetOfProbableCoordinates = new ArrayList<>();
-
         if (column > 0 && column < 9 && row > 0 && row < 9) {
             temporarySetOfProbableCoordinates.add(new Pair<>(column, row - 1));
             temporarySetOfProbableCoordinates.add(new Pair<>(column, row + 1));
             temporarySetOfProbableCoordinates.add(new Pair<>(column - 1, row));
             temporarySetOfProbableCoordinates.add(new Pair<>(column + 1, row));
-//            removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(temporarySetOfProbableCoordinates);
             probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
         }
         if (column == 0 && row > 0 && row < 9) {
             temporarySetOfProbableCoordinates.add(new Pair<>(column, row - 1));
             temporarySetOfProbableCoordinates.add(new Pair<>(column, row + 1));
             temporarySetOfProbableCoordinates.add(new Pair<>(column + 1, row));
-//            removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(temporarySetOfProbableCoordinates);
             probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
         }
         if (column == 9 && row > 0 && row < 9) {
             temporarySetOfProbableCoordinates.add(new Pair<>(column, row - 1));
             temporarySetOfProbableCoordinates.add(new Pair<>(column, row + 1));
             temporarySetOfProbableCoordinates.add(new Pair<>(column - 1, row));
-//            removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(temporarySetOfProbableCoordinates);
             probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
         }
         if (column > 0 && column < 9 && row == 0) {
             temporarySetOfProbableCoordinates.add(new Pair<>(column, row + 1));
             temporarySetOfProbableCoordinates.add(new Pair<>(column - 1, row));
             temporarySetOfProbableCoordinates.add(new Pair<>(column + 1, row));
-//            removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(temporarySetOfProbableCoordinates);
             probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
         }
         if (column > 0 && column < 9 && row == 9) {
             temporarySetOfProbableCoordinates.add(new Pair<>(column, row - 1));
             temporarySetOfProbableCoordinates.add(new Pair<>(column - 1, row));
             temporarySetOfProbableCoordinates.add(new Pair<>(column + 1, row));
-//            removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(temporarySetOfProbableCoordinates);
             probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
         }
         if (column == 0 && row == 0) {
             temporarySetOfProbableCoordinates.add(new Pair<>(column, row + 1));
             temporarySetOfProbableCoordinates.add(new Pair<>(column + 1, row));
-//            removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(temporarySetOfProbableCoordinates);
             probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
         }
         if (column == 9 && row == 0) {
             temporarySetOfProbableCoordinates.add(new Pair<>(column, row + 1));
             temporarySetOfProbableCoordinates.add(new Pair<>(column - 1, row));
-//            removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(temporarySetOfProbableCoordinates);
             probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
         }
         if (column == 0 && row == 9) {
             temporarySetOfProbableCoordinates.add(new Pair<>(column, row - 1));
             temporarySetOfProbableCoordinates.add(new Pair<>(column + 1, row));
-//            removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(temporarySetOfProbableCoordinates);
             probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
         }
         if (column == 9 && row == 9) {
             temporarySetOfProbableCoordinates.add(new Pair<>(column, row - 1));
             temporarySetOfProbableCoordinates.add(new Pair<>(column - 1, row));
-//            removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(temporarySetOfProbableCoordinates);
             probableCoordinates = extractedShootAroundHitMast(temporarySetOfProbableCoordinates, random);
         }
         return probableCoordinates;
@@ -890,7 +723,7 @@ public class Player {
     public Pair<Integer, Integer> extractedShootAroundHitMast(
         List<Pair<Integer, Integer>> temporarySetOfProbableCoordinates, Random random) {
 
-        Pair<Integer, Integer> probableCoordinates = new Pair<>(100, 100);
+        Pair<Integer, Integer> probableCoordinates = new Pair<>(100, 100); // wrong coordinates as default will be returned if no right move possible
         List<Pair<Integer, Integer>> setOfProbableCoordinates = new ArrayList<>();
 
         for (Pair<Integer, Integer> coordinates : temporarySetOfProbableCoordinates) {
@@ -906,19 +739,10 @@ public class Player {
                 probableCoordinates = setOfProbableCoordinates.get(0);
             }
         }
-        System.out.println(setOfProbableCoordinates + "; " + probableCoordinates); // ----------------------------------
         return probableCoordinates;
     }
 
-//    public void removeNonExistingCoordinatesForComputerShootFromTemporarySetOfProbableCoordinates(List<Pair<Integer, Integer>> temporarySetOfProbableCoordinates) {
-//        for (Pair<Integer, Integer> coordinates : temporarySetOfProbableCoordinates) {
-//            if (!coordinatesForComputerShoot.contains(coordinates)) {
-//                temporarySetOfProbableCoordinates.remove(coordinates);
-//            }
-//        }
-//    }
-
-    public void protectWrongWayCoordinatesOnCopyOfPlayerBoard(int column, int row) {
+    public void protectShootingOnWrongWayOnPlayerBoard(int column, int row) {
         if (column > 0 && column < 9 && row > 0 && row < 9) {
             if (copyOfPlayerBoard[column - 1][row] == 1) {
                 copyOfPlayerBoard[column][row - 1] = 2;
@@ -1074,23 +898,17 @@ public class Player {
     }
 
     public boolean isShipSunk(Ship ship, List<ShipMast> shipMastsList) {
-
         boolean checkIsShipSunk;
         boolean checker = true;
-
         for (Pair<Integer, Integer> pair : ship.getMastsCoordinates()) {
             ShipMast shipMast = identifyShipMast(pair.getKey(), pair.getValue(), shipMastsList);
             checker = checker && shipMast.getIsShipMastHit();
         }
-
         checkIsShipSunk = checker;
-
         if (checkIsShipSunk) {
             ship.setStatus(-1);
         }
-
         return checkIsShipSunk;
-
     }
 
     public boolean areAllShipsSunk(Map<String, Ship> shipsMap) {
@@ -1105,7 +923,7 @@ public class Player {
         return result;
     }
 
-    public void showShipProtectedArea(GridPane grid, int board[][], List<Missed> missedList) {
+    public void showShipProtectedArea(GridPane grid, int[][] board, List<Missed> missedList) {
         for (int i = 0; i < 10; i++) {
             for (int n = 0; n < 10; n++) {
                 if (board[i][n] == 2) {
@@ -1144,23 +962,17 @@ public class Player {
     }
 
     public void buildShipsOnComputerBoard() {
-
         Map<String, Ship> map = shipsContainer.getSetOfComputerShips();
-
         Deque<Ship> theShipsForCheck = new ArrayDeque<>();
         for (Map.Entry<String, Ship> entry : map.entrySet()) {
             theShipsForCheck.offer(entry.getValue());
         }
-
         Deque<Ship> theShipsForSaveData = new ArrayDeque<>();
         for (Map.Entry<String, Ship> entry : map.entrySet()) {
             theShipsForSaveData.offer(entry.getValue());
         }
-
         List<Pair<Integer, Integer>> prohibitedCoordinates = new ArrayList<>();
-
         Random random = new Random();
-
         while (getSumOfShipStatus(map) < 10) { // until all computer ships built
             int numberOfMasts = checkShipExistsInShipsContainer(theShipsForCheck);
             int column;
@@ -1186,7 +998,6 @@ public class Player {
                 }
             }
         }
-
     }
 
     public int getSumOfShipStatus(Map<String, Ship> map) {
@@ -1197,10 +1008,8 @@ public class Player {
         return status;
     }
 
-    public List<String> isEnoughSpaceForShip(int column, int row, int board[][], int numberOfMasts) {
-
+    public List<String> isEnoughSpaceForShip(int column, int row, int[][] board, int numberOfMasts) {
         List<String> allowedDirections = new ArrayList<>();
-
         if (row + 1 - numberOfMasts >= 0) {
             int sum = 0;
             for (int i = 0; i < numberOfMasts - 1; i++) {
@@ -1210,7 +1019,6 @@ public class Player {
                 allowedDirections.add("up");
             }
         }
-
         if (column - 1 + numberOfMasts <= 9) {
             int sum = 0;
             for (int i = 0; i < numberOfMasts - 1; i++) {
@@ -1220,7 +1028,6 @@ public class Player {
                 allowedDirections.add("right");
             }
         }
-
         if (row - 1 + numberOfMasts <= 9) {
             int sum = 0;
             for (int i = 0; i < numberOfMasts - 1; i++) {
@@ -1230,7 +1037,6 @@ public class Player {
                 allowedDirections.add("down");
             }
         }
-
         if (column + 1 - numberOfMasts >= 0) {
             int sum = 0;
             for (int i = 0; i < numberOfMasts - 1; i++) {
@@ -1240,18 +1046,12 @@ public class Player {
                 allowedDirections.add("left");
             }
         }
-
         return allowedDirections;
-
     }
 
-    public void buildShip(int approvedColumn, int approvedRow, String direction, int numberOfMasts,
-                          Deque<Ship> deque) {
-
+    public void buildShip(int approvedColumn, int approvedRow, String direction, int numberOfMasts, Deque<Ship> deque) {
         List<Pair<Integer, Integer>> coordinates = new ArrayList<>();
-
         switch (direction) {
-
             case "up":
                 for (int i = 0; i < numberOfMasts; i++) {
                     int column = approvedColumn;
@@ -1263,7 +1063,6 @@ public class Player {
                 protectShipPosition(computerBoard, coordinatesToSaveUP);
                 coordinates.clear();
                 break;
-
             case "right":
                 for (int i = 0; i < numberOfMasts; i++) {
                     int column = approvedColumn + i;
@@ -1275,7 +1074,6 @@ public class Player {
                 protectShipPosition(computerBoard, coordinatesToSaveRIGHT);
                 coordinates.clear();
                 break;
-
             case "down":
                 for (int i = 0; i < numberOfMasts; i++) {
                     int column = approvedColumn;
@@ -1287,7 +1085,6 @@ public class Player {
                 protectShipPosition(computerBoard, coordinatesToSaveDOWN);
                 coordinates.clear();
                 break;
-
             case "left":
                 for (int i = 0; i < numberOfMasts; i++) {
                     int column = approvedColumn - i;
@@ -1299,53 +1096,48 @@ public class Player {
                 protectShipPosition(computerBoard, coordinatesToSaveLEFT);
                 coordinates.clear();
                 break;
-
         }
-
     }
 
     public void extractedBuildShip(int column, int row, List<Pair<Integer, Integer>> coordinates) {
-
         ShipMast shipMast = new ShipMast(new Pair<>(column, row));
         shipsContainer.addComputerShipMastToContainer(shipMast);
         computerBoard[column][row] = 1;
         coordinates.add(new Pair<>(column, row));
-
     }
 
     public void resetAllForNewGame() {
-
-        for (ShipMast shipMast : shipsContainer.getSetOfShipMasts()) {
+        for (ShipMast shipMast : shipsContainer.getSetOfPlayerShipMasts()) {
             gridPlayer.getChildren().remove(shipMast);
         }
-        shipsContainer.getSetOfShipMasts().clear();
+        shipsContainer.getSetOfPlayerShipMasts().clear();
 
         for (ShipMast shipMast : shipsContainer.getSetOfComputerShipMasts()) {
             gridComputer.getChildren().remove(shipMast);
         }
         shipsContainer.getSetOfComputerShipMasts().clear();
 
-        for (Hit hit : shipsContainer.getSetOfHits()) {
+        for (Hit hit : shipsContainer.getSetOfPlayerHits()) {
             gridPlayer.getChildren().remove(hit);
         }
-        shipsContainer.getSetOfHits().clear();
+        shipsContainer.getSetOfPlayerHits().clear();
 
         for (Hit hit : shipsContainer.getSetOfComputerHits()) {
             gridComputer.getChildren().remove(hit);
         }
         shipsContainer.getSetOfComputerHits().clear();
 
-        for (Missed missed : shipsContainer.getSetOfMissed()) {
+        for (Missed missed : shipsContainer.getSetOfPlayerMissed()) {
             gridPlayer.getChildren().remove(missed);
         }
-        shipsContainer.getSetOfMissed().clear();
+        shipsContainer.getSetOfPlayerMissed().clear();
 
         for (Missed missed : shipsContainer.getSetOfComputerMissed()) {
             gridComputer.getChildren().remove(missed);
         }
         shipsContainer.getSetOfComputerMissed().clear();
 
-        shipsContainer.getSetOfShips().clear();
+        shipsContainer.getSetOfPlayerShips().clear();
         shipsContainer.getSetOfComputerShips().clear();
 
         for (int i = 0; i < 10; i++) {
@@ -1361,7 +1153,5 @@ public class Player {
         coordinatesForComputerShoot.clear();
         wasPlayerMastHit = false;
         playerHitMastCoordinates = null;
-
     }
-
 }

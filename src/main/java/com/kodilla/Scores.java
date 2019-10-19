@@ -19,6 +19,4 @@ public class Scores {
     public int getComputerScore() {
         return computerScore;
     }
-
-
 }

@@ -5,8 +5,8 @@ import javafx.scene.control.Label;
 public class GameLabel extends Label {
     private int width;
     private int height;
-    String imageName;
-    String name;
+    private String imageName;
+    private String name;
 
     public GameLabel(int width, int height, String imageName, String name) {
         this.width = width;
@@ -22,5 +22,4 @@ public class GameLabel extends Label {
     public String getName() {
         return name;
     }
-
 }

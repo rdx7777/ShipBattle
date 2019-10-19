@@ -21,5 +21,4 @@ public class GameButton extends Button {
     public String getButtonName() {
         return buttonName;
     }
-
 }

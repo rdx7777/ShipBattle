@@ -21,22 +21,22 @@ public class ShipBattle extends Application {
     }
 
     // creating top labels
-    GameLabel userInterfaceLabel = new GameLabel(378, 54, "user-interface_background.jpg", "User Interface");
-    GameLabel playerScoreLabel = new GameLabel(54, 40, "score_background.jpg", "Player Score");
-    GameLabel computerScoreLabel = new GameLabel(54, 40, "score_background.jpg", "Computer Score");
-    GameLabel playerNameLabel = new GameLabel(135, 40, "name_background.jpg", "Player Name");
-    GameLabel computerNameLabel = new GameLabel(135, 40, "name_background.jpg", "Computer Name");
+    private GameLabel userInterfaceLabel = new GameLabel(378, 54, "user-interface_background.jpg", "User Interface");
+    private GameLabel playerScoreLabel = new GameLabel(54, 40, "score_background.jpg", "Player Score");
+    private GameLabel computerScoreLabel = new GameLabel(54, 40, "score_background.jpg", "Computer Score");
+    private GameLabel playerNameLabel = new GameLabel(135, 40, "name_background.jpg", "Player Name");
+    private GameLabel computerNameLabel = new GameLabel(135, 40, "name_background.jpg", "Computer Name");
 
     // creating bottom buttons
-    GameButton newGameButton = new GameButton(108, 40, "New game");
-    GameButton resetButton = new GameButton(108, 40, "Reset");
-    GameButton startButton = new GameButton(108, 40, "Start");
-    GameButton helpButton = new GameButton(108, 40, "Help");
-    GameButton exitButton = new GameButton(108, 40, "Exit");
-    GameButton areYouSureExitButton = new GameButton(135, 40, "Are you sure?");
-    GameButton cancelExitButton = new GameButton(135, 40, "Cancel");
-    GameButton areYouSureResetButton = new GameButton(135, 40, "Are you sure?");
-    GameButton cancelResetButton = new GameButton(135, 40, "Cancel");
+    private GameButton newGameButton = new GameButton(108, 40, "New game");
+    private GameButton resetButton = new GameButton(108, 40, "Reset");
+    private GameButton startButton = new GameButton(108, 40, "Start");
+    private GameButton helpButton = new GameButton(108, 40, "Help");
+    private GameButton exitButton = new GameButton(108, 40, "Exit");
+    private GameButton areYouSureExitButton = new GameButton(135, 40, "Are you sure?");
+    private GameButton cancelExitButton = new GameButton(135, 40, "Cancel");
+    private GameButton areYouSureResetButton = new GameButton(135, 40, "Are you sure?");
+    private GameButton cancelResetButton = new GameButton(135, 40, "Cancel");
 
     @Override
     public void start(Stage primaryStage) {
@@ -62,27 +62,29 @@ public class ShipBattle extends Application {
         grid.add(gridPlayer, 0, 4, 10, 10);
         grid.add(gridComputer, 12, 4, 10, 10);
 
-        // setting size of columns in the grids
-        int columnSizes[] = {27, 27, 27, 27, 27, 27, 27, 27, 27, 27,
+        // setting size of columns for the main grid
+        int[] columnSizes = {27, 27, 27, 27, 27, 27, 27, 27, 27, 27,
                 81, 27,
                 27, 27, 27, 27, 27, 27, 27, 27, 27, 27};
         for(int i = 0; i<columnSizes.length; i++) {
             grid.getColumnConstraints().add(new ColumnConstraints(columnSizes[i]));
         }
 
-        // setting size of rows in the grid
-        int rowSizes[] = {54, 14, 40, 14, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 40, 40};
+        // setting size of rows for the main grid
+        int[] rowSizes = {54, 14, 40, 14, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 40, 40};
         for(int i = 0; i<rowSizes.length; i++) {
             grid.getRowConstraints().add(new RowConstraints(rowSizes[i]));
         }
 
-        int columnSizesForGrids[] = {27, 27, 27, 27, 27, 27, 27, 27, 27, 27};
+        // setting size of columns for player & computer grid
+        int[] columnSizesForGrids = {27, 27, 27, 27, 27, 27, 27, 27, 27, 27};
         for(int i = 0; i<columnSizesForGrids.length; i++) {
             gridPlayer.getColumnConstraints().add(new ColumnConstraints(columnSizesForGrids[i]));
             gridComputer.getColumnConstraints().add(new ColumnConstraints(columnSizesForGrids[i]));
         }
 
-        int rowSizesForGrids[] = {27, 27, 27, 27, 27, 27, 27, 27, 27, 27};
+        // setting size of rows for player & computer grid
+        int[] rowSizesForGrids = {27, 27, 27, 27, 27, 27, 27, 27, 27, 27};
         for(int i = 0; i<rowSizesForGrids.length; i++) {
             gridPlayer.getRowConstraints().add(new RowConstraints(rowSizesForGrids[i]));
             gridComputer.getRowConstraints().add(new RowConstraints(rowSizesForGrids[i]));
@@ -119,9 +121,9 @@ public class ShipBattle extends Application {
         // creating main objects
         ShipsContainer shipsContainer = new ShipsContainer();
         Scores scores = new Scores();
-        Player player = new Player(grid, gridPlayer, gridComputer, shipsContainer, scores);
+        Game game = new Game(grid, gridPlayer, gridComputer, shipsContainer, scores);
 
-        // setting buttons to handle choices for "Exit"
+        // setting buttons to handle choices for "Reset"
         areYouSureResetButton.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
         areYouSureResetButton.setTextFill(Color.RED);
         cancelResetButton.setFont(Font.font("Verdana", FontWeight.BOLD, 12));
@@ -133,7 +135,6 @@ public class ShipBattle extends Application {
 
         // setting actions for "New game" button
         newGameButton.setOnAction(event -> {
-
             userInterfaceLabel.setAlignment(Pos.TOP_LEFT);
             userInterfaceLabel.setPadding(new Insets(5, 0, 0, 5));
             userInterfaceLabel.setFont(Font.font("Verdana", FontWeight.MEDIUM, 12));
@@ -141,11 +142,11 @@ public class ShipBattle extends Application {
                     "FIRST build one 4-masts ship, then two 3-masts ships, \n" +
                     "then three 2-masts ships and finally four 1-mast ships.");
 
-            player.resetAllForNewGame();
-            player.createBoard(gridPlayer, shipsContainer.getSetOfControlSquares());
-            player.setEmptyPlayerBoard();
-            player.createShipObjectsAndAddingToContainer();
-            player.setShipMastOnControlSquareField();
+            game.resetAllForNewGame();
+            game.createBoard(gridPlayer, shipsContainer.getSetOfPlayerControlSquares());
+            game.setEmptyPlayerBoard();
+            game.createPlayerShipObjectsAndAddToContainer();
+            game.buildShipsOnPlayerBoard();
 
             newGameButton.setDisable(true);
             resetButton.setDisable(false);
@@ -170,16 +171,16 @@ public class ShipBattle extends Application {
             resetButton.setDisable(true);
         });
 
-        // setting actions for "Are you sure?" button for "Reset" choice
+        // setting actions for "Are you sure?" button with "Reset" choice
         areYouSureResetButton.setOnAction(event -> {
             grid.getChildren().remove(areYouSureResetButton);
             grid.getChildren().remove(cancelResetButton);
-            player.blockActionOnBoard(gridPlayer, true);
-            player.blockActionOnBoard(gridComputer, true);
+            game.blockActionOnBoard(gridPlayer, true);
+            game.blockActionOnBoard(gridComputer, true);
             newGameButton.setDisable(false);
         });
 
-        // setting actions for "Cancel" button for "Reset" choice
+        // setting actions for "Cancel" button with "Reset" choice
         cancelResetButton.setOnAction(event -> {
             grid.getChildren().remove(areYouSureResetButton);
             grid.getChildren().remove(cancelResetButton);
@@ -190,14 +191,14 @@ public class ShipBattle extends Application {
         startButton.setDisable(true);
 
         startButton.setOnAction(event -> {
-            player.blockActionOnBoard(gridPlayer, true);
-            player.blockActionOnBoard(gridComputer, false);
+            game.blockActionOnBoard(gridPlayer, true);
+            game.blockActionOnBoard(gridComputer, false);
             startButton.setDisable(true);
-            player.createBoard(gridComputer, shipsContainer.getSetOfComputerControlSquares());
-            player.setEmptyComputerBoard();
-            player.createComputerShipObjectsAndAddingToContainer();
-            player.buildShipsOnComputerBoard();
-            player.shootOnComputerBoard();
+            game.createBoard(gridComputer, shipsContainer.getSetOfComputerControlSquares());
+            game.setEmptyComputerBoard();
+            game.createComputerShipObjectsAndAddingToContainer();
+            game.buildShipsOnComputerBoard();
+            game.shootOnComputerBoard();
         });
 
         // setting actions for "Help" button

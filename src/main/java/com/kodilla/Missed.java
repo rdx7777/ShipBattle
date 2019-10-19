@@ -13,13 +13,6 @@ public class Missed extends Button {
 
         setMinSize(25, 25);
         setMaxSize(25, 25);
-//        setStyle("-fx-border-style: solid");
-//        setStyle("-fx-border-width: 0");
-//        setStyle("-fx-background-radius: 0");
         setStyle("-fx-background-image: url(missed_square.jpg);");
-
-//        setStyle("-fx-border-style: none");
-
     }
-
 }
